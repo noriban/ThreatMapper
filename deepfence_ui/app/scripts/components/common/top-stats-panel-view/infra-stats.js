@@ -37,10 +37,6 @@ const renderGroup = group => (
 class InfraStats extends React.Component {
   constructor(props) {
     super(props);
-    const activeMenuItem = localStorage.getItem('selectedMenuItem');
-    this.state = {
-      selectedMenuItem: activeMenuItem || 'Topology'
-    };
     this.fetchCounts = this.fetchCounts.bind(this);
     this.renderIntegration = this.renderIntegration.bind(this);
     this.goBackToIntegrations = this.goBackToIntegrations.bind(this);

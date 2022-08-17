@@ -13,106 +13,325 @@ import MICROSOFT_LOGO from '../../images/microsoft-teams.png';
 
 export const INTEGRATION_MENU_COLLECTION = [
   {
-    name: 'slack', isActive: false, icon: SLACK_LOGO, displayName: 'Slack', category: 'notification', bgcolor: '#0E0E0E', parent: 'Notification'
+    name: 'slack',
+    isActive: false,
+    icon: SLACK_LOGO,
+    displayName: 'Slack',
+    category: 'notification',
+    bgcolor: '#0E0E0E',
+    parent: 'Notification',
   },
   {
-    name: 'pagerduty', isActive: false, icon: PAGER_DUTY_LOGO, displayName: 'Pager Duty', category: 'notification', bgcolor: '#04AB38', parent: 'Notification'
+    name: 'pagerduty',
+    isActive: false,
+    icon: PAGER_DUTY_LOGO,
+    displayName: 'Pager Duty',
+    category: 'notification',
+    bgcolor: '#04AB38',
+    parent: 'Notification',
   },
   {
-    name: 'email', isActive: true, icon: EMAIL_LOGO, displayName: 'Email', category: 'notification', bgcolor: '#A6CDFF', parent: 'Notification'
+    name: 'email',
+    isActive: true,
+    icon: EMAIL_LOGO,
+    displayName: 'Email',
+    category: 'notification',
+    bgcolor: '#A6CDFF',
+    parent: 'Notification',
   },
   {
-    name: 'splunk', isActive: true, icon: SPLUNK_LOGO, displayName: 'Splunk', category: 'siem', bgcolor: '#70ac4c', parent: 'SIEM'
+    name: 'splunk',
+    isActive: true,
+    icon: SPLUNK_LOGO,
+    displayName: 'Splunk',
+    category: 'siem',
+    bgcolor: '#70ac4c',
+    parent: 'SIEM',
   },
   {
-    name: 'elasticsearch', isActive: true, icon: ELASTICSEARCH_LOGO, displayName: 'Elasticsearch', category: 'siem', bgcolor: 'black', parent: 'SIEM'
+    name: 'elasticsearch',
+    isActive: true,
+    icon: ELASTICSEARCH_LOGO,
+    displayName: 'Elasticsearch',
+    category: 'siem',
+    bgcolor: 'black',
+    parent: 'SIEM',
   },
   {
-    name: 's3', isActive: true, icon: AWS_S3_LOGO, displayName: 'S3', category: 'archival', parent: 'Archival'
+    name: 's3',
+    isActive: true,
+    icon: AWS_S3_LOGO,
+    displayName: 'S3',
+    category: 'archival',
+    parent: 'Archival',
   },
   {
-    name: 'http_endpoint', isActive: true, icon: HTTP_LOGO, displayName: 'HTTP endpoint', category: 'notification', bgcolor: 'white', parent: 'Notification'
+    name: 'http_endpoint',
+    isActive: true,
+    icon: HTTP_LOGO,
+    displayName: 'HTTP endpoint',
+    category: 'notification',
+    bgcolor: 'white',
+    parent: 'Notification',
   },
   {
-    name: 'jira', isActive: false, icon: JIRA_LOGO, displayName: 'Jira', category: 'ticketing', bgcolor: '#A6CDFF', parent: 'Ticketing'
+    name: 'jira',
+    isActive: false,
+    icon: JIRA_LOGO,
+    displayName: 'Jira',
+    category: 'ticketing',
+    bgcolor: '#A6CDFF',
+    parent: 'Ticketing',
   },
   {
-    name: 'sumo_logic', isActive: true, icon: SUMO_LOGIC_LOGO, displayName: 'Sumo Logic', category: 'siem', bgcolor: 'black', parent: 'SIEM'
+    name: 'sumo_logic',
+    isActive: true,
+    icon: SUMO_LOGIC_LOGO,
+    displayName: 'Sumo Logic',
+    category: 'siem',
+    bgcolor: 'black',
+    parent: 'SIEM',
   },
   {
-    name: 'google_chronicle', isActive: true, icon: GOOGLE_CHRONICLE_LOGO, displayName: 'Google Chronicle', category: 'siem', bgcolor: 'white', parent: 'SIEM'
+    name: 'google_chronicle',
+    isActive: true,
+    icon: GOOGLE_CHRONICLE_LOGO,
+    displayName: 'Google Chronicle',
+    category: 'siem',
+    bgcolor: 'white',
+    parent: 'SIEM',
   },
   {
-    name: 'reports', isActive: true, icon: REPORTS, displayName: 'PDF/XLSX', category: 'report', bgcolor: '#7ec359', parent: 'Reports'
+    name: 'reports',
+    isActive: true,
+    icon: REPORTS,
+    displayName: 'PDF/XLSX',
+    category: 'report',
+    bgcolor: '#7ec359',
+    parent: 'Reports',
   },
   {
-    name: 'microsoft_teams', isActive: false, icon: MICROSOFT_LOGO, displayName: 'Microsoft Teams', category: 'notification', bgcolor: '#0E0E0E', parent: 'Notification'
+    name: 'microsoft_teams',
+    isActive: false,
+    icon: MICROSOFT_LOGO,
+    displayName: 'Microsoft Teams',
+    category: 'notification',
+    bgcolor: '#0E0E0E',
+    parent: 'Notification',
+  },
+];
+
+export const NAVIGATION_MENU_COLLECTION = [
+  {
+    id: 'topology',
+    name: 'Topology',
+    menuIcon: 'icon-Topology',
+    link: '/topology',
+    items: [
+      {
+        id: 'cloud',
+        name: 'Cloud view',
+        link: '/topology/cloud',
+      },
+      {
+        id: 'k8s',
+        name: 'Kubernetes view',
+        link: '/topology/k8s',
+      },
+      {
+        id: 'hosts',
+        name: 'Hosts view',
+        link: '/topology/hosts',
+      },
+    ],
+  },
+  {
+    id: 'threat_graph',
+    name: 'Threat Graph',
+    menuIcon: 'nav-icon-attack-graph',
+    link: '/threat-graph',
+  },
+  {
+    id: 'vulnerabilities',
+    name: 'Vulnerabilities',
+    menuIcon: 'icon-biohazard',
+    link: '/vulnerability',
+    items: [
+      {
+        id: 'most-exploitable',
+        name: 'Most Exploietable Vulnerabilities',
+        link: '/vulnerability/vulnerabilities',
+      },
+      {
+        id: 'vulnerability-scans',
+        name: 'Vulnerability Scans',
+        link: '/vulnerability/scans',
+      },
+      {
+        id: 'runtime-bom',
+        name: 'Runtime BOM',
+        link: '/vulnerability/bom',
+      }
+    ],
+  },
+  {
+    id: 'secrets',
+    name: 'Secrets',
+    menuIcon: 'nav-icon-secret',
+    link: '/secret-scan',
+  },
+  {
+    id: 'posture',
+    name: 'Posture',
+    menuIcon: 'icon-compliance',
+    link: '/compliance',
+    items: [
+      {
+        id: 'aws',
+        name: 'AWS',
+        link: '/compliance/aws',
+      },
+      {
+        id: 'gcp',
+        name: 'Google Cloud',
+        link: '/compliance/gcp',
+      },
+      {
+        id: 'azure',
+        name: 'Azure',
+        link: '/compliance/azure',
+      },
+      {
+        id: 'kubernetes',
+        name: 'Kubernetes',
+        link: '/compliance/kubernetes',
+      },
+      {
+        id: 'linux',
+        name: 'Linux Host',
+        link: '/compliance/linux',
+      },
+    ],
+  },
+  {
+    id: 'registry',
+    name: 'Registries',
+    menuIcon: 'icon-containers',
+    link: '/registry_vulnerability_scan',
+  },
+  {
+    id: 'ingetgration',
+    name: 'Integrations',
+    menuIcon: 'icon-notification',
+    link: '/notification',
   },
 ];
 
 export const ADMIN_SIDE_NAV_MENU_COLLECTION = [
   {
-    name: 'Topology', menuIcon: 'icon-Topology', isActive: true, link: '/topology'
+    name: 'Topology',
+    menuIcon: 'icon-Topology',
+    isActive: true,
+    link: '/topology',
   },
   {
-    name: 'Threat Graph', menuIcon: 'nav-icon-attack-graph', isActive: true, link: '/threat-graph'
+    name: 'Threat Graph',
+    menuIcon: 'nav-icon-attack-graph',
+    isActive: true,
+    link: '/threat-graph',
   },
   {
-    name: 'Vulnerabilities', menuIcon: 'icon-biohazard', isActive: false, link: '/vulnerability'
+    name: 'Vulnerabilities',
+    menuIcon: 'icon-biohazard',
+    isActive: false,
+    link: '/vulnerability',
   },
   {
-    name: 'Secrets', menuIcon: "nav-icon-secret", isActive: false, link: '/secret-scan'
+    name: 'Secrets',
+    menuIcon: 'nav-icon-secret',
+    isActive: false,
+    link: '/secret-scan',
   },
   {
-    name: 'Posture', menuIcon: 'icon-compliance', isActive: false, link: '/compliance'
+    name: 'Posture',
+    menuIcon: 'icon-compliance',
+    isActive: false,
+    link: '/compliance',
   },
   {
-    name: 'Registries', menuIcon: 'icon-containers', isActive: false, link: '/registry_vulnerability_scan'
+    name: 'Registries',
+    menuIcon: 'icon-containers',
+    isActive: false,
+    link: '/registry_vulnerability_scan',
   },
   {
-    name: 'Integrations', menuIcon: 'icon-notification', isActive: false, link: '/notification'
+    name: 'Integrations',
+    menuIcon: 'icon-notification',
+    isActive: false,
+    link: '/notification',
   },
 ];
 
 export const USER_SIDE_NAV_MENU_COLLECTION = [
   {
-    name: 'Topology', menuIcon: 'icon-Topology', isActive: true, link: '/topology'
+    name: 'Topology',
+    menuIcon: 'icon-Topology',
+    isActive: true,
+    link: '/topology',
   },
   {
-    name: 'Threat Graph', menuIcon: 'nav-icon-attack-graph', isActive: true, link: '/threat-graph'
+    name: 'Threat Graph',
+    menuIcon: 'nav-icon-attack-graph',
+    isActive: true,
+    link: '/threat-graph',
   },
   {
-    name: 'Vulnerabilities', menuIcon: 'icon-biohazard', isActive: false, link: '/vulnerability'
+    name: 'Vulnerabilities',
+    menuIcon: 'icon-biohazard',
+    isActive: false,
+    link: '/vulnerability',
   },
   {
-    name: 'Secrets', menuIcon: "nav-icon-secret", isActive: false, link: '/secret-scan'
+    name: 'Secrets',
+    menuIcon: 'nav-icon-secret',
+    isActive: false,
+    link: '/secret-scan',
   },
   {
-    name: 'Posture', menuIcon: 'icon-compliance', isActive: false, link: '/compliance'
+    name: 'Posture',
+    menuIcon: 'icon-compliance',
+    isActive: false,
+    link: '/compliance',
   },
   {
-    name: 'Registries', menuIcon: 'icon-containers', isActive: false, link: '/registry_vulnerability_scan'
+    name: 'Registries',
+    menuIcon: 'icon-containers',
+    isActive: false,
+    link: '/registry_vulnerability_scan',
   },
   {
-    name: 'Integrations', menuIcon: 'icon-notification', isActive: false, link: '/notification'
+    name: 'Integrations',
+    menuIcon: 'icon-notification',
+    isActive: false,
+    link: '/notification',
   },
 ];
 
 export const ADMIN_SETTINGS_MENU_COLLECTION = [
-  {name: 'agent_setup', isActive: false},
-  {name: 'scheduled_jobs', isActive: false},
-  {name: 'user_management', isActive: false},
-  {name: 'alerts_&_logs_management', isActive: false},
-  {name: 'diagnosis', isActive: false},
-  {name: 'user_audit_logs', isActive: false},
-  {name: 'email_configuration', isActive: false},
-  {name: 'global_settings', isActive: false}
+  { name: 'agent_setup', isActive: false },
+  { name: 'scheduled_jobs', isActive: false },
+  { name: 'user_management', isActive: false },
+  { name: 'alerts_&_logs_management', isActive: false },
+  { name: 'diagnosis', isActive: false },
+  { name: 'user_audit_logs', isActive: false },
+  { name: 'email_configuration', isActive: false },
+  { name: 'global_settings', isActive: false },
 ];
 
 export const USER_SETTINGS_MUNU_COLLECTION = [
-  {name: 'agent_setup', isActive: false},
-  {name: 'scheduled_jobs', isActive: false},
-  {name: 'user_management', isActive: false}
+  { name: 'agent_setup', isActive: false },
+  { name: 'scheduled_jobs', isActive: false },
+  { name: 'user_management', isActive: false },
 ];
 
 export const CVE_SCAN_TYPE_OPTIONS = [

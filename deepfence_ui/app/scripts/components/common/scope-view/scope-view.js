@@ -1,7 +1,6 @@
-/*eslint-disable*/
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import SideNavigation from '../side-navigation/side-navigation';
+import {Navigation} from '../navigation';
 import { Nodes } from '../../nodes';
 import ViewModeSelector from '../../view-mode-selector';
 import {
@@ -53,10 +52,7 @@ export const ScopeView = (props) => {
 
   return (
     <div>
-      <SideNavigation
-        navMenuCollection={sideNavMenuCollection}
-        activeMenu={activeMenu}
-      />
+      <Navigation/>
 
       <div
         className={`scope-ui-wrapper ${
@@ -71,7 +67,7 @@ export const ScopeView = (props) => {
             {isDonutDetailsModalVisible && <DonutDetailsModal />}
           </div>
 
-          {apiKey && 
+          {apiKey &&
             <NodeFiltersPanel
               apiKey={apiKey}
               apiUrl={wsURL}
@@ -79,7 +75,7 @@ export const ScopeView = (props) => {
           }
           <div className="multi-cloud-view-selector">
             <ViewModeSelector />
-            <i className="fa fa-bars hamburger-icon" onClick={toggleSidePanel}></i>
+            <i className="fa fa-bars hamburger-icon" onClick={toggleSidePanel} />
           </div>
           <Nodes />
         </div>
