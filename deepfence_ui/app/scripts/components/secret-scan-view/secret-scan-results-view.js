@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { Redirect } from 'react-router-dom';
 import moment from 'moment';
 import HeaderView from '../common/header-view/header-view';
-import SideNavigation from '../common/side-navigation/side-navigation';
+import { Navigation } from '../common/navigation';
 import NotificationToaster from '../common/notification-toaster/notification-toaster';
 import SecretScanChartView from './secret-scan-chart-view';
 import SecretScanTableV2 from './secret-scan-table-view/secret-scan-table-v2-view';
@@ -15,19 +15,9 @@ import {
   NOTIFICATION_POLLING_DURATION,
 } from '../../constants/visualization-config';
 import { setActiveFilters, breadcrumbChange } from '../../actions/app-actions';
-import {
-  ADMIN_SIDE_NAV_MENU_COLLECTION,
-  USER_SIDE_NAV_MENU_COLLECTION,
-} from '../../constants/menu-collection';
-import { getUserRole } from '../../helpers/auth-helper';
 
 const SecretScanResultsView = props => {
   const dispatch = useDispatch();
-  const sideNavMenuCollection =
-    getUserRole() === 'admin'
-      ? ADMIN_SIDE_NAV_MENU_COLLECTION
-      : USER_SIDE_NAV_MENU_COLLECTION;
-  const [activeMenu, setActiveMenu] = useState(sideNavMenuCollection[0]);
   const [redirectBack, setRedirectBack] = useState(false);
   const [link, setLink] = useState('');
   const [intervalObj, setIntervalObj] = useState(null);
@@ -120,10 +110,7 @@ const SecretScanResultsView = props => {
 
   return (
     <div>
-      <SideNavigation
-        navMenuCollection={sideNavMenuCollection}
-        activeMenu={activeMenu}
-      />
+      <Navigation />
 
       <div className={`vulnerability-view-wrapper cve-details ${divClassName}`}>
         <HeaderView />

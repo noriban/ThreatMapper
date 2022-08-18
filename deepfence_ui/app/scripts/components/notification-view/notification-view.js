@@ -5,15 +5,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 // Custom component imports
-import SideNavigation from '../common/side-navigation/side-navigation';
+import { Navigation } from '../common/navigation';
 import AppLoader from "../common/app-loader/app-loader";
 
 import {fetchSystemStatus, markNotificationAsSeen,
 } from '../../actions/app-actions';
-import { IS_NOTIFICATION_CHECK_ENABLE, NOTIFICATION_POLLING_DURATION } from '../../constants/visualization-config';
 import { removeUnderscore } from '../../utils/string-utils';
-import { ADMIN_SIDE_NAV_MENU_COLLECTION, USER_SIDE_NAV_MENU_COLLECTION } from '../../constants/menu-collection';
-import { getUserRole } from "../../helpers/auth-helper";
 import IntegrationView from "../integration-view/integration-view";
 import HeaderView from '../common/header-view/header-view';
 const alertColor = { color: '#db2547' };
@@ -21,8 +18,7 @@ const alertColor = { color: '#db2547' };
 class NotificationsView extends React.Component {
   constructor() {
     super();
-    this.sideNavMenuCollection = (getUserRole() == 'admin') ? ADMIN_SIDE_NAV_MENU_COLLECTION : USER_SIDE_NAV_MENU_COLLECTION;
-    this.state = {activeMenu: this.sideNavMenuCollection[0]};
+    this.state = {};
   }
 
   updateNotificationSeenStatus() {
@@ -160,11 +156,11 @@ class NotificationsView extends React.Component {
 
     return (
       <div>
-        <SideNavigation navMenuCollection={this.sideNavMenuCollection} activeMenu={this.state.activeMenu} />
+        <Navigation  />
         <div className="protection-polices-view-wrapper"><HeaderView /></div>
         <div className="">
           <div className={`notifications-container ${this.props.isSideNavCollapsed ? 'collapse-side-nav' : 'expand-side-nav'}`}>
-            <IntegrationView 
+            <IntegrationView
             match={match}
             />
 

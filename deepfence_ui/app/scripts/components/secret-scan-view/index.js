@@ -2,14 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Link, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
-import SideNavigation from '../common/side-navigation/side-navigation';
+import { Navigation } from '../common/navigation';
 import HeaderView from '../common/header-view/header-view';
 import SecretScanStatsView from './secret-scan-stats-panel/secret-scan-stats-view';
-import {
-  ADMIN_SIDE_NAV_MENU_COLLECTION,
-  USER_SIDE_NAV_MENU_COLLECTION,
-} from '../../constants/menu-collection';
-import { getUserRole } from '../../helpers/auth-helper';
 import SecretScanView from './secret-scan-index';
 import {
   getSecretScanReportChartAction,
@@ -27,11 +22,6 @@ const menu = [
 
 const SecretScanHome = props => {
   const { registerPolling, startPolling } = props;
-  const sideNavMenuCollection =
-    getUserRole() === 'admin'
-      ? ADMIN_SIDE_NAV_MENU_COLLECTION
-      : USER_SIDE_NAV_MENU_COLLECTION;
-  const [activeMenu] = useState(sideNavMenuCollection[0]);
   const [isLicenseExpiryModalVisible, setIsLicenseExpiryModalVisible] =
     useState(false);
   const [licenseResponse, setLicenseResponse] = useState(null);
@@ -88,10 +78,7 @@ const SecretScanHome = props => {
   });
   return (
     <div className="cve-summary-view">
-      <SideNavigation
-        navMenuCollection={sideNavMenuCollection}
-        activeMenu={activeMenu}
-      />
+      <Navigation />
       <div style={{ overflow: 'hidden' }}>
         <HeaderView />
         <div className={divClassName}>

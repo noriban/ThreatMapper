@@ -6,24 +6,14 @@ import { Redirect } from 'react-router-dom';
 import ComplianceTestsView from './tests-container';
 import ComplianceTestCategoryReportContainer from './test-category-report-container';
 import ComplianceTestStatusReportContainer from './test-status-report-container';
-import SideNavigation from '../common/side-navigation/side-navigation';
+import { Navigation } from '../common/navigation';
 import HeaderView from '../common/header-view/header-view';
-import {
-  ADMIN_SIDE_NAV_MENU_COLLECTION,
-  USER_SIDE_NAV_MENU_COLLECTION,
-} from '../../constants/menu-collection';
-import { getUserRole } from '../../helpers/auth-helper';
 import MaskFilterForm from './mask-filter-form';
 
 class ComplianceDetailsView extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.sideNavMenuCollection =
-      getUserRole() === 'admin'
-        ? ADMIN_SIDE_NAV_MENU_COLLECTION
-        : USER_SIDE_NAV_MENU_COLLECTION;
     this.state = {
-      activeMenu: this.sideNavMenuCollection[0],
       redirectBack: false,
     };
     this.handleBackButton = this.handleBackButton.bind(this);
@@ -88,10 +78,7 @@ class ComplianceDetailsView extends React.PureComponent {
 
     return (
       <div className="compliance-details">
-        <SideNavigation
-          navMenuCollection={this.sideNavMenuCollection}
-          activeMenu={this.state.activeMenu}
-        />
+        <Navigation />
         <div className={divClassName}>
           <HeaderView />
           <div className="" style={{ paddingTop: '64px' }} />

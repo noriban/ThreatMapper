@@ -8,7 +8,6 @@ import { Route, Link, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
 
 // Custom component imports
-import SideNavigation from '../common/side-navigation/side-navigation';
 import EmailIntegrationView from './email-integration-view/email-integration-view';
 import SlackIntegrationView from './slack-integration-view/slack-integration-view';
 import MicrosoftTeamsIntegrationView from './microsoft-teams-integration-view/microsoft-teams-integration-view';

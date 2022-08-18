@@ -4,13 +4,8 @@ import { Route, Link, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 
-import SideNavigation from '../common/side-navigation/side-navigation';
+import { Navigation } from '../common/navigation';
 import HeaderView from '../common/header-view/header-view';
-import {
-  ADMIN_SIDE_NAV_MENU_COLLECTION,
-  USER_SIDE_NAV_MENU_COLLECTION,
-} from '../../constants/menu-collection';
-import { getUserRole } from '../../helpers/auth-helper';
 import {
   AWSComplianceViewMenu,
   GCPComplianceViewMenu,
@@ -22,13 +17,7 @@ import {
 class ComplianceSummary extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.sideNavMenuCollection =
-      getUserRole() === 'admin'
-        ? ADMIN_SIDE_NAV_MENU_COLLECTION
-        : USER_SIDE_NAV_MENU_COLLECTION;
-    this.state = {
-      activeMenu: this.sideNavMenuCollection[0],
-    };
+    this.state = {};
   }
 
   render() {
@@ -46,10 +35,7 @@ class ComplianceSummary extends React.PureComponent {
     );
     return (
       <div className="compliance-summary-view">
-        <SideNavigation
-          navMenuCollection={this.sideNavMenuCollection}
-          activeMenu={this.state.activeMenu}
-        />
+        <Navigation />
         <div style={{ overflow: 'hidden' }}>
           <HeaderView />
           <div className={divClassName} />

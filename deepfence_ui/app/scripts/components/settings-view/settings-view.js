@@ -5,7 +5,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 // Custom component imports
-import SideNavigation from '../common/side-navigation/side-navigation';
+import { Navigation } from '../common/navigation';
 import UserProfileView from './user-profile-view/user-profile-view';
 import VulnerabilityManagementView from './logs-management/logs-management';
 import DiagnosisView from './diagnosis/index';
@@ -17,8 +17,8 @@ import UserAuditLogs from './user-audit-logs/index';
 import { removeUnderscore } from "../../utils/string-utils";
 import { getUserRole } from "../../helpers/auth-helper";
 import {
-  ADMIN_SETTINGS_MENU_COLLECTION, ADMIN_SIDE_NAV_MENU_COLLECTION,
-  USER_SIDE_NAV_MENU_COLLECTION, USER_SETTINGS_MUNU_COLLECTION
+  ADMIN_SETTINGS_MENU_COLLECTION,
+  USER_SETTINGS_MUNU_COLLECTION
 } from "../../constants/menu-collection";
 import Tippy from '@tippyjs/react';
 import { logoutUser } from '../../actions/app-actions';
@@ -27,11 +27,9 @@ import { AgentSetup } from '../common/agent-setup';
 class SettingsView extends React.Component {
   constructor() {
     super();
-    this.sideNavMenuCollection = (getUserRole() == 'admin') ? ADMIN_SIDE_NAV_MENU_COLLECTION : USER_SIDE_NAV_MENU_COLLECTION;
     this.adminTabList = ADMIN_SETTINGS_MENU_COLLECTION;
     this.userTabList = USER_SETTINGS_MUNU_COLLECTION;
     this.state = {
-      activeMenu: this.sideNavMenuCollection[0],
       activeTab: this.adminTabList[0]
     };
     this.handleOnClick = this.handleOnClick.bind(this);
@@ -139,7 +137,7 @@ class SettingsView extends React.Component {
 
     return (
       <div>
-        <SideNavigation navMenuCollection={this.sideNavMenuCollection} activeMenu={this.state.activeMenu} />
+        <Navigation />
         {/* // make genralised css */}
         <div className={`alerts-view-switcher-wrapper ${this.props.isSideNavCollapsed ? 'collapse-side-nav' : 'expand-side-nav'}`}>
           <div className="tabs-wrapper tabheading">
