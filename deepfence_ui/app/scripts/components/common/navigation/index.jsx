@@ -38,10 +38,10 @@ const Navigation = (props) => {
               <NavigationTrigger className={styles.navigationMenuTrigger}>
                 {navItem.items?.length ? (
                   <NavigationLink
-                    active={props?.match?.path?.startsWith(navItem.link)}
+                    active={props?.location?.pathname?.startsWith(navItem.link?.split?.('/'))}
                     className={classNames(styles.navigationMenuLink, {
                       [styles.navigationMenuActiveLink]:
-                        props?.match?.path?.startsWith(navItem.link),
+                        props?.location?.pathname?.startsWith(navItem.link),
                     })}
                   >
                     <div className={styles.navigationMenuIcon}>
@@ -59,7 +59,7 @@ const Navigation = (props) => {
                     to={navItem.link}
                     className={classNames(styles.navigationMenuLink, {
                       [styles.navigationMenuActiveLink]:
-                        props?.match?.path?.startsWith(navItem.link),
+                        props?.location?.pathname?.startsWith(navItem.link),
                     })}
                   >
                     <div className={styles.navigationMenuIcon}>
