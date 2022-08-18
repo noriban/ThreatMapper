@@ -23,8 +23,8 @@ const BubbleChart = props => {
       padding: 0,
       data,
       theme: 'dark',
-      height: 500,
-      width: 500,
+      height: 350,
+      width: 350,
       colorField: 'name',
       color: severityColorsCirclePacking,
       pointStyle: {
