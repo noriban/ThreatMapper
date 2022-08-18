@@ -121,7 +121,7 @@ export const INTEGRATION_MENU_COLLECTION = [
   },
 ];
 
-export const NAVIGATION_MENU_COLLECTION = [
+const NAVIGATION_MENU_COLLECTION = [
   {
     id: 'topology',
     name: 'Topology',
@@ -226,6 +226,10 @@ export const NAVIGATION_MENU_COLLECTION = [
     link: '/notification',
   },
 ];
+
+export function getNavigationMenuitems() {
+  return NAVIGATION_MENU_COLLECTION;
+}
 
 export const ADMIN_SIDE_NAV_MENU_COLLECTION = [
   {

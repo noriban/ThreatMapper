@@ -11,10 +11,10 @@ import {
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './index.module.scss';
-import { NAVIGATION_MENU_COLLECTION } from '../../../constants/menu-collection';
+import { getNavigationMenuitems } from '../../../constants/menu-collection';
 import BRAND_LOGO_WITHOUT_NAME from '../../../../images/Deepfence_Logo_Mark.svg';
 
-const Navigation = ({ navMenuCollection, activeMenu, ...props }) => {
+const Navigation = (props) => {
   return (
     <NavigationRoot className={styles.navigationRoot} orientation="vertical">
       <NavigationList className={styles.navigationRootList}>
@@ -29,7 +29,7 @@ const Navigation = ({ navMenuCollection, activeMenu, ...props }) => {
             </Link>
           </NavigationTrigger>
         </NavigationItem>
-        {NAVIGATION_MENU_COLLECTION.map(navItem => {
+        {getNavigationMenuitems().map(navItem => {
           return (
             <NavigationItem
               className={styles.navigationMenuItem}
