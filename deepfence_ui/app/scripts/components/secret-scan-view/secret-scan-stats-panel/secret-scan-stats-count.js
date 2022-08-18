@@ -44,7 +44,7 @@ const SecretScanStatsCount = props => {
   return (
     <div className="compliance-stats-count flex-item">
       <div className="stats-table">
-        <div className="name heading">Secret Scans</div>
+        <div className="name heading override">Secret Scans</div>
         <div className="total">
           <div className="value"> {total} </div>
           <div className="label"> Total </div>

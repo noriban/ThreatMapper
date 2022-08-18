@@ -187,7 +187,7 @@ const SecretScanImageReport = props => {
   ];
   return (
     <div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', padding: '10px 0px' }}>
         <div className="dataTables_length d-flex justify-content-start">
           <label htmlFor="true">
             {'Show '}

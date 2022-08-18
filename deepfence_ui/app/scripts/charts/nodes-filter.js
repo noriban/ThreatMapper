@@ -128,7 +128,7 @@ class NodesFilter extends React.Component {
       <div className="df-modal-form-slim">
         <form onSubmit={this.submitClickHandler}>
           {topologyFilters && topologyFilters.length > 5 &&(
-            <div className="nodes-filter" style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start'}}>
+            <div className="nodes-filter" style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', gap: '6px'}}>
               {topologyFilters && topologyFilters.map(filter => this.renderOne(filter))}
             </div>
           )}

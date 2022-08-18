@@ -49,8 +49,8 @@ const SecretScanReport = props => {
         <SunburstChart
           data={summaryStats}
           name="Secret scan details"
-          chartWidth={600}
-          chartHeight={600}
+          chartWidth={400}
+          chartHeight={400}
           colors={severityColorsSunBurst}
           onSectionClick={point => sectionClickHandler(point)}
         />
