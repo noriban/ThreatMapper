@@ -45,7 +45,7 @@ const SunburstChart = props => {
       layout: 'fixedOverlap',
       textAlign: 'center',
       formatter: el =>
-        el.name.length > 14 ? `${el.name.substring(0, 12)}...` : `${el.name}`,
+        el.name.length > 8 ? `${el.name.substring(0, 6)}...` : `${el.name}`,
     },
     sunburstStyle: {
       stroke: dfStyles.chartBorderLineColor,

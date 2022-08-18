@@ -141,7 +141,6 @@
       .runtime-vulnerabilities-chart {
         background-color: $background-primary;
         margin-bottom: 8px;
-        max-height: 50vh;
 
         .ReactTable {
           padding-top: 10px;
@@ -484,7 +483,7 @@
 
   .vulnerability-view-table-wrapper {
     position: relative;
-    top: 103px;
+    top: 60px;
     margin-top: 10px;
   }
 

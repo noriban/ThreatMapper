@@ -159,7 +159,7 @@ export const NAVIGATION_MENU_COLLECTION = [
     items: [
       {
         id: 'most-exploitable',
-        name: 'Most Exploietable Vulnerabilities',
+        name: 'Most Exploitable Vulnerabilities',
         link: '/vulnerability/vulnerabilities',
       },
       {

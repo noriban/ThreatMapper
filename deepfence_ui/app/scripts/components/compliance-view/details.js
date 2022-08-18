@@ -81,7 +81,7 @@ class ComplianceDetailsView extends React.PureComponent {
         <Navigation />
         <div className={divClassName}>
           <HeaderView />
-          <div className="" style={{ paddingTop: '64px' }} />
+          <div className="" style={{ paddingTop: '54px' }} />
           {cloudType === 'kubernetes' && (
             <div
               className="go-back-btn"
