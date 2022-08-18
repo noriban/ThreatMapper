@@ -65,7 +65,7 @@ const SecretScanStatsTopHosts = props => {
 
   return (
     <div className="compliance-pass-stats flex-item flex-item-box margin-right-box">
-      <div className="name heading">Top Running Hosts</div>
+      <div className="name heading override">Top Running Hosts</div>
       {!isDataAvailable && (
         <div className="info" style={{ textAlign: 'center', zIndex: 10 }}>
           no data available

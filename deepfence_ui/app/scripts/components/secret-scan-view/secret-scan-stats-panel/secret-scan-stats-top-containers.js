@@ -39,7 +39,7 @@ const SecretScanStatsTopContainers = props => {
           no data available
         </div>
       )}
-      <div className="name heading">Top Running Containers</div>
+      <div className="name heading override">Top Running Containers</div>
       {isDataAvailable && (
         <StackedChart
           data={sortChartNodes(data)}

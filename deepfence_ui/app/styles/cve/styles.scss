@@ -223,7 +223,7 @@
       position: relative;
 
       .severity-report {
-        margin-top: 30px;
+        // margin-top: 30px;
         .unique-vulnerabilities {
           position: absolute;
           left: 30px;
@@ -245,7 +245,7 @@
 
     .severity-report-table {
       background-color: $flex-box-background;
-      margin-top: 10px;
+      margin-top: 8px;
       // padding-top: 40px;
 
       .ReactTable {
