@@ -12,7 +12,7 @@
   background: black;
   /* this should ideally be margin-top, but the slider component we depend on
    * hardcodes height: 100vh in its inline style... */
-  padding-top: 60px;
+  padding-top: 48px;
 }
 .slidingPanel {
   /* always set to scroll so that the panel header doesn't flicker horizontally

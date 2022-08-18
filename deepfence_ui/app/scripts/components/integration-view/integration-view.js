@@ -272,7 +272,7 @@ class IntegrationView extends React.Component {
       return (
         <div>
           <div className="alerts-view-switcher-wrapper">
-            <div className="df-tabs" style={{marginTop: '55px'}}>
+            <div className="df-tabs" style={{marginTop: '43px'}}>
               <div className="tabs-wrapper tabheading" style={{ color: 'white', display: 'flex', fontSize: '20px' }}>
 
                 {tabCategoryList.map(el => (
@@ -308,7 +308,7 @@ class IntegrationView extends React.Component {
       );
     }
     return (
-      <div style={{marginTop: '53px'}}>
+      <div style={{marginTop: '41px'}}>
         <div className="chart-wrapper">
           <div className="integration-container">
             <div className="tabs-content-wrapper">

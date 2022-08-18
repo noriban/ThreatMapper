@@ -88,27 +88,6 @@ const SecretScanHome = props => {
       <div className="summary">
         <div className="tab-links">
           <div className="df-tabs">
-            <div className="tabheading">
-              <ul>
-                {menu.map(menuItem => (
-                  <Route
-                    key={menuItem.id}
-                    path={`${match.path}/${menuItem.id}`}
-                    /* eslint-disable react/no-children-prop */
-                    children={({ match: linkMatch }) => (
-                      <li
-                        key={menuItem.id}
-                        className={classnames('tab', { active: linkMatch })}
-                      >
-                        <Link to={`${match.url}/${menuItem.id}`}>
-                          {menuItem.displayName}
-                        </Link>
-                      </li>
-                    )}
-                  />
-                ))}
-              </ul>
-            </div>
             {menu.map(menuItem => (
               <Route
                 key={menuItem.id}
