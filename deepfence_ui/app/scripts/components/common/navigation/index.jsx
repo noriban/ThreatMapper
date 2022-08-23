@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Root as NavigationRoot,
   List as NavigationList,
@@ -15,8 +15,14 @@ import { getNavigationMenuitems } from '../../../constants/menu-collection';
 import BRAND_LOGO_WITHOUT_NAME from '../../../../images/Deepfence_Logo_Mark.svg';
 
 const Navigation = (props) => {
+  // https://github.com/radix-ui/primitives/issues/1301#issuecomment-1104693545
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    setValue("");
+  }, [props?.location?.pathname])
+
   return (
-    <NavigationRoot className={styles.navigationRoot} orientation="vertical">
+    <NavigationRoot className={styles.navigationRoot} orientation="vertical" value={value} onValueChange={setValue}>
       <NavigationList className={styles.navigationRootList}>
         <NavigationItem className={styles.navigationMenuItem}>
           <NavigationTrigger className={styles.navigationLogoTrigger}>

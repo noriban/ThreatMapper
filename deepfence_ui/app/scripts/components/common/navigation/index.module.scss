@@ -4,7 +4,11 @@
   left: 0;
   bottom: 0;
   width: 90px;
-  background-color: #080808;
+  background-color: #171717;
+  box-shadow:
+    0px 2px 2px 0px hsla(0,0%,0%,0.14),
+    0px 3px 1px -2px hsla(0,0%,0%,0.12),
+    0px 1px 5px 0px hsla(0,0%,0%,0.2);
   z-index: 101;
 
   .navigationRootList {
@@ -21,8 +25,10 @@
       text-transform: capitalize;
       color: silver;
       font-size: 10px;
+      font-weight: 600;
       padding: 8px 0;
       &:hover {
+        transition: background-color 200ms linear;
         background-color: #000000;
       }
 
@@ -45,6 +51,8 @@
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          text-align: center;
+          padding: 0 8px;
         }
 
         .navigationMenuActiveLink {
@@ -81,8 +89,11 @@
   position: absolute;
   top: 0;
   left: 100%;
-  background-color: #0C0C0C;
-  box-shadow: 0px 0px 12px rgba(255,255,255,0.1);
+  background-color: #171717;
+  box-shadow:
+    0px 4px 5px 0px hsla(0,0%,0%,0.14),
+    0px 1px 10px 0px hsla(0,0%,0%,0.12),
+    0px 2px 4px -1px hsla(0,0%,0%,0.2);
   animation-duration: 200ms;
   animation-timing-function: ease;
   &[data-state="open"] { animation-name: enterFromLeft; }
@@ -94,7 +105,7 @@
     display: flex;
     flex-direction: column;
     list-style: none;
-    padding: 12px 0;
+    padding: 8px 0;
 
     .subNavigationMenuItem {
       width: 100%;
@@ -102,8 +113,10 @@
       text-transform: capitalize;
       white-space: nowrap;
       font-size: 14px;
+      font-weight: normal;
 
       &:hover {
+        transition: background-color 100ms linear;
         background-color: #000000;
       }
 
