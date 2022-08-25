@@ -97,13 +97,13 @@ const ComplianceTable = withRouter(props => {
 
   return (
     <div style={{ marginBottom: '75px', marginTop: '8px' }}>
-      <div style={{ color: 'white' }} className="name heading">
+      <div style={{ color: 'white' }} className="name heading override">
         Account Detail
       </div>
       {isLoading === true ? (
         <AppLoader />
       ) : (
-        <div style={{ padding: '0 4px' }}>
+        <div>
           <AccountListTable
             cloudType={props.cloudType}
             handleViewRules={handleViewRules}

@@ -11,8 +11,8 @@
 
   .tabheading {
       background-color: $flex-head-background;
-      padding-top: 14px;
-      padding-bottom: 14px;
+      padding-top: 6px;
+      padding-bottom: 6px;
 
       @media screen and (min-width:768px) and (max-width: 1024px) {
         padding-top: 10px;
@@ -95,11 +95,11 @@
 
     &:after {
       content: "";
-      height: 5px;
+      height: 2px;
       background-color: $color-primary;
       border-radius: 2px 2px 0 0;
       position: absolute;
-      bottom: -16px;
+      bottom: -5px;
       left: 0px;
       width: 100%;
     }

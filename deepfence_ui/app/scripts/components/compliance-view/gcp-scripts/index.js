@@ -23,7 +23,7 @@ export const GcpTerraFormScript = withRouter(props => {
           marginBottom: 0,
         }}
         onClick={() => setCollapsed(!collapsed)}
-        className="name heading"
+        className="name heading override"
       >
         {collapsed ? (
           <i className="fa fa-chevron-right" />

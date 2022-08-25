@@ -16,13 +16,13 @@ export const ComplianceStats = () => {
   return (
     <div className={styles.container}>
       <div className={styles.statsBox}>
-        <div className="name heading">Total accounts</div>
+        <div className="name heading override">Total accounts</div>
         <div className={styles.statsBoxBody}>
           {totalAccounts}
         </div>
       </div>
       <div className={styles.statsBox}>
-        <div className="name heading">Compliance %</div>
+        <div className="name heading override">Compliance %</div>
         <div className={styles.statsBoxBody}>
           {!isNil(accountList?.compliance_percentage)
             ? `${Number(accountList?.compliance_percentage).toFixed(0)} %`
@@ -30,13 +30,13 @@ export const ComplianceStats = () => {
         </div>
       </div>
       <div className={styles.statsBox}>
-        <div className="name heading">Total scans</div>
+        <div className="name heading override">Total scans</div>
         <div className={styles.statsBoxBody}>
           {!isNil(accountList?.total_scans) ? accountList?.total_scans : '-'}
         </div>
       </div>
       <div className={styles.statsBox}>
-        <div className="name heading">Total cloud resources</div>
+        <div className="name heading override">Total cloud resources</div>
         <div className={styles.statsBoxBody}>
           {!isNil(accountList?.total_resources)
             ? accountList?.total_resources
