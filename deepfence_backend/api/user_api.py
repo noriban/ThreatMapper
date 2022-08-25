@@ -1392,12 +1392,17 @@ class IntegrationView(MethodView):
             for notif in CloudtrailAlertNotification.query.filter(
                     CloudtrailAlertNotification.user_id.in_(active_user_ids)).all():
                 response[notif.integration.integration_type].append(notif.pretty_print())
+            for notif in ComplianceReportNotification.query.filter(
+                    ComplianceReportNotification.user_id.in_(active_user_ids)).all():
+                response[notif.integration.integration_type].append(notif.pretty_print())
         else:
             for notif in user.vulnerability_notifications:
                 response[notif.integration.integration_type].append(notif.pretty_print())
             for notif in user.user_activity_notification:
                 response[notif.integration.integration_type].append(notif.pretty_print())
             for notif in user.cloudtrail_alert_notification:
+                response[notif.integration.integration_type].append(notif.pretty_print())
+            for notif in user.compliance_report_notifications:
                 response[notif.integration.integration_type].append(notif.pretty_print())
 
         for integration_type, notifications in response.items():
@@ -1522,6 +1527,8 @@ class IntegrationView(MethodView):
             notification = UserActivityNotification.query.filter_by(id=id).one_or_none()
         elif notification_type == NOTIFICATION_TYPE_CLOUDTRAIL_ALERT:
             notification = CloudtrailAlertNotification.query.filter_by(id=id).one_or_none()
+        elif notification_type == NOTIFICATION_TYPE_COMPLIANCE:
+            notification = ComplianceReportNotification.query.filter_by(id=id).one_or_none()
 
         notification_json = None
         if notification is not None:
