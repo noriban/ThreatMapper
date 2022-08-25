@@ -27,9 +27,10 @@
       font-size: 10px;
       font-weight: 600;
       padding: 8px 0;
+      isolation: isolate;
       &:hover {
         transition: background-color 200ms linear;
-        background-color: #000000;
+        background-color: rgba(70, 70, 70, 0.5);
       }
 
       .navigationMenuTrigger {
@@ -63,8 +64,8 @@
 
       .navigationLogoTrigger {
         all: unset;
-        margin-top: 32px;
-        margin-bottom: 32px;
+        margin-top: 24px;
+        margin-bottom: 16px;
         width: 100%;
         height: 100%;
         display: flex;
@@ -73,7 +74,7 @@
         justify-content: center;
 
         .navigationLogoImg {
-          width: 50px;
+          width: 48px;
         }
       }
     }
@@ -105,19 +106,19 @@
     display: flex;
     flex-direction: column;
     list-style: none;
-    padding: 8px 0;
+    z-index: 2;
 
     .subNavigationMenuItem {
       width: 100%;
       cursor: pointer;
       text-transform: capitalize;
       white-space: nowrap;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: normal;
 
       &:hover {
         transition: background-color 100ms linear;
-        background-color: #000000;
+        background-color: rgba(70, 70, 70, 0.5);
       }
 
       .subNavigationMenuTrigger {
@@ -130,7 +131,7 @@
 
         .subNavigationMenuLink {
           all: unset;
-          padding: 6px 20px;
+          padding: 8px 18px;
           display: inline-block;
           width: 100%;
           box-sizing: border-box;
@@ -141,5 +142,16 @@
         }
       }
     }
+  }
+
+  .indicatorArrow {
+    position: absolute;
+    background: #171717;
+    z-index: -10;
+    top: 24px;
+    left: -6px;
+    transform: rotate(45deg);
+    height: 12px;
+    width: 12px;
   }
 }

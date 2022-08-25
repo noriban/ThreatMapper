@@ -14,15 +14,20 @@ import styles from './index.module.scss';
 import { getNavigationMenuitems } from '../../../constants/menu-collection';
 import BRAND_LOGO_WITHOUT_NAME from '../../../../images/Deepfence_Logo_Mark.svg';
 
-const Navigation = (props) => {
+const Navigation = props => {
   // https://github.com/radix-ui/primitives/issues/1301#issuecomment-1104693545
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   useEffect(() => {
-    setValue("");
-  }, [props?.location?.pathname])
+    setValue('');
+  }, [props?.location?.pathname]);
 
   return (
-    <NavigationRoot className={styles.navigationRoot} orientation="vertical" value={value} onValueChange={setValue}>
+    <NavigationRoot
+      className={styles.navigationRoot}
+      orientation="vertical"
+      value={value}
+      onValueChange={setValue}
+    >
       <NavigationList className={styles.navigationRootList}>
         <NavigationItem className={styles.navigationMenuItem}>
           <NavigationTrigger className={styles.navigationLogoTrigger}>
@@ -44,7 +49,9 @@ const Navigation = (props) => {
               <NavigationTrigger className={styles.navigationMenuTrigger}>
                 {navItem.items?.length ? (
                   <NavigationLink
-                    active={props?.location?.pathname?.startsWith(navItem.link?.split?.('/'))}
+                    active={props?.location?.pathname?.startsWith(
+                      navItem.link?.split?.('/')
+                    )}
                     className={classNames(styles.navigationMenuLink, {
                       [styles.navigationMenuActiveLink]:
                         props?.location?.pathname?.startsWith(navItem.link),
@@ -80,35 +87,38 @@ const Navigation = (props) => {
                 )}
               </NavigationTrigger>
               {navItem.items?.length ? (
-                <NavigationContent className={styles.navigationContent}>
-                  <SubNavigationMenu className={styles.subNavigationRoot}>
-                    <NavigationList className={styles.subNavigationList}>
-                      {navItem.items.map(subNavItem => {
-                        return (
-                          <NavigationItem
-                            className={styles.subNavigationMenuItem}
-                            key={subNavItem.id}
-                          >
-                            <NavigationTrigger
-                              className={styles.subNavigationMenuTrigger}
+                <>
+                  <NavigationContent className={styles.navigationContent}>
+                    <SubNavigationMenu className={styles.subNavigationRoot}>
+                      <div className={styles.indicatorArrow} />
+                      <NavigationList className={styles.subNavigationList}>
+                        {navItem.items.map(subNavItem => {
+                          return (
+                            <NavigationItem
+                              className={styles.subNavigationMenuItem}
+                              key={subNavItem.id}
                             >
-                              <NavLink
-                                tabIndex={-1}
-                                to={subNavItem.link}
-                                className={styles.subNavigationMenuLink}
-                                activeClassName={
-                                  styles.subNavigationMenuActiveLink
-                                }
+                              <NavigationTrigger
+                                className={styles.subNavigationMenuTrigger}
                               >
-                                {subNavItem.name}
-                              </NavLink>
-                            </NavigationTrigger>
-                          </NavigationItem>
-                        );
-                      })}
-                    </NavigationList>
-                  </SubNavigationMenu>
-                </NavigationContent>
+                                <NavLink
+                                  tabIndex={-1}
+                                  to={subNavItem.link}
+                                  className={styles.subNavigationMenuLink}
+                                  activeClassName={
+                                    styles.subNavigationMenuActiveLink
+                                  }
+                                >
+                                  {subNavItem.name}
+                                </NavLink>
+                              </NavigationTrigger>
+                            </NavigationItem>
+                          );
+                        })}
+                      </NavigationList>
+                    </SubNavigationMenu>
+                  </NavigationContent>
+                </>
               ) : null}
             </NavigationItem>
           );
@@ -118,8 +128,6 @@ const Navigation = (props) => {
   );
 };
 
-const NavigationWithRouter = withRouter(Navigation)
+const NavigationWithRouter = withRouter(Navigation);
 
-export {
-  NavigationWithRouter as Navigation
-};
+export { NavigationWithRouter as Navigation };
