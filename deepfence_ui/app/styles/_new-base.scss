@@ -2151,16 +2151,17 @@ input[type='checkbox']:checked {
 
   .vulnerability-filter {
     background-color: #171717;
-    height: 50px;
-    padding: 14px 20px 14px;
+    padding: 10px 0;
 
     .hideMasked {
       display: flex;
-      justify-content: space-between;
-      width: 12%;
-
+      padding-right: 26px;
       span {
         color: #fff;
+      }
+
+      .mask-label {
+        padding-right: 36px;
       }
     }
   }
@@ -3760,8 +3761,7 @@ input[type='checkbox']:checked {
   .cve-severity-chart-wrapper {
     display: block;
     justify-content: space-between;
-    margin-top: 30px;
-    padding-bottom: 20px;
+    padding: 20px 0px;
     .bubble-chart-tooltip-wrapper {
       padding: 10px;
       max-width: 250px;
@@ -3914,7 +3914,7 @@ input[type='checkbox']:checked {
       border: 1px solid $border-color;
       text-align: center;
       padding: 0px 10px;
-      height: 69px;
+      height: 50px;
       display: flex;
       width: 230px;
       cursor: pointer;

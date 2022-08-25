@@ -136,8 +136,8 @@ class SecretScanChartView extends React.Component {
           <SunburstChart
             data={secretSeverityChartData}
             name="Secret scan details"
-            chartWidth={600}
-            chartHeight={600}
+            chartWidth={400}
+            chartHeight={400}
             colors={severityColorsSunBurst}
             onSectionClick={this.sectionClickHandler}
           />

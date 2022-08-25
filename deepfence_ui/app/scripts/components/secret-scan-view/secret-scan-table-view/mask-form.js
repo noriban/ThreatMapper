@@ -4,7 +4,7 @@ import ToggleSwitchField from '../../common/toggle-switch/redux-form-field';
 
 const MaskForm = () => (
   <div className="hideMasked">
-    <span>Hide Masked</span>
+    <span className='mask-label'>Hide Masked</span>
     <Field name="hideMasked" component={ToggleSwitchField} />
   </div>
 );
