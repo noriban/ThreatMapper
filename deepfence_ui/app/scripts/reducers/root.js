@@ -1984,6 +1984,55 @@ export function rootReducer(state = initialState, action) {
       return state;
     }
 
+    case ActionTypes.SCAN_COMPLIANCE_BULK_REQUEST: {
+      state = state.setIn(['scan_compliance_bulk', 'loading'], true);
+      state = state.deleteIn(['scan_compliance_bulk', 'error', 'message']);
+      state = state.deleteIn(['scan_compliance_bulk', 'message']);
+      return state;
+    }
+
+    case ActionTypes.SCAN_COMPLIANCE_BULK_FAILURE: {
+      state = state.setIn(['scan_compliance_bulk', 'loading'], false);
+      state = state.setIn(['scan_compliance_bulk', 'error', 'message'], 'Sorry, something went wrong');
+      return state;
+    }
+
+    case ActionTypes.SCAN_COMPLIANCE_BULK_SUCCESS: {
+      const {
+        payload: {
+          success,
+          error,
+        } = {},
+        input: {
+          action: apiAction,
+        },
+      } = action;
+
+      state = state.setIn(['scan_compliance_bulk', 'loading'], false);
+
+      const errorMessage = 'Sorry, something went wrong';
+
+      if (success) {
+        state = state.deleteIn(['scan_compliance_bulk', 'error', 'message']);
+        let message = 'Request to scan for compliance has been queued';
+        if (apiAction === 'schedule_compliance_scan') {
+          message = 'Request to schedule compliance scan has been saved successfully';
+        } 
+        state = state.setIn(['scan_compliance_bulk', 'message'], message);
+      } else {
+        state = state.setIn(['scan_compliance_bulk', 'error', 'message'], errorMessage);
+        state = state.deleteIn(['scan_compliance_bulk', 'message']);
+      }
+      return state;
+    }
+
+    case ActionTypes.CLEAR_SCAN_COMPLIANCE_BULK: {
+      state = state.deleteIn(['scan_compliance_bulk', 'error', 'message']);
+      state = state.deleteIn(['scan_compliance_bulk', 'message']);
+      state = state.setIn(['scan_compliance_bulk', 'loading'], false);
+      return state;
+    }
+
     default: {
       // forwarding unknown action types to redux-form reducer.
       state = state.set('form', formReducer(state.get('form'), action));

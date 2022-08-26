@@ -2109,3 +2109,18 @@ export function getAttackGraphNodeIssuesAction(params) {
   ];
   return genericThunkAction(actionTypes, searchDocsWrapper, params);
 }
+
+export function startScanComplianceBulkAction(params) {
+  const actionTypes = [
+    ActionTypes.SCAN_COMPLIANCE_BULK_REQUEST,
+    ActionTypes.SCAN_COMPLIANCE_BULK_SUCCESS,
+    ActionTypes.SCAN_COMPLIANCE_BULK_FAILURE,
+  ];
+  return genericThunkAction(actionTypes, scanRegistryImages, params);
+}
+
+export function clearScanComplianceBulkAction() {
+  return {
+    type: ActionTypes.CLEAR_SCAN_COMPLIANCE_BULK,
+  };
+}

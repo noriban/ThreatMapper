@@ -9,11 +9,15 @@ import {
   clearStartComplianceScanErrrorAction,
   getComplianceCloudCredentialsAction,
   refreshCloudComplianceResourcesAction,
+  startScanComplianceBulkAction,
   toaster,
 } from '../../actions/app-actions';
 import AppLoader from '../common/app-loader/app-loader';
 
 import { StartScanModalContent } from './start-scan-modal';
+import { DfDropDownMenu } from '../common/df-dropdown';
+import { nodeListWithType } from '../multi-cloud-table/utils';
+import ComplianceScanModal from './compliance-scan-form';
 
 const ComplianceTable = withRouter(props => {
   const dispatch = useDispatch();
@@ -95,6 +99,63 @@ const ComplianceTable = withRouter(props => {
     );
   };
 
+  const startBulkComplianceScan = ({cloudType, nodeId, checkTypes, scheduleInterval}) => {
+    if (checkTypes.length) {
+      const nodeListObject = nodeListWithType(nodeId);
+      let actionArgs = {
+        compliance_check_type: checkTypes,
+        resources: [],
+      };
+      if (scheduleInterval && scheduleInterval.length) {
+        actionArgs = {
+          ...actionArgs,
+          cron: `0 0 */${scheduleInterval} * *`,
+        };
+      }
+      let node_id_list = Object.values(nodeListObject);
+      if (node_id_list && node_id_list.length) {
+        [node_id_list] = node_id_list
+      }
+      dispatch(startScanComplianceBulkAction({
+        action: 'start_compliance_scan',
+        node_type: cloudType,
+        node_id_list,
+        action_args: actionArgs
+      }))
+    }
+  };
+
+  const renderComplianceScanModal = (cloudType, selectedRows) => {
+    return <ComplianceScanModal
+      cloudType={cloudType}
+      onSubmit={(valuesIm) => {
+      const { scanType: checkTypes, scheduleInterval } = valuesIm.toJS();
+      startBulkComplianceScan({
+        cloudType,
+        nodeId: selectedRows,
+        checkTypes,
+        scheduleInterval
+      })
+    }}/>
+  }
+
+  const onScanSelection = (selectedRows) => {
+    const { triggerModal, cloudType } = props;
+    triggerModal('GENERIC_MODAL', {
+      title: `Start Compliance Scan`,
+      modalContent: () =>
+        renderComplianceScanModal(cloudType, Object.keys(selectedRows), startBulkComplianceScan),
+      onHide: () => {
+        dispatch(clearStartComplianceScanErrrorAction());
+      },
+      contentStyles: {
+        width: '400px',
+        height: '400px',
+      },
+    });
+
+  }
+
   return (
     <div style={{ marginBottom: '75px', marginTop: '8px' }}>
       <div style={{ color: 'white' }} className="name heading">
@@ -113,6 +174,14 @@ const ComplianceTable = withRouter(props => {
               refreshDisabledIds
             )}
             refreshDisabledIds={refreshDisabledIds}
+            actionItems={{
+              onScanSelection,
+              options: [{
+                label: 'Start Compliance Scan',
+                onClick: onScanSelection,
+                enabled: true,
+              }]
+            }}
           />
         </div>
       )}
@@ -138,6 +207,7 @@ const AccountListTable = ({
   handleViewRules,
   doRefresh,
   refreshDisabledIds = [],
+  actionItems,
 }) => {
   return (
     <DfTableV2
@@ -163,6 +233,14 @@ const AccountListTable = ({
               cloudType={cloudType}
               handleViewRules={handleViewRules}
               doRefresh={doRefresh}
+              actionItems={{
+                onScanSelection: actionItems.onScanSelection,
+                options: [{
+                  label: 'Start Compliance Scan',
+                  onClick: actionItems.onScanSelection,
+                  enabled: true,
+                }]
+              }}
             />
           </div>
         );
@@ -191,16 +269,16 @@ const AccountListTable = ({
         {
           Header: 'Account ID',
           accessor: 'node_name',
-          width: 70,
-          maxWidth: 70,
-          minWidth: 70,
+          width: 40,
+          maxWidth: 40,
+          minWidth: 30,
         },
         {
           Header: 'Cloud Provider',
           accessor: 'cloud_provider',
-          width: 50,
-          maxWidth: 70,
-          minWidth: 50,
+          width: 40,
+          maxWidth: 40,
+          minWidth: 30,
         },
         {
           Header: 'Active',
@@ -214,9 +292,9 @@ const AccountListTable = ({
             }
             return '-';
           },
-          width: 50,
-          maxWidth: 70,
-          minWidth: 50,
+          width: 25,
+          maxWidth: 25,
+          minWidth: 25,
         },
         {
           Header: () => {
@@ -229,9 +307,9 @@ const AccountListTable = ({
             }
             return <div>{Number(row.value).toFixed(0)}%</div>;
           },
-          width: 60,
-          maxWidth: 70,
-          minWidth: 60,
+          width: 40,
+          maxWidth: 40,
+          minWidth: 40,
         },
         {
           Header: 'Actions',
@@ -345,6 +423,23 @@ const AccountListTable = ({
           },
         },
       ]}
+      multiSelectOptions={{
+        actions: [
+          {
+            name: 'Scan',
+            IconComponent: DfDropDownMenu,
+            componentParams: {
+              alignment: 'right',
+              label: 'Actions',
+              options: actionItems.options,
+            },
+            onClick: () => ({}),
+          },
+        ],
+        columnConfig: {
+          accessor: 'node_id',
+        },
+      }}
     />
   );
 };

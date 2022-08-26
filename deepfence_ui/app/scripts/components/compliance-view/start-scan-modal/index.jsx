@@ -251,7 +251,7 @@ const NoSelectionText = () => {
   );
 };
 
-const checkTypes = {
+export const checkTypes = {
   aws: [
     {
       id: 'cis',
