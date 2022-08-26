@@ -74,6 +74,7 @@ function useColumnFilter({
     let visibleColumns = [...columns];
 
     if (multiSelectOptions) {
+      const { disableRowSelection } = multiSelectOptions?.columnConfig ?? {};
       visibleColumns.push({
         Header: () => 'Action',
         id: 'df-multi-select-column',
@@ -87,8 +88,8 @@ function useColumnFilter({
             >
               <input
                 type="checkbox"
-                checked={!row.original?.enabled ? false : checked} // do not check for disabled row when select all is triggered
-                disabled={!row.original?.enabled} // disable checkbox for disabled row
+                checked={disableRowSelection ? (disableRowSelection(row.original) ? false : checked) : checked} // do not check for disabled row when select all is triggered
+                disabled={disableRowSelection ? disableRowSelection(row.original) : false} // disable checkbox for disabled row
                 {...toggleRowSelectedProps}
               />
             </div>
@@ -209,6 +210,7 @@ function useColumnFilter({
 * @param {Object[]} props.multiSelectOptions.actions - actions for multi select
 * @param {Object[]} props.multiSelectOptions.columnConfig - column config for multi select
 * @param {Object[]} props.multiSelectOptions.columnConfig.accessor - accessor property name for selection
+* @param {function} props.multiSelectOptions.columnConfig.disableRowSelection - function to disable row selection for some rows
 */
 const DfTableV2 = ({
   columns,
@@ -496,7 +498,7 @@ function MultiselectActions({
   data
 }) {
   const { columnConfig, actions = [] } = multiSelectOptions;
-  const { accessor } = columnConfig;
+  const { accessor, disableRowSelection } = columnConfig ?? {};
   const defaultActions = [{
     name: 'Toggle All',
     icon: <i className={classNames(styles.actionIcon, "fa fa-check-circle cursor")} />,
@@ -510,8 +512,7 @@ function MultiselectActions({
   useEffect(() => {
     const newIdx = {};
     selectedFlatRows.forEach((row) => {
-      // disabled rows are skip for scan
-      if (row.original?.enabled) {
+      if (!disableRowSelection || !disableRowSelection(row.original)) {
         newIdx[row.original[accessor]] = row.original;
       }
     });

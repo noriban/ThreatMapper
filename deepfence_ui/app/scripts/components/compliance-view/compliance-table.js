@@ -438,6 +438,7 @@ const AccountListTable = ({
         ],
         columnConfig: {
           accessor: 'node_id',
+          disableRowSelection: (rowData) => rowData?.enabled === false
         },
       }}
     />

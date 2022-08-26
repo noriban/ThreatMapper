@@ -2017,7 +2017,7 @@ export function rootReducer(state = initialState, action) {
         let message = 'Request to scan for compliance has been queued';
         if (apiAction === 'schedule_compliance_scan') {
           message = 'Request to schedule compliance scan has been saved successfully';
-        } 
+        }
         state = state.setIn(['scan_compliance_bulk', 'message'], message);
       } else {
         state = state.setIn(['scan_compliance_bulk', 'error', 'message'], errorMessage);
