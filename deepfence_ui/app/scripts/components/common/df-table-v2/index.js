@@ -78,7 +78,7 @@ function useColumnFilter({
         Header: () => 'Action',
         id: 'df-multi-select-column',
         Cell: ({ row }) => {
-          const { indeterminate: _, ...toggleRowSelectedProps } = row.getToggleRowSelectedProps();
+          const { indeterminate: _, checked, ...toggleRowSelectedProps } = row.getToggleRowSelectedProps();
           return (
             <div
               className="center-text"
@@ -87,6 +87,8 @@ function useColumnFilter({
             >
               <input
                 type="checkbox"
+                checked={!row.original?.enabled ? false : checked} // do not check for disabled row when select all is triggered
+                disabled={!row.original?.enabled} // disable checkbox for disabled row
                 {...toggleRowSelectedProps}
               />
             </div>
@@ -508,7 +510,10 @@ function MultiselectActions({
   useEffect(() => {
     const newIdx = {};
     selectedFlatRows.forEach((row) => {
-      newIdx[row.original[accessor]] = row.original;
+      // disabled rows are skip for scan
+      if (row.original?.enabled) {
+        newIdx[row.original[accessor]] = row.original;
+      }
     });
     setSelectedRowIndex(newIdx);
   }, [selectedFlatRows]);
