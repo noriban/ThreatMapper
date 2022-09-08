@@ -18,6 +18,7 @@ import (
 type NotificationSettings struct {
 	vulnerabilityNotificationsSet bool
 	cloudTrailNotificationsSet    bool
+	complianceNotificationsSet    bool
 	sync.RWMutex
 }
 
@@ -28,6 +29,7 @@ var (
 	redisAddr               string
 	vulnerabilityTaskQueue  chan []byte
 	cloudTrailTaskQueue     chan []byte
+	complianceTaskQueue     chan []byte
 	celeryCli               *gocelery.CeleryClient
 	resourcePubsubToChanMap map[string]chan []byte
 	notificationSettings    NotificationSettings
@@ -72,19 +74,22 @@ func init() {
 	}
 	vulnerabilityTaskQueue = make(chan []byte, 10000)
 	cloudTrailTaskQueue = make(chan []byte, 10000)
+	complianceTaskQueue = make(chan []byte, 10000)
 	resourcePubsubToChanMap = map[string]chan []byte{
 		vulnerabilityRedisPubsubName: vulnerabilityTaskQueue,
 		cloudTrailRedisPubsubName:    cloudTrailTaskQueue,
+		complianceRedisPubsubName:    complianceTaskQueue,
 	}
 	notificationSettings = NotificationSettings{
 		vulnerabilityNotificationsSet: false,
 		cloudTrailNotificationsSet:    false,
+		complianceNotificationsSet:    false,
 	}
 }
 
 func initRedisPubsub() {
 	redisPubSub = &redis.PubSubConn{Conn: redisPool.Get()}
-	err := redisPubSub.Subscribe(vulnerabilityRedisPubsubName, cloudTrailRedisPubsubName)
+	err := redisPubSub.Subscribe(vulnerabilityRedisPubsubName, cloudTrailRedisPubsubName, complianceRedisPubsubName)
 	if err != nil {
 		gracefulExit(err)
 	}
@@ -155,6 +160,13 @@ func batchMessages(resourceType string, resourceChan *chan []byte, batchSize int
 					cloudTrailNotificationsSet := notificationSettings.cloudTrailNotificationsSet
 					notificationSettings.RUnlock()
 					if cloudTrailNotificationsSet {
+                                                createNotificationCeleryTask(resourceType, messages)
+                                        }
+				} else if resourceType == resourceTypeCompliance {
+					notificationSettings.RLock()
+					complianceNotificationsSet := notificationSettings.complianceNotificationsSet
+					notificationSettings.RUnlock()
+					if complianceNotificationsSet {
 						createNotificationCeleryTask(resourceType, messages)
 					}
 				}
@@ -174,5 +186,6 @@ func main() {
 	go syncPoliciesAndNotifications()
 	go batchMessages(resourceTypeVulnerability, &vulnerabilityTaskQueue, 100)
 	go batchMessages(resourceTypeCloudTrailAlert, &cloudTrailTaskQueue, 100)
+	go batchMessages(resourceTypeCompliance, &complianceTaskQueue, 100)
 	receiveMessagesFromRedisPubsub()
 }

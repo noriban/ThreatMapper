@@ -11,9 +11,11 @@ import (
 
 const (
 	resourceTypeVulnerability    = "vulnerability"
+	resourceTypeCompliance       = "compliance"
 	resourceTypeCloudTrailAlert  = "cloudtrail-alert"
 	vulnerabilityRedisPubsubName = "vulnerability_task_queue"
 	cloudTrailRedisPubsubName    = "cloudtrail_task_queue"
+	complianceRedisPubsubName    = "compliance_task_queue"
 	celeryNotificationTask       = "tasks.notification_worker.notification_task"
 )
 
@@ -86,6 +88,12 @@ func syncPoliciesAndNotificationsSettings() {
         if err != nil {
                 log.Println(err)
         }
+	var complianceNotificationCount int
+	row = postgresDb.QueryRow("SELECT COUNT(*) FROM compliance_report_notification where duration_in_mins=-1")
+	err = row.Scan(&complianceNotificationCount)
+	if err != nil {
+		log.Println(err)
+	}
 	notificationSettings.Lock()
 	if vulnerabilityNotificationCount > 0 {
 		notificationSettings.vulnerabilityNotificationsSet = true
@@ -96,6 +104,11 @@ func syncPoliciesAndNotificationsSettings() {
 		notificationSettings.cloudTrailNotificationsSet = true
 	} else {
 		notificationSettings.cloudTrailNotificationsSet = false
+	}
+	if complianceNotificationCount > 0 {
+		notificationSettings.complianceNotificationsSet = true
+	} else {
+		notificationSettings.complianceNotificationsSet = false
 	}
 	notificationSettings.Unlock()
 }
