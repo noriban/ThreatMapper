@@ -201,9 +201,9 @@ class EmailIntegrationView extends React.Component {
     );
 
     const filterObject = {
-      ...apiFilters, 
-      ...apiCloudTrailFilters
-    }
+      ...apiFilters,
+      ...apiCloudTrailFilters,
+    };
 
     if (email) {
       let params = {
@@ -388,12 +388,14 @@ class EmailIntegrationView extends React.Component {
                     </div>
                   )}
                 </div>
-                <div>
-                  <AdvanceFilterOption
-                    modalContent={this.getModalContent}
-                    filters={this.props.nodeFilters}
-                  />
-                </div>
+                {resourceType && resourceType.value !== 'cloudtrail_alert' && (
+                  <div>
+                    <AdvanceFilterOption
+                      modalContent={this.getModalContent}
+                      filters={this.props.nodeFilters}
+                    />
+                  </div>
+                )}
                 <br />
                 <div className="form-group">
                   {isDemoModeEnabled
