@@ -79,7 +79,6 @@ export const ScopeView = (props) => {
           }
           <div className="multi-cloud-view-selector">
             <ViewModeSelector />
-            <i className="fa fa-bars hamburger-icon" onClick={toggleSidePanel}></i>
           </div>
           <Nodes />
         </div>

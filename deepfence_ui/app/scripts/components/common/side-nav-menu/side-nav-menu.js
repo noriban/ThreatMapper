@@ -43,9 +43,6 @@ class SideNavMenu extends React.Component {
     const hideLabel = {
       opacity: '0'
     };
-    const iconWrapperStyles = {
-      display: 'flex'
-    };
     const notificationDotStyles = {
       width: '5px',
       height: '5px',
@@ -57,8 +54,8 @@ class SideNavMenu extends React.Component {
     };
       return (
         <NavLink onClick={() => {this.selectedMenuHandle(this.props.data.name)}} className='navigation-menu'  activeClassName="active" to={this.props.link} >
-          <div className="menu-icon" style={iconWrapperStyles}>
-            <i title={this.props.data.name} className={this.props.data.menuIcon} aria-hidden="true" />
+          <div className="menu-icon">
+            <i title={this.props.data.name} className={`${this.props.data.menuIcon} fa-fw`} aria-hidden="true" />
             {(this.props.data.name == 'notification' && this.props.isNotificationIconEnable) && <span style={notificationDotStyles} />}
             {(this.props.data.name == 'Integrations' && this.props.integrationsAreFailing) && <i className="red-dot" style={integrationErrorCustomStyle} />}
           </div>

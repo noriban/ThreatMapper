@@ -15,7 +15,8 @@ export const SingleSelectDropdown = (props) => {
     control: provided => ({
       ...provided,
       width: props.width,
-      borderColor: '#1c1c1c',
+      border: 0,
+      boxShadow: 'none'
     }),
   };
 
@@ -35,17 +36,24 @@ export const SingleSelectDropdown = (props) => {
 
   return (
     <div className="single-select-dropdown">
-      <span className="prefix-text-dropdown">{props.prefixText}</span>
+      <span className="prefix-text-dropdown" style={{
+        paddingLeft: '8px'
+      }}>
+        <i className="fa fa-clock-o" aria-hidden="true"/>
+      </span>
       <Select
         {...props}
         components={{
           IndicatorSeparator: null,
         }}
+        isSearchable={false}
         onChange={value => props.onChange(value)}
         styles={styles}
         theme={themeCb}
+        getOptionLabel ={(option)=>option.label}
       />
-      <span className="postfix-text-dropdown">{props.postfixText}</span>
+      <span className="postfix-text-dropdown" style={{
+      }}>{props.postfixText}</span>
     </div>
   );
 };

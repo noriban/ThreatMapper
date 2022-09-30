@@ -24,11 +24,28 @@ const getKey = (key) => {
 };
 
 const renderGroup = group => (
-  <div className="infra-stats-group">
+  <div className="infra-stats-group" style={{
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    rowGap: '4px'
+  }}>
     {Object.entries(group).map(([key, value]) => (
       <div key={key} className="infra-item">
-        <div className="count">{value}</div>
-        <div className="name">{getKey(key)}</div>
+      <div className="name" style={{
+        display: 'flex',
+        alignItems: 'center',
+        background: "#242424",
+        padding: '0 4px',
+        borderRadius: '8px'
+      }}>
+        <div className="count" style={{
+          paddingRight: '6px',
+          fontWeight: 'bold'
+        }}>
+          {value}
+        </div>
+         <span>{getKey(key)}</span>
+        </div>
       </div>
     ))}
   </div>

@@ -100,10 +100,8 @@
 
   .brand-logo-wrapper {
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding-top: 30px;
-    padding-bottom: 28px;
+    padding-top: 6px;
     .brand-logo {
       height: 50px;
       width: 50px;
@@ -118,13 +116,13 @@
   }
 
   .navigation-menu-wrapper {
+    padding-top: 16px;
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
-
+    gap: 18px;
     .navigation-menu {
-      margin-bottom: 18px;
       display: flex;
+      height: 40px;
       flex-direction: column;
       align-items: center;
       text-align: center;
@@ -155,15 +153,18 @@
       }
       .menu-icon {
         font-size: 22px;
+        height: 30px;
         i {
           color: $nav-menu-color;
+          &::before {
+            font-size: 24px;
+          }
         }
       }
       .menu-name {
         font-size: 11px;
         text-transform: capitalize;
         color: $nav-menu-color;
-        padding-top: 3px;
       }
     }
 
@@ -176,7 +177,6 @@
     @media screen and (max-height: 850px) {
       .navigation-menu {
         .menu-icon {
-          font-size: 22px;
           i {
             color: $nav-menu-color;
           }
@@ -190,7 +190,6 @@
 
     @media screen and (max-height: 768px) {
       .navigation-menu {
-        height: 40px;
         .menu-name {
           font-size: 10px;
         }
@@ -341,27 +340,26 @@
 
 .search-container ::-webkit-input-placeholder {
   /* Edge */
-  color: #b2b0b2;
+  // color: #b2b0b2;
   font-size: 14px;
   line-height: 24px;
 }
 .search-container :-ms-input-placeholder {
   /* Internet Explorer 10-11 */
-  color: #b2b0b2;
+  // color: #b2b0b2;
   font-size: 14px;
   line-height: 24px;
 }
 .search-container ::placeholder {
-  color: #b2b0b2;
+  // color: #b2b0b2;
   font-size: 14px;
   line-height: 24px;
 }
 
 .search-container {
-  flex: 0 0 auto;
-  position: relative;
+  display: flex;
+  align-items: center;
   max-width: 40%;
-  float: left;
   @media screen and (min-width: 768px) and (max-width: 1024px) {
     max-width: 30%;
     margin-right: 2px;
@@ -372,23 +370,22 @@
   }
 }
 .search-input {
-  width: 130px;
+  width: 120px;
   height: 32px;
-  background-color: $s-background-color;
-  color: #b2b0b2;
-  border-radius: 3px;
+  background-color: #242424;
+  color: #000;
+  border: 1px solid #393939;
   outline: none;
   font-size: 14px;
   // font-family: $open-sans;
-  border: none;
-  padding: 4px 10px;
+  padding: 4px 10px 4px 30px;
   margin-right: 10px;
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   transition: all 0.5s;
 }
 .search-input:focus {
-  width: 250px;
+  width: 220px;
   background-color: $s-background-color;
   color: #b2b0b2;
 }
@@ -4762,6 +4759,10 @@ input {
     margin-right: 3px;
     margin-top: -2px;
   }
+  h6 {
+    margin: $no-margin;
+    color: $white;
+  }
 }
 
 .select-button-wrapper {
@@ -4884,7 +4885,7 @@ input {
 
       .infra-stats-group {
         display: flex;
-        padding: 2px;
+        // padding: 2px;
         border-radius: 3px;
 
         @media screen and (min-width: 768px) and (max-width: 1024px) {

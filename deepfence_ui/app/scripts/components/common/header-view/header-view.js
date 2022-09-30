@@ -15,7 +15,7 @@ import {
   toggleFiltersView, noIntegrationComponentChange, logoutUser
 } from '../../../actions/app-actions';
 import { REFRESH_INTERVALS_OPTIONS, TIME_BOUNDARY_OPTIONS } from '../../../constants/dashboard-refresh-config';
-import { SingleSelectDropdown } from '../dropdown/single-select-dropdown';
+import { Dropdown, DropdownContent, DropdownTriggerElement } from '../dropdown/Dropdown';
 
 class HeaderView extends React.Component {
   constructor() {
@@ -69,11 +69,10 @@ class HeaderView extends React.Component {
             <img src={DROPDOWN_IMAGE} alt="breadcrumb" style={{ marginRight: '2px' }} />
           </div>
         ) : (
-          <span key={`${el.id}-${el.name}`}>
-            {' '}
+          <h6 key={`${el.id}-${el.name}`} className="white no-margin">
             {el.name}
             {' '}
-          </span>
+          </h6>
         )))}
       </div>
     );
@@ -130,7 +129,7 @@ class HeaderView extends React.Component {
     const { history } = this.props;
     history.push('/settings');
   }
-
+  
   render() {
     return (
       <div className={`header-view ${this.props.isSideNavCollapsed ? 'collapse-fixed-panel' : 'expand-fixed-panel'}`}>
@@ -140,20 +139,43 @@ class HeaderView extends React.Component {
             this.props.hideLuceneQuery ? null : (
               <>
                 <SearchBox onRef={ref => { (this.child = ref) }} />
-                <SingleSelectDropdown
-                  prefixText="from "
-                  onChange={this.setHistoryBound}
-                  options={TIME_BOUNDARY_OPTIONS}
-                  defaultValue={this.props.historyBound}
-                  width={150}
-                />
-                <SingleSelectDropdown
-                  prefixText="refresh "
-                  onChange={this.setRefreshInterval}
-                  options={REFRESH_INTERVALS_OPTIONS}
-                  defaultValue={this.props.refreshInterval}
-                  width={150}
-                />
+                <div id="header-dropdown-wrapper">
+                  <Dropdown content={
+                    <DropdownContent
+                      items={TIME_BOUNDARY_OPTIONS}
+                      onSelect={this.setHistoryBound}
+                      selectedItem={this.props.historyBound}/>}>
+                      <DropdownTriggerElement
+                        value={this.props.historyBound.label}
+                        style={{
+                          height: '28px'
+                        }}
+                        LeftIcon={() => {
+                        return <span className='trigger-left-icon'>
+                          <i className="fa fa-clock-o" aria-hidden="true"/>
+                        </span>
+                      }}
+                    />
+                  </Dropdown>
+                  &nbsp; &nbsp;
+                  <Dropdown content={
+                    <DropdownContent
+                      items={REFRESH_INTERVALS_OPTIONS}
+                      onSelect={this.setRefreshInterval}
+                      selectedItem={this.props.refreshInterval}/>}>
+                      <DropdownTriggerElement
+                        value={this.props.refreshInterval.label}
+                        style={{
+                          height: '28px'
+                        }}
+                        LeftIcon={() => {
+                        return <span className='trigger-left-icon'>
+                          <i className="fa fa-refresh" aria-hidden="true"/>
+                        </span>
+                      }}
+                    />
+                  </Dropdown>
+                </div>
               </>
             )
           }

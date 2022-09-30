@@ -561,8 +561,8 @@
   color: #16c7f3;
 }
 
-.view-mode-selector-action.view-mode-selector-action-selected:hover {
-  background-color: $button-background-color !important;
+.view-mode-selector-action.view-mode-selector-action-selected {
+  background-color: $theme-color !important;
 }
 
 .df-modal-form-slim {

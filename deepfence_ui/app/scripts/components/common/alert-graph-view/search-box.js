@@ -100,11 +100,19 @@ class SearchBox extends React.Component {
     }
     return (
         <div className="search-container">
+          <span style={{
+            position: 'absolute',
+            color: '#bfbfbf',
+            zIndex: 2,
+            paddingLeft: '8px'
+          }}>
+            <i className="fa fa-search" aria-hidden="true"></i>
+          </span>
           <input className="search-input" placeholder="Search..."
-                 onFocus={(e) => e.target.placeholder = 'Search (Supports Lucene Syntax)'}
-                 onBlur={(e) => e.target.placeholder = 'Search...'}
-                 onKeyPress={(e) => this.keyPressHandler(e)} onChange={(e) => this.changeHandler(e)}
-                 value={this.state.searchBarValue}/>
+            onFocus={(e) => e.target.placeholder = 'Supports Lucene Syntax'}
+            onBlur={(e) => e.target.placeholder = 'Search...'}
+            onKeyPress={(e) => this.keyPressHandler(e)} onChange={(e) => this.changeHandler(e)}
+            value={this.state.searchBarValue}/>
           {error}
         </div>
     );
