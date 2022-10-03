@@ -13,6 +13,9 @@ const PROCESS_INSET = 32;
 const commonColumnsDefault = [{
   Header: 'name',
   accessor: 'label',
+  Cell: ({ original }) => {
+    return <u className="theme-blue-textcolor"><span className="cursor-pointer">{original.label}</span></u>
+  },
 },
 {
   Header: 'type',
@@ -22,6 +25,9 @@ const commonColumnsDefault = [{
 const commonColumnsRestOfTable = [{
   Header: '',
   accessor: 'label',
+  Cell: ({ original }) => {
+    return <u className="theme-blue-textcolor"><span className="cursor-pointer">{original.label}</span></u>
+  },
 },
 {
   Header: '',

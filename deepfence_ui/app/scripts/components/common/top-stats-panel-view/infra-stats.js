@@ -5,12 +5,26 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
+import Tippy from '@tippyjs/react';
 import {
   fetchTopologyMetrics, noIntegrationComponentChange,
 } from '../../../actions/app-actions';
 import pollable from '../header-view/pollable';
 import DROPDOWN_IMAGE from '../../../../images/dropdown.svg';
 import { simplePluralize } from '../../../utils/string-utils';
+
+const INFRA_MAP = {
+  'Cloud Providers': 'CP',
+  'Containers': 'CT',
+  'Container Images': 'CI',
+  'Hosts': 'HS',
+  'Kubernetes': 'KB',
+  'Namespaces': 'NS',
+  'pods': 'PD'
+}
+
+const colors = ['#709ee4', '#138c6c', '#f1c847', '#e26c60', '#bb9cf8', '#6f2ff5']
 
 const getKey = (key) => {
   const keyMapping = {
@@ -25,26 +39,33 @@ const getKey = (key) => {
 
 const renderGroup = group => (
   <div className="infra-stats-group" style={{
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    rowGap: '4px'
   }}>
-    {Object.entries(group).map(([key, value]) => (
+    {Object.entries(group).map(([key, value], i) => (
       <div key={key} className="infra-item">
-      <div className="name" style={{
-        display: 'flex',
-        alignItems: 'center',
-        background: "#242424",
-        padding: '0 4px',
-        borderRadius: '8px'
-      }}>
-        <div className="count" style={{
-          paddingRight: '6px',
-          fontWeight: 'bold'
+        <div className="name" style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent:'center',
+          gap: '4px'
         }}>
-          {value}
-        </div>
-         <span>{getKey(key)}</span>
+          <Tippy content={getKey(key)} 
+            placement="bottom">
+            <div style={{display: 'flex'}}>
+              <i className='fa fa-amazon' style={{
+                  background: colors[i],
+                  padding: '4px',
+                  borderRadius: '50%',
+              }}/>
+              
+              <div className="count" style={{
+                paddingRight: '6px',
+                paddingLeft: '2px',
+                fontWeight: 'bold'
+              }}>
+                {value}
+              </div>
+            </div>
+          </Tippy>
         </div>
       </div>
     ))}

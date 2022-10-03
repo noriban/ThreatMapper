@@ -2522,3 +2522,15 @@ a {
     line-height: 1.3rem;
   }
 }
+
+.flex-row {
+  display: 'flex';
+  flex-direction: 'row';
+}
+
+.theme-blue-textcolor {
+  color: $active-color
+}
+.cursor-pointer {
+  cursor: pointer;
+}
