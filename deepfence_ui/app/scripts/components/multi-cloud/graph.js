@@ -79,6 +79,7 @@ export const useGraph = (el, data) => {
           // DO NOT set .fill here, as it breaks image nodes.
           stroke: COLORS.NODE_OUTLINE,
           lineWidth: 2,
+          cursor: 'pointer'
         },
         labelCfg: {
           ...LABEL_CFG,

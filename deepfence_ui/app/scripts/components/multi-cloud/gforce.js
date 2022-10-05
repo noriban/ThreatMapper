@@ -2,6 +2,8 @@
 
 export const BASE_NODE_STRENGTH = 6000;
 
+// We use gForceLayout and properties can be found here: https://g6.antv.vision/en/docs/api/graphLayout/gforce
+
 export const gForceLayout = (graph) => {
   return {
     preventOverlap: true,
