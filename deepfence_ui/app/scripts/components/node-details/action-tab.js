@@ -34,16 +34,17 @@ class ActionTab extends React.PureComponent {
         onClick={this.triggerModal}
         aria-hidden="true"
       >
-        <div
-          className="headline"
-        >
-          {displayName}
-        </div>
         <div className="info-summary">
           {' '}
           {infoSummary}
           {' '}
         </div>
+        <div
+          className="headline"
+        >
+          {displayName}
+        </div>
+        
       </div>
     );
   }
