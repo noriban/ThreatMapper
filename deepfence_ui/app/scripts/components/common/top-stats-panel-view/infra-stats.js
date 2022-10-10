@@ -3,12 +3,13 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-unused-state */
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import Tippy from '@tippyjs/react';
 import {
-  fetchTopologyMetrics, noIntegrationComponentChange,
+  fetchTopologyMetrics,
+  noIntegrationComponentChange,
 } from '../../../actions/app-actions';
 import pollable from '../header-view/pollable';
 import DROPDOWN_IMAGE from '../../../../images/dropdown.svg';
@@ -16,17 +17,24 @@ import { simplePluralize } from '../../../utils/string-utils';
 
 const INFRA_MAP = {
   'Cloud Providers': 'CP',
-  'Containers': 'CT',
+  Containers: 'CT',
   'Container Images': 'CI',
-  'Hosts': 'HS',
-  'Kubernetes': 'KB',
-  'Namespaces': 'NS',
-  'pods': 'PD'
-}
+  Hosts: 'HS',
+  Kubernetes: 'KB',
+  Namespaces: 'NS',
+  pods: 'PD',
+};
 
-const colors = ['#709ee4', '#138c6c', '#f1c847', '#e26c60', '#bb9cf8', '#6f2ff5']
+const colors = [
+  '#709ee4',
+  '#138c6c',
+  '#f1c847',
+  '#e26c60',
+  '#bb9cf8',
+  '#6f2ff5',
+];
 
-const getKey = (key) => {
+const getKey = key => {
   const keyMapping = {
     cloud_provider: 'CSPs',
     container_image: 'Images',
@@ -38,34 +46,36 @@ const getKey = (key) => {
 };
 
 const renderGroup = group => (
-  <div className="infra-stats-group" style={{
-  }}>
+  <div
+    className="infra-stats-group"
+    style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      rowGap: '4px',
+    }}
+  >
     {Object.entries(group).map(([key, value], i) => (
       <div key={key} className="infra-item">
-        <div className="name" style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent:'center',
-          gap: '4px'
-        }}>
-          <Tippy content={getKey(key)} 
-            placement="bottom">
-            <div style={{display: 'flex'}}>
-              <i className='fa fa-amazon' style={{
-                  background: colors[i],
-                  padding: '4px',
-                  borderRadius: '50%',
-              }}/>
-              
-              <div className="count" style={{
-                paddingRight: '6px',
-                paddingLeft: '2px',
-                fontWeight: 'bold'
-              }}>
-                {value}
-              </div>
-            </div>
-          </Tippy>
+        <div
+          className="name"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: '#242424',
+            padding: '0 4px',
+            borderRadius: '8px',
+          }}
+        >
+          <div
+            className="count"
+            style={{
+              paddingRight: '6px',
+              fontWeight: 'bold',
+            }}
+          >
+            {value}
+          </div>
+          <span>{getKey(key)}</span>
         </div>
       </div>
     ))}
@@ -77,7 +87,7 @@ class InfraStats extends React.Component {
     super(props);
     const activeMenuItem = localStorage.getItem('selectedMenuItem');
     this.state = {
-      selectedMenuItem: activeMenuItem || 'Topology'
+      selectedMenuItem: activeMenuItem || 'Topology',
     };
     this.fetchCounts = this.fetchCounts.bind(this);
     this.renderIntegration = this.renderIntegration.bind(this);
@@ -89,55 +99,78 @@ class InfraStats extends React.Component {
   }
 
   componentDidMount() {
-    const {registerPolling, startPolling} = this.props;
+    const { registerPolling, startPolling } = this.props;
     registerPolling(this.fetchCounts);
     startPolling();
   }
 
   fetchCounts() {
-    const {
-      fetchTopologyMetrics: action,
-    } = this.props;
+    const { fetchTopologyMetrics: action } = this.props;
     return action();
   }
 
   renderIntegration() {
     if (window.location.hash === '#/notification') {
       return (
-        <div className="dashbord-link" onClick={this.goBackToIntegrations} style={{cursor: 'pointer'}} aria-hidden="true">
-          {this.props.changeIntegration ? (<span className="dashboard-breadcrumb" style={{marginRight: '2px', color: '#007BFF'}}> Integrations</span>) : (<span>Integrations</span>)}
-          {this.props.changeIntegration && <img src={DROPDOWN_IMAGE} alt="breadcrumb" style={{marginRight: '2px'}} />}
+        <div
+          className="dashbord-link"
+          onClick={this.goBackToIntegrations}
+          style={{ cursor: 'pointer' }}
+          aria-hidden="true"
+        >
+          {this.props.changeIntegration ? (
+            <span
+              className="dashboard-breadcrumb"
+              style={{ marginRight: '2px', color: '#007BFF' }}
+            >
+              {' '}
+              Integrations
+            </span>
+          ) : (
+            <span>Integrations</span>
+          )}
+          {this.props.changeIntegration && (
+            <img
+              src={DROPDOWN_IMAGE}
+              alt="breadcrumb"
+              style={{ marginRight: '2px' }}
+            />
+          )}
           {this.props.integrationName}
         </div>
       );
     }
     return (
       <div className="dashbord-link">
-        {this.props.breadcrumb && this.props.breadcrumb.map(el => (el.link ? (
-          <div style={{display: 'inline'}} key={el.id}>
-            <span className="dashboard-breadcrumb" style={{marginRight: '2px'}} key={el.id}>
-              <Link to={el.link} replace>
-                {el.name}
-                {' '}
-              </Link>
-            </span>
-            <img src={DROPDOWN_IMAGE} alt="breadcrumb" style={{marginRight: '2px'}} />
-          </div>
-        ) : (
-          <span>
-            {' '}
-            {el.name}
-            {' '}
-          </span>
-        )))}
+        {this.props.breadcrumb &&
+          this.props.breadcrumb.map(el =>
+            el.link ? (
+              <div style={{ display: 'inline' }} key={el.id}>
+                <span
+                  className="dashboard-breadcrumb"
+                  style={{ marginRight: '2px' }}
+                  key={el.id}
+                >
+                  <Link to={el.link} replace>
+                    {el.name}{' '}
+                  </Link>
+                </span>
+                <img
+                  src={DROPDOWN_IMAGE}
+                  alt="breadcrumb"
+                  style={{ marginRight: '2px' }}
+                />
+              </div>
+            ) : (
+              <span> {el.name} </span>
+            )
+          )}
       </div>
     );
   }
 
   render() {
-    const {
-      infraStats = {}
-    } = this.props;
+    const { infraStats = {} } = this.props;
     if (infraStats?.coverage?.discovered === infraStats?.coverage?.protected) {
       // delete coverage from infraStats
       delete infraStats.coverage;
@@ -149,13 +182,11 @@ class InfraStats extends React.Component {
           <div className="infra-stats" key={key}>
             {renderGroup(value)}
           </div>
-        ))
-        }
+        ))}
       </div>
     );
   }
 }
-
 
 function mapStateToProps(state) {
   return {
@@ -172,11 +203,9 @@ function mapStateToProps(state) {
     changeIntegration: state.get('changeIntegration'),
     infraStats: state.get('topologyMetrics'),
     historyBound: state.get('alertPanelHistoryBound'),
-    isFiltersViewVisible: state.get('isFiltersViewVisible')
+    isFiltersViewVisible: state.get('isFiltersViewVisible'),
   };
 }
-export default connect(
-  mapStateToProps, {
-    fetchTopologyMetrics,
-  }
-)(pollable()(InfraStats));
+export default connect(mapStateToProps, {
+  fetchTopologyMetrics,
+})(pollable()(InfraStats));
