@@ -2,6 +2,7 @@ import * as LabelPrimitive from '@radix-ui/react-label';
 import cx from 'classnames';
 import React, { ComponentProps, forwardRef, useId } from 'react';
 import { IconContext } from 'react-icons';
+import { twMerge } from 'tailwind-merge';
 
 import { Typography } from '../typography/Typography';
 import HelperText from './HelperText';
@@ -17,6 +18,8 @@ export interface TextInputProps
   color?: ColorType;
   label?: string;
   helperText?: string;
+  className?: string;
+  required?: boolean;
 }
 
 type IconProps = {
@@ -34,7 +37,7 @@ export const classes = {
       'dark:border-gray-600 dark:text-gray-400',
       'dark:focus:border-blue-800 dark:focus:text-white dark:active:text-white',
     ),
-    error: cx('border-red-500 text-red-700', 'focus:border-red-500 focus:text-red-500'),
+    error: cx('border-red-500', 'focus:border-red-500'),
     success: cx(
       'border-green-500 text-green-700',
       'focus:border-green-500 focus:text-green-500',
@@ -113,6 +116,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       startIcon,
       endIcon,
       helperText,
+      className = '',
+      required,
       id,
       ...rest
     },
@@ -121,12 +126,13 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     const internalId = useId();
     const _id = id ? id : internalId;
     return (
-      <div className="flex flex-col gap-2">
+      <div className={twMerge('flex flex-col gap-2 w-full', className)}>
         {label && (
           <LabelPrimitive.Root
             htmlFor={_id}
             className={cx(`${Typography.weight.medium} text-gray-900 dark:text-white`)}
           >
+            {required && <span>*</span>}
             {label}
           </LabelPrimitive.Root>
         )}

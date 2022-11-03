@@ -69,7 +69,9 @@ export const ErrorWithCaption = Template.bind({});
 ErrorWithCaption.args = {
   placeholder: 'test@deepfence.io',
   startIcon: <AiOutlineMail />,
-  color: 'error',
   value: 'hello',
-  helperText: 'Please enter valid username.',
+  label: 'Username',
+  required: true,
+  color: 'error',
+  helperText: 'Please enter valid email.',
 };
