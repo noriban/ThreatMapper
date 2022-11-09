@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { Echart } from './components/echarts';
 import { Echart2 } from './components/echarts/Echart2';
+import { Graph } from './components/echarts/g6';
 import { Tooltip } from './components/tooltip/Tooltip';
 import { Typography } from './components/typography/Typography';
 import theme from './theme/default';
@@ -29,6 +30,7 @@ function App() {
         </Tooltip>
         <Echart />
         <Echart2 />
+        <Graph />
       </ThemeProvider>
     </QueryClientProvider>
   );
