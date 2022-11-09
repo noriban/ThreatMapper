@@ -1,6 +1,8 @@
 import cx from 'classnames';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { Echart } from './components/echarts';
+import { Echart2 } from './components/echarts/Echart2';
 import { Tooltip } from './components/tooltip/Tooltip';
 import { Typography } from './components/typography/Typography';
 import theme from './theme/default';
@@ -25,6 +27,8 @@ function App() {
             test
           </h1>
         </Tooltip>
+        <Echart />
+        <Echart2 />
       </ThemeProvider>
     </QueryClientProvider>
   );
