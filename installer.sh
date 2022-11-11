@@ -3,6 +3,7 @@ set -e
 
 DEFAULT_PLATFORM="docker"
 DEFAULT_VERSION="v1.4.1"
+DEFAULT_STORAGE_CLASS="\"\""
 supported_versions=("v1.2.0" "v1.3.0" "v1.3.1" "v1.4.0" "v1.4.1" "v1.4.1-update")
 
 RED="\033[1;31m"
@@ -12,6 +13,7 @@ CYAN="\033[1;36m"
 
 PLATFORM=$DEFAULT_PLATFORM
 VERSION=$DEFAULT_VERSION
+STORAGE_CLASS=$DEFAULT_STORAGE_CLASS
 
 # Echo usage if something isn't right.
 usage() { 
@@ -44,10 +46,33 @@ detailed_setup() {
 
     # expression=".image.tag = "${VERSION}""
     # yq -i "${expression}" deepfence_console_values.yaml
-    python3 -c 'import yaml;f=open("deepfence_console_values.yaml");y=yaml.safe_load(f);y["image"]["tag"] = "${VERSION}"; print(yaml.dump(y, default_flow_style=False, sort_keys=False))'
+    sed -i.bak -e "/^\([[:space:]]*tag: \).*/s//\1${VERSION}/" deepfence_console_values.yaml
+    # storageClass: openebs-hostpath
+    sed -i.bak -e "/^\([[:space:]]*storageClass: \).*/s//\1${STORAGE_CLASS}/" deepfence_console_values.yaml
+
+    # check for underlying runtime
+    CONTAINER_RUNTIME_OUT=$(kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.containerRuntimeVersion}' | grep "containerd" 2>&1) || { echo "containerd not detected."; }
+    if [[ (! -z "$CONTAINER_RUNTIME_OUT") ]]; then
+        echo "containerd detected."
+        RUNTIME="containerd"
+    fi
+
+    CONTAINER_RUNTIME_OUT=$(kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.containerRuntimeVersion}' | grep "docker" 2>&1) || { echo "docker not detected."; }
+    if [[ (! -z "$CONTAINER_RUNTIME_OUT") ]]; then
+        echo "docker"
+        RUNTIME="docker"
+    fi
+
+    if [ "$RUNTIME" = "docker" ]; then
+        sed -i.bak -e "/^\([[:space:]]*dockerSock:: \).*/s//\1true/" deepfence_console_values.yaml
+        sed -i.bak -e "/^\([[:space:]]*containerdSock:: \).*/s//\1false/" deepfence_console_values.yaml
+    elif [ "$RUNTIME" = "containerd" ]; then
+        sed -i.bak -e "/^\([[:space:]]*containerdSock: \).*/s//\1true/" deepfence_console_values.yaml
+        sed -i.bak -e "/^\([[:space:]]*dockerSock: \).*/s//\1false/" deepfence_console_values.yaml
+    fi
 }
 
-while getopts "p:v:" o; do
+while getopts "p:v:s:" o; do
     case "${o}" in
         p)
             PLATFORM=${OPTARG}
@@ -56,6 +81,9 @@ while getopts "p:v:" o; do
         v)  
             VERSION=${OPTARG}
             [[ ! " ${supported_versions[*]} " =~ " ${VERSION} " ]] && unsupported_version "$VERSION"
+            ;;
+        s)  
+            STORAGE_CLASS=${OPTARG}
             ;;
         \?)
             printf "${RED}ERROR: Invalid option -$OPTARG${NOCOLOR}\n"
