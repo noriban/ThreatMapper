@@ -1,0 +1,56 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: "admission-webhook.deepfence.io"
+webhooks:
+  - name: "admission-webhook.deepfence.io"
+    failurePolicy: Ignore
+    matchPolicy: Equivalent
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values: ["kube-system","deepfence"]
+        - key: deepfence.io/admission-webhook
+          operator: In
+          values: ["enabled"]
+    # objectSelector:
+    #   matchLabels:
+    #      deepfence.io/admission-webhook: enabled
+    rules:
+      - apiGroups: ["*"]
+        apiVersions: ["v1"]
+        operations: ["CREATE","UPDATE"]
+        resources: ["pods", "deployments"]
+        scope: "*"
+    clientConfig:
+      service:
+        namespace: deepfence
+        name: admission-webhook
+        path: /validate
+        port: 443
+      caBundle: |
+        LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURNekNDQWh1Z0F3SUJBZ0lVQ1dqUWhzTUxn
+        a25QdHlZMjV0cWIyY2htZkY0d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0tURUxNQWtHQTFVRUJoTUNR
+        VlV4R2pBWUJnTlZCQU1NRVdGa2JXbHpjMmx2YmkxM1pXSm9iMjlyTUI0WApEVEl5TVRFeU5URXhN
+        VEF5T0ZvWERUSXpNVEV5TlRFeE1UQXlPRm93S1RFTE1Ba0dBMVVFQmhNQ1FWVXhHakFZCkJnTlZC
+        QU1NRVdGa2JXbHpjMmx2YmkxM1pXSm9iMjlyTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FR
+        OEEKTUlJQkNnS0NBUUVBd3VyU3dJTVc5MTRNM2V0RDlZSmlFeWh5M3QzMDdsN3NTdEo0cGFlZHZL
+        aGw0bnFCeUg2VApyanJ2U2hSWUx2cTZYVjJtb1RvSnFNTVJkajd5eTBHcnphWDhEOEVQK1MzMXRQ
+        VWVYVU1WNEtQdTM1ZzF5UE8wCmV3azNHQzZPdTh0eWh6VTRtcElyNG1IQzE5R2QxVzlhaDlmRklN
+        aUhIWVBmbmRLOUlRcWZUbkNoYXVLWHBFNHAKV00wVkZDNmZCQW8vaTFwWFcvb3BOeE9KR25Pd0pl
+        TjNXbVlwWXhORkFsK3NxZWk0YXRsZU04RCtXbmIzdzIyTAoyc2VZMXNHQVl0ak01UkFLcFZFcFEr
+        QUtzVFVVdS9EbGdPck5JbStMc1BwYVpXZFovTldiN1JxdFBWWjQ3YmhhCk56c3U4NnVuY1VvUnJH
+        ekt4aStuMVhpY3lTZEVrRjliQ3dJREFRQUJvMU13VVRBZEJnTlZIUTRFRmdRVXB1YU4KelZGaVJN
+        c0V2RmRXdE5SY2ZCVkNlZXd3SHdZRFZSMGpCQmd3Rm9BVXB1YU56VkZpUk1zRXZGZFd0TlJjZkJW
+        QwplZXd3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBUWZT
+        NHJCK0xwKzJ3Cnh5TWh4ZlpYTFpqdTk2QjNuN2NvRTk5eW1xS0ZJUFpiaHkveDZ5a0lIbkR0K3F0
+        SFJaU2NxUDAybUxBUlJFTkQKUDM1eGl4NUhMV3YxMW85MW5semhmemoxVDdpYktrejI4OTZzd3pV
+        dE9UT090Z1JDenpzOEZwVmR2bTV1WHJ3aQpyMjJDMWZZeXBGMDJuUXB6MkhweXkwT1lhT1RIYjFY
+        MzVoa1pRbjRYbXZEM2pKcGUzM0FYNFRsL2NBdjBJQzNHCmEzMWNSL3E1VGFhZE9pSkVPZGwyaTY1
+        cCtZZm1nYkc1TnlOd1orck5nS0pweEUxOEx5ZlNGbldaK05lTVBySHYKRkUvKzdCTUMyby9VOE80
+        bUJreU94S01wUzZvNk1VVStjaFcxRzFua3JlR3NJdEVRcTM2MHdtYmxpSUhpdGdKTgpoWXRCcmVv
+        UEtRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    timeoutSeconds: 5
