@@ -31,7 +31,7 @@ var (
 	policiesList = &[]Policies{
 		{
 			ID:              1,
-			Conditions:      []Conditions{{Key: "namespace", Value: "default"}},
+			Conditions:      []Conditions{{Key: "namespace", Value: "test"}},
 			Vulnerabilities: Vulnerabilities{Type: "cve", Severity: "critical", Threshold: 1},
 			Action:          "deny",
 		},

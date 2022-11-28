@@ -19,14 +19,6 @@ spec:
         - name: webhook
           image: deepfenceio/admission-webhook:latest
           imagePullPolicy: Never
-          # command:
-          #   - /bin/sh
-          #   - -c 
-          #   - admission-webhook
-          #   - --console-url
-          #   - ${MGMT_CONSOLE_URL}
-          #   - --api-key
-          #   - ${DEEPFENCE_KEY}
           ports:
             - containerPort: 8443
           env:

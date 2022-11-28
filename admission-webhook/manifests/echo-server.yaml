@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   labels:
     app: echo-server
-    deepfence.io/admission-webhook: enabled
+    deepfence.io/admission-webhook: disabled
   name: echo-server
 spec:
   replicas: 3
@@ -15,10 +15,10 @@ spec:
     metadata:
       labels:
         app: echo-server
-        # deepfence.io/admission-webhook: enabled
+        deepfence.io/admission-webhook: disabled
     spec:
       containers:
-        - image: inanimate/echo-server
+        - image: inanimate/echo-server:latest
           name: echo-server
           ports:
             - containerPort: 8080
