@@ -54,7 +54,7 @@ const WithContent = () => {
   const [tab, setTab] = useState('tab1');
   return (
     <Tab value={tab} defaultValue={tab} tabs={tabs2} onValueChange={(v) => setTab(v)}>
-      <div className="h-full p-2 dark:text-white">
+      <div className="dfc-h-full dfc-p-2 dark:dfc-text-white">
         You are now on {tabs2.find((t) => t.value === tab)?.label}
       </div>
     </Tab>

@@ -32,20 +32,20 @@ type IconProps = {
 export const classes = {
   color: {
     default: cx(
-      'border-gray-300 text-gray-500',
-      'focus:border-blue-600 focus:text-gray-900',
-      'dark:border-gray-600 dark:text-gray-400',
-      'dark:focus:border-blue-800 dark:focus:text-white dark:active:text-white',
+      'dfc-border-gray-300 dfc-text-gray-500',
+      'focus:dfc-border-blue-600 focus:dfc-text-gray-900',
+      'dark:dfc-border-gray-600 dark:dfc-text-gray-400',
+      'dark:focus:dfc-border-blue-800 dark:focus:dfc-text-white dark:active:dfc-text-white',
     ),
-    error: cx('border-red-500', 'focus:border-red-500'),
+    error: cx('dfc-border-red-500', 'focus:dfc-border-red-500'),
     success: cx(
-      'border-green-500 text-green-700',
-      'focus:border-green-500 focus:text-green-500',
+      'dfc-border-green-500 dfc-text-green-700',
+      'focus:dfc-border-green-500 focus:dfc-text-green-500',
     ),
   },
   size: {
-    sm: `${Typography.size.sm} p-3`,
-    md: `${Typography.size.base} py-3.5 px-4`,
+    sm: `${Typography.size.sm} dfc-p-3`,
+    md: `${Typography.size.base} dfc-py-3.5 dfc-px-4`,
   },
 };
 
@@ -61,15 +61,15 @@ export const LeftIcon = ({
   return (
     <span
       className={cx(
-        'pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3',
+        'dfc-pointer-events-none dfc-absolute dfc-inset-y-0 dfc-left-0 dfc-flex dfc-items-center dfc-pl-3',
       )}
       data-testid={`textinput-start-icon-${id}`}
     >
       <IconContext.Provider
         value={{
           className: cx(`${classes.color[color]}`, {
-            'w-[18px] h-[18px]': sizing === 'sm',
-            'w-[20px] h-[20px]': sizing === 'md',
+            'dfc-w-[18px] dfc-h-[18px]': sizing === 'sm',
+            'dfc-w-[20px] dfc-h-[20px]': sizing === 'md',
           }),
         }}
       >
@@ -88,15 +88,15 @@ export const RightIcon = ({
   return (
     <span
       className={cx(
-        'pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3',
+        'dfc-pointer-events-none dfc-absolute dfc-inset-y-0 dfc-right-0 dfc-flex dfc-items-center dfc-pr-3',
       )}
       data-testid={`textinput-end-icon-${id}`}
     >
       <IconContext.Provider
         value={{
           className: cx(`${classes.color[color]}`, {
-            'w-[18px] h-[18px]': sizing === 'sm',
-            'w-[20px] h-[20px]': sizing === 'md',
+            'dfc-w-[18px] dfc-h-[18px]': sizing === 'sm',
+            'dfc-w-[20px] dfc-h-[20px]': sizing === 'md',
           }),
         }}
       >
@@ -126,34 +126,36 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     const internalId = useId();
     const _id = id ? id : internalId;
     return (
-      <div className={twMerge('flex flex-col gap-2 w-full', className)}>
+      <div className={twMerge('dfc-flex dfc-flex-col dfc-gap-2 dfc-w-full', className)}>
         {label && (
           <LabelPrimitive.Root
             htmlFor={_id}
-            className={cx(`${Typography.weight.medium} text-gray-900 dark:text-white`)}
+            className={cx(
+              `${Typography.weight.medium} dfc-text-gray-900 dark:dfc-text-white`,
+            )}
           >
             {required && <span>*</span>}
             {label}
           </LabelPrimitive.Root>
         )}
-        <div className="relative">
+        <div className="dfc-relative">
           {startIcon && (
             <LeftIcon icon={startIcon} sizing={sizing} color={color} id={_id} />
           )}
           {endIcon && <RightIcon icon={endIcon} sizing={sizing} color={color} id={_id} />}
           <input
             className={cx(
-              'block w-full border box-border rounded-lg bg-gray-50 dark:bg-gray-700',
-              'focus:outline-none',
+              'dfc-block dfc-w-full dfc-border dfc-box-border dfc-rounded-lg dfc-bg-gray-50 dark:dfc-bg-gray-700',
+              'focus:dfc-outline-none',
               `${classes.color[color]}`,
               `${classes.size[sizing]}`,
               `${Typography.weight.normal}`,
               {
-                'disabled:cursor-not-allowed': disabled,
-                'pl-[38px]': startIcon,
-                'pr-[38px]': endIcon,
-                'h-[42px]': sizing === 'sm',
-                'h-[52px]': sizing === 'md',
+                'disabled:dfc-cursor-not-allowed': disabled,
+                'dfc-pl-[38px]': startIcon,
+                'dfc-pr-[38px]': endIcon,
+                'dfc-h-[42px]': sizing === 'sm',
+                'dfc-h-[52px]': sizing === 'md',
               },
             )}
             disabled={disabled}
@@ -168,7 +170,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             sizing={sizing}
             color={color}
             text={helperText}
-            className="mb-2.5"
+            className="dfc-mb-2.5"
           />
         )}
       </div>

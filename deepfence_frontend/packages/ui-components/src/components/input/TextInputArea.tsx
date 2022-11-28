@@ -18,8 +18,8 @@ export interface TextInputAreaProps
 
 const classes = {
   size: {
-    sm: `${Typography.size.sm} p-3`,
-    md: `${Typography.size.base} py-3.5 px-4`,
+    sm: `${Typography.size.sm} dfc-p-3`,
+    md: `${Typography.size.base} dfc-py-3.5 dfc-px-4`,
   },
 };
 
@@ -44,11 +44,13 @@ export const TextInputArea = forwardRef<HTMLTextAreaElement, TextInputAreaProps>
     const _id = id ? id : internalId;
 
     return (
-      <div className={cx('flex flex-col gap-2')}>
+      <div className={cx('dfc-flex dfc-flex-col dfc-gap-2')}>
         {label && (
           <LabelPrimitive.Root
             htmlFor={_id}
-            className={cx(`${Typography.weight.medium} text-gray-900 dark:text-white`)}
+            className={cx(
+              `${Typography.weight.medium} dfc-text-gray-900 dark:dfc-text-white`,
+            )}
           >
             {label}
           </LabelPrimitive.Root>
@@ -56,15 +58,15 @@ export const TextInputArea = forwardRef<HTMLTextAreaElement, TextInputAreaProps>
         <div>
           <textarea
             className={cx(
-              'border box-border rounded-lg bg-gray-50 dark:bg-gray-700',
-              'focus:outline-none',
-              'border-gray-200 text-gray-500 focus:text-gray-900 dark:border-gray-600 dark:text-gray-400',
-              'focus:border-blue-600 dark:focus:border-blue-800 dark:focus:text-white dark:active:text-white',
+              'dfc-border dfc-box-border dfc-rounded-lg dfc-bg-gray-50 dark:dfc-bg-gray-700',
+              'focus:dfc-outline-none',
+              'dfc-border-gray-200 dfc-text-gray-500 focus:dfc-text-gray-900 dark:dfc-border-gray-600 dark:dfc-text-gray-400',
+              'focus:dfc-border-blue-600 dark:focus:dfc-border-blue-800 dark:focus:dfc-text-white dark:active:dfc-text-white',
               `${Typography.weight.normal}`,
               `${classes.size[sizing]}`,
               {
-                'disabled:cursor-not-allowed': disabled,
-                'w-full': !width && !cols,
+                'disabled:dfc-cursor-not-allowed': disabled,
+                'dfc-w-full': !width && !cols,
               },
               `${width}`,
             )}
@@ -81,7 +83,7 @@ export const TextInputArea = forwardRef<HTMLTextAreaElement, TextInputAreaProps>
             sizing={sizing}
             color={color}
             text={helperText}
-            className="mb-2.5"
+            className="dfc-mb-2.5"
           />
         )}
       </div>

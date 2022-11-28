@@ -27,18 +27,18 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
   const _id = id ? id : internalId;
 
   return (
-    <div className="flex items-center">
+    <div className="dfc-flex dfc-items-center">
       <CheckboxPrimitive.Root
         id={_id}
         className={cx(
-          'flex h-4 w-4 shrink-0 items-center justify-center rounded',
-          'focus:outline-none focus:ring-blue-200 focus:ring-2 dark:focus:ring-blue-800',
-          'radix-state-unchecked:bg-gray-50 radix-state-unchecked:dark:bg-gray-700 radix-state-unchecked:border border-gray-300 dark:border-gray-600',
-          'radix-state-checked:bg-blue-600',
+          'dfc-flex dfc-h-4 dfc-w-4 dfc-shrink-0 dfc-items-center dfc-justify-center dfc-rounded',
+          'focus:dfc-outline-none focus:dfc-ring-blue-200 focus:dfc-ring-2 dark:focus:dfc-ring-blue-800',
+          'radix-state-unchecked:dfc-bg-gray-50 radix-state-unchecked:dark:dfc-bg-gray-700 radix-state-unchecked:dfc-border dfc-border-gray-300 dark:dfc-border-gray-600',
+          'radix-state-checked:dfc-bg-blue-600',
           {
-            'bg-blue-600': internalChecked === 'indeterminate',
+            'dfc-bg-blue-600': internalChecked === 'indeterminate',
           },
-          'transition-colors',
+          'dfc-transition-colors',
           className,
         )}
         data-testid={`checkbox-${_id}`}
@@ -54,10 +54,10 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
       >
         <CheckboxPrimitive.Indicator>
           {internalChecked === 'indeterminate' && (
-            <FaMinus className="h-2.5 w-2.5 self-center text-white" />
+            <FaMinus className="dfc-h-2.5 dfc-w-2.5 dfc-self-center dfc-text-white" />
           )}
           {internalChecked === true && (
-            <FaCheck className="h-2 w-2 self-center text-white" />
+            <FaCheck className="dfc-h-2 dfc-w-2 dfc-self-center dfc-text-white" />
           )}
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
@@ -67,7 +67,7 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
           className={cx(
             Typography.size.xs,
             Typography.weight.normal,
-            'ml-2 text-gray-500 dark:text-gray-400 cursor-default',
+            'dfc-ml-2 dfc-text-gray-500 dark:dfc-text-gray-400 dfc-cursor-default',
           )}
         >
           {label}

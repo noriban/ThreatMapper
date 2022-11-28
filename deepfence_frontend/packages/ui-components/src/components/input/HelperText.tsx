@@ -17,9 +17,9 @@ type Props = {
 
 export const classes = {
   color: {
-    default: 'border-gray-300 text-gray-500',
-    error: 'border-red-500 text-red-700',
-    success: 'border-green-500 text-green-700',
+    default: 'dfc-border-gray-300 dfc-text-gray-500',
+    error: 'dfc-border-red-500 dfc-text-red-700',
+    success: 'dfc-border-green-500 dfc-text-green-700',
   },
   size: {
     sm: `${Typography.size.sm}`,

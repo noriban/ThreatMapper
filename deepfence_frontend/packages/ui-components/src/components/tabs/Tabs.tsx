@@ -35,7 +35,7 @@ const Tabs = (props: TabProps) => {
     <TabsPrimitive.Root defaultValue={defaultValue} {...rest} data-testid={'tabs-testid'}>
       <TabsPrimitive.List
         className={cx(
-          'inline-flex gap-x-8 border-b bg-white border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 dark:bg-gray-900',
+          'dfc-inline-flex dfc-gap-x-8 dfc-border-b dfc-bg-white dfc-border-gray-200 dark:dfc-border-gray-700 dfc-text-gray-500 dark:dfc-text-gray-400 dark:dfc-bg-gray-900',
         )}
       >
         {tabs.map(({ label, value, id, icon }) => {
@@ -46,16 +46,18 @@ const Tabs = (props: TabProps) => {
               value={value}
               data-testid={`tab-item-${_id}`}
               className={cx(
-                'group',
-                'focus:outline-none py-4 px-3',
-                'radix-state-active:border-b radix-state-active:-mb-px radix-state-active:text-blue-600 radix-state-active:border-blue-600',
-                'dark:radix-state-active:border-blue-600',
-                'focus:radix-state-active:ring-1 focus:radix-state-active:ring-blue-200',
-                'dark:focus:radix-state-active:ring-blue-800',
+                'dfc-group',
+                'focus:dfc-outline-none dfc-py-4 dfc-px-3',
+                'radix-state-active:dfc-border-b radix-state-active:dfc--mb-px radix-state-active:dfc-text-blue-600 radix-state-active:dfc-border-blue-600',
+                'dark:radix-state-active:dfc-border-blue-600',
+                'focus:radix-state-active:dfc-ring-1 focus:radix-state-active:dfc-ring-blue-200',
+                'dark:focus:radix-state-active:dfc-ring-blue-800',
               )}
             >
               {icon && (
-                <IconContext.Provider value={{ className: cx('w-4 h-4 mr-2 inline') }}>
+                <IconContext.Provider
+                  value={{ className: cx('dfc-w-4 dfc-h-4 dfc-mr-2 dfc-inline') }}
+                >
                   {icon}
                 </IconContext.Provider>
               )}

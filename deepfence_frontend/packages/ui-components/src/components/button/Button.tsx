@@ -19,46 +19,48 @@ interface ButtonProps extends Omit<ComponentProps<'button'>, 'color'> {
 }
 
 export const classes = {
-  disabled: 'cursor-not-allowed',
-  pill: 'rounded-full',
+  disabled: 'dfc-cursor-not-allowed',
+  pill: 'dfc-rounded-full',
   size: {
-    xs: `${Typography.size.xs} px-3 py-2`,
-    sm: `${Typography.size.sm} px-3 py-2`,
-    md: `${Typography.size.base} px-5 py-2.5`,
-    lg: `${Typography.size.lg} px-5 py-3`,
-    xl: `${Typography.size.xl} px-6 py-3.5`,
+    xs: `${Typography.size.xs} dfc-px-3 dfc-py-2`,
+    sm: `${Typography.size.sm} dfc-px-3 dfc-py-2`,
+    md: `${Typography.size.base} dfc-px-5 dfc-py-2.5`,
+    lg: `${Typography.size.lg} dfc-px-5 dfc-py-3`,
+    xl: `${Typography.size.xl} dfc-px-6 dfc-py-3.5`,
   },
   color: {
     default:
-      'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900 focus:text-gray-900 focus:ring-2 focus:ring-gray-100',
-    primary: 'bg-blue-600 text-white hover:bg-blue-800 focus:ring-2 focus:ring-blue-500',
-    danger: 'bg-red-500 text-white hover:bg-red-800 focus:ring-2 focus:ring-red-300',
+      'dfc-bg-gray-200 dfc-text-gray-700 hover:dfc-bg-gray-300 hover:dfc-text-gray-900 focus:dfc-text-gray-900 focus:dfc-ring-2 focus:dfc-ring-gray-100',
+    primary:
+      'dfc-bg-blue-600 dfc-text-white hover:dfc-bg-blue-800 focus:dfc-ring-2 focus:dfc-ring-blue-500',
+    danger:
+      'dfc-bg-red-500 dfc-text-white hover:dfc-bg-red-800 focus:dfc-ring-2 focus:dfc-ring-red-300',
     success:
-      'bg-green-500 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-300',
+      'dfc-bg-green-500 dfc-text-white hover:dfc-bg-green-700 focus:dfc-ring-2 focus:dfc-ring-green-300',
   },
   outline: {
     default:
-      'bg-white text-gray-800 ring-1 ring-gray-900 hover:bg-gray-800 hover:text-white focus:ring-1 focus:ring-gray-200 dark:ring-white',
+      'dfc-bg-white dfc-text-gray-800 dfc-ring-1 dfc-ring-gray-900 hover:dfc-bg-gray-800 hover:dfc-text-white focus:dfc-ring-1 focus:dfc-ring-gray-200 dark:dfc-ring-white',
     primary:
-      'bg-white ring-1 ring-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white focus:ring-2 focus:ring-blue-300',
+      'dfc-bg-white dfc-ring-1 dfc-ring-blue-600 dfc-text-blue-600 hover:dfc-bg-blue-600 hover:dfc-text-white focus:dfc-ring-2 focus:dfc-ring-blue-300',
     danger:
-      'text-red-600 ring-1 ring-red-600 hover:bg-red-700 hover:text-white focus:ring-2 focus:ring-red-300',
+      'dfc-text-red-600 dfc-ring-1 dfc-ring-red-600 hover:dfc-bg-red-700 hover:dfc-text-white focus:dfc-ring-2 focus:dfc-ring-red-300',
     success:
-      'text-green-500 ring-1 ring-green-500  hover:bg-green-500 hover:text-white focus:ring-2 focus:ring-green-300',
+      'dfc-text-green-500 dfc-ring-1 dfc-ring-green-500  hover:dfc-bg-green-500 hover:dfc-text-white focus:dfc-ring-2 focus:dfc-ring-green-300',
   },
   startIcon: {
-    xs: 'mr-[10.4px]',
-    sm: 'mr-[10.4px]',
-    md: 'mr-[11px]',
-    lg: 'mr-[15px]',
-    xl: 'mr-[15px]',
+    xs: 'dfc-mr-[10.4px]',
+    sm: 'dfc-mr-[10.4px]',
+    md: 'dfc-mr-[11px]',
+    lg: 'dfc-mr-[15px]',
+    xl: 'dfc-mr-[15px]',
   },
   endIcon: {
-    xs: 'ml-[10.4px]',
-    sm: 'ml-[10.4px]',
-    md: 'ml-[11px]',
-    lg: 'ml-[15px]',
-    xl: 'ml-[15px]',
+    xs: 'dfc-ml-[10.4px]',
+    sm: 'dfc-ml-[10.4px]',
+    md: 'dfc-ml-[11px]',
+    lg: 'dfc-ml-[15px]',
+    xl: 'dfc-ml-[15px]',
   },
 };
 
@@ -89,10 +91,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         className={twMerge(
           cx(
-            'flex flex-row items-center justify-center',
+            'dfc-flex dfc-flex-row dfc-items-center dfc-justify-center',
             `${Typography.weight.medium}`,
             `${classes.size[size]}`,
-            'rounded-lg focus:outline-none select-none',
+            'dfc-rounded-lg dfc-focus:dfc-outline-none dfc-select-none',
             {
               [classes.color.primary]: color === 'primary' && !outline,
               [classes.outline.primary]: outline && color === 'primary',
@@ -109,7 +111,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               [classes.outline.success]: color === 'success' && outline,
 
               [classes.disabled]: disabled,
-              'dark:text-white dark:bg-gray-900 dark:hover:bg-gray-800 dark:focus:ring-2 dark:focus:ring-gray-400':
+              'dark:dfc-text-white dark:dfc-bg-gray-900 dark:hover:dfc-bg-gray-800 dark:focus:dfc-ring-2 dark:focus:dfc-ring-gray-400':
                 outline,
             },
           ),

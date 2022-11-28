@@ -52,15 +52,15 @@ export const LeftIcon = ({
   return (
     <span
       className={cx(
-        'pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3',
+        'dfc-pointer-events-none dfc-absolute dfc-inset-y-0 dfc-left-0 dfc-flex dfc-items-center dfc-pl-3',
       )}
       data-testid={`ariakit-select-icon-${name}`}
     >
       <IconContext.Provider
         value={{
           className: cx(`${classes.color[color]}`, {
-            'w-[18px] h-[18px]': sizing === 'sm',
-            'w-[20px] h-[20px]': sizing === 'md',
+            'dfc-w-[18px] dfc-h-[18px]': sizing === 'sm',
+            'dfc-w-[20px] dfc-h-[20px]': sizing === 'md',
           }),
         }}
       >
@@ -77,15 +77,15 @@ const SelectArrow = ({
   return (
     <span
       className={cx(
-        'pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3',
+        'dfc-pointer-events-none dfc-absolute dfc-inset-y-0 dfc-right-0 dfc-flex dfc-items-center dfc-pr-3',
         `${classes.color[color]}`,
       )}
     >
       <IconContext.Provider
         value={{
           className: cx(`${classes.color[color]}`, {
-            'w-[18px] h-[18px]': sizing === 'sm',
-            'w-[20px] h-[20px]': sizing === 'md',
+            'dfc-w-[18px] dfc-h-[18px]': sizing === 'sm',
+            'dfc-w-[20px] dfc-h-[20px]': sizing === 'md',
           }),
         }}
       >
@@ -98,20 +98,23 @@ const SelectArrow = ({
 export const classes = {
   color: {
     default: cx(
-      'border-gray-300 text-gray-500',
-      'focus:border-blue-600 focus:text-gray-900',
-      'dark:border-gray-600 dark:text-gray-400',
-      'dark:focus:border-blue-800 dark:focus:text-white dark:active:text-white',
+      'dfc-border-gray-300 dfc-text-gray-500',
+      'focus:dfc-border-blue-600 focus:dfc-text-gray-900',
+      'dark:dfc-border-gray-600 dark:dfc-text-gray-400',
+      'dark:focus:dfc-border-blue-800 dark:focus:dfc-text-white dark:active:dfc-text-white',
     ),
-    error: cx('border-red-500 text-red-700', 'focus:border-red-500 focus:text-red-500'),
+    error: cx(
+      'dfc-border-red-500 dfc-text-red-700',
+      'focus:dfc-border-red-500 focus:dfc-text-red-500',
+    ),
     success: cx(
-      'border-green-500 text-green-700',
-      'focus:border-green-500 focus:text-green-500',
+      'dfc-border-green-500 dfc-text-green-700',
+      'focus:dfc-border-green-500 focus:dfc-text-green-500',
     ),
   },
   size: {
-    sm: `${Typography.size.sm} p-3`,
-    md: `${Typography.size.base} py-3.5 px-4`,
+    sm: `${Typography.size.sm} dfc-p-3`,
+    md: `${Typography.size.base} dfc-py-3.5 dfc-px-4`,
   },
 };
 
@@ -155,30 +158,32 @@ export function Select<T extends Value>({
 
   return (
     <SelectStateContext.Provider value={select}>
-      <div className="flex flex-col gap-2">
+      <div className="dfc-flex dfc-flex-col dfc-gap-2">
         <AriakitSelectLabel
           state={select}
-          className={cx(`${Typography.weight.medium} text-gray-900 dark:text-white`)}
+          className={cx(
+            `${Typography.weight.medium} dfc-text-gray-900 dark:dfc-text-white`,
+          )}
           data-testid={`ariakit-label-${name}`}
         >
           {label}
         </AriakitSelectLabel>
-        <div className="relative">
+        <div className="dfc-relative">
           <AriaKitSelect
             state={select}
             name={name}
             className={cx(
-              'w-full border box-border rounded-lg bg-gray-50 dark:bg-gray-700',
-              'block text-left relative',
-              'focus:outline-none select-none overscroll-contain',
+              'dfc-w-full dfc-border dfc-box-border dfc-rounded-lg dfc-bg-gray-50 dark:dfc-bg-gray-700',
+              'dfc-block dfc-text-left dfc-relative',
+              'focus:dfc-outline-none dfc-select-none dfc-overscroll-contain',
               `${classes.color[color]}`,
               `${classes.size[sizing]}`,
               `${Typography.weight.normal}`,
               `${Typography.leading.none}`,
               {
-                'pl-[38px]': startIcon,
-                'h-[42px]': sizing === 'sm',
-                'h-[52px]': sizing === 'md',
+                'dfc-pl-[38px]': startIcon,
+                'dfc-h-[42px]': sizing === 'sm',
+                'dfc-h-[52px]': sizing === 'md',
               },
             )}
             data-testid={`ariakit-select-${name}`}
@@ -194,12 +199,12 @@ export function Select<T extends Value>({
           portal
           state={select}
           className={cx(
-            'shadow-sm bg-white dark:bg-gray-700 py-1',
-            'rounded-md',
-            'border border-gray-200 dark:border-gray-600',
-            'focus:outline-none select-none',
-            'max-h-[min(var(--popover-available-height,315px),315px)] overflow-y-auto',
-            'animate-slide-down',
+            'dfc-shadow-sm dfc-bg-white dark:dfc-bg-gray-700 dfc-py-1',
+            'dfc-rounded-md',
+            'dfc-border dfc-border-gray-200 dark:dfc-border-gray-600',
+            'focus:dfc-outline-none dfc-select-none',
+            'dfc-max-h-[min(var(--popover-available-height,315px),315px)] dfc-overflow-y-auto',
+            'dfc-animate-slide-down',
           )}
           data-testid={`ariakit-portal-${name}`}
         >
@@ -224,14 +229,15 @@ export const SelectItem = (props: SelectItemProps<'div'>) => {
 
   const classes = twMerge(
     cx(
-      'flex px-4 py-2 items-center gap-3 text-gray-500 dark:text-gray-300 cursor-pointer',
-      'focus:outline-none dark:focus:bg-gray-600 focus:bg-gray-100',
-      'data-active-item:dark:bg-gray-600 data-active-item:bg-gray-100',
-      'data-focus-visible:dark:bg-gray-600 data-focus-visible:bg-gray-100',
+      'dfc-flex dfc-px-4 dfc-py-2 dfc-items-center dfc-gap-3 dfc-text-gray-500 dark:dfc-text-gray-300 dfc-cursor-pointer',
+      'focus:dfc-outline-none dark:focus:dfc-bg-gray-600 focus:dfc-bg-gray-100',
+      'data-active-item:dark:dfc-bg-gray-600 data-active-item:dfc-bg-gray-100',
+      'data-focus-visible:dark:dfc-bg-gray-600 data-focus-visible:dfc-bg-gray-100',
       Typography.size.sm,
       Typography.weight.medium,
       {
-        [`text-blue-600 dark:text-blue-400 ${Typography.weight.semibold}`]: isSelected,
+        [`dfc-text-blue-600 dark:dfc-text-blue-400 ${Typography.weight.semibold}`]:
+          isSelected,
       },
     ),
     props?.className,

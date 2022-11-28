@@ -22,7 +22,7 @@ const Child = ({ children }: { children: AvatarType['children'] }) => {
       ) : (
         <IconContext.Provider
           value={{
-            className: cx(`w-6 h-6`, {}),
+            className: cx(`dfc-w-6 dfc-h-6`, {}),
           }}
         >
           <HiOutlineUser />
@@ -47,13 +47,17 @@ export const Avatar = (props: AvatarType) => {
       onClick={onClick}
       className={twMerge(
         cx(
-          `inline-flex overflow-hidden relative justify-center items-center w-10 h-10 bg-gray-100 rounded-full dark:bg-gray-600`,
-          `text-gray-700 dark:text-gray-100 ${Typography.size.lg}`,
+          `dfc-inline-flex dfc-overflow-hidden dfc-relative dfc-justify-center dfc-items-center dfc-w-10 dfc-h-10 dfc-bg-gray-100 dfc-rounded-full dark:dfc-bg-gray-600`,
+          `dfc-text-gray-700 dark:dfc-text-gray-100 ${Typography.size.lg}`,
         ),
         className,
       )}
     >
-      {!asChild ? <img src={src} alt={alt} className="p-2" /> : <Child>{children}</Child>}
+      {!asChild ? (
+        <img src={src} alt={alt} className="dfc-p-2" />
+      ) : (
+        <Child>{children}</Child>
+      )}
     </button>
   );
 };

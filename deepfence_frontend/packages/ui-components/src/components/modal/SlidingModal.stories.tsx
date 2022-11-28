@@ -27,7 +27,7 @@ export const ModalWithTrigger = () => {
         onOpenChange={() => setOpen(false)}
         elementToFocusOnCloseRef={ref}
       >
-        <div className="dark:text-white">This is a content</div>
+        <div className="dark:dfc-text-white">This is a content</div>
       </SlidingModal>
     </>
   );
@@ -47,7 +47,7 @@ export const WithoutTitle = () => {
         onOpenChange={() => setOpen(false)}
         elementToFocusOnCloseRef={ref}
       >
-        <div className="dark:text-white">This is a content</div>
+        <div className="dark:dfc-text-white">This is a content</div>
       </SlidingModal>
     </>
   );
@@ -68,7 +68,7 @@ export const LongContent = () => {
         onOpenChange={() => setOpen(false)}
         footer={<Footer />}
       >
-        <div className="dark:text-white">
+        <div className="dark:dfc-text-white">
           {Array.from(Array(30).keys()).map((k) => (
             <p key={k}>This is a content</p>
           ))}

@@ -46,5 +46,5 @@ export const CustomWidth = Template.bind({});
 CustomWidth.args = {
   placeholder: 'Hello Deepfence',
   label: 'Comment',
-  width: 'w-4/12',
+  width: 'dfc-w-4/12',
 };

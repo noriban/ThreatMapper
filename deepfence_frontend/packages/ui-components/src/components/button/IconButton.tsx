@@ -14,18 +14,18 @@ interface Props extends Omit<ComponentProps<'button'>, 'className' | 'color'> {
 const classes = {
   ...buttonClasses,
   size: {
-    xs: `p-1 w-7 h-7`,
-    sm: `p-2 w-9 h-9`,
-    md: `p-2.5 w-10 h-10`,
-    lg: `p-3 w-12 h-12`,
-    xl: `p-3.5 w-[52px] h-[52px]`,
+    xs: `dfc-p-1 dfc-w-7 dfc-h-7`,
+    sm: `dfc-p-2 dfc-w-9 dfc-h-9`,
+    md: `dfc-p-2.5 dfc-w-10 dfc-h-10`,
+    lg: `dfc-p-3 dfc-w-12 dfc-h-12`,
+    xl: `dfc-p-3.5 dfc-w-[52px] dfc-h-[52px]`,
   },
   icon: {
-    xs: 'w-2.5 h-2.5',
-    sm: 'w-2.5 h-2.5',
-    md: 'w-2.5 h-2.5',
-    lg: 'w-3 h-3',
-    xl: 'w-3 h-3',
+    xs: 'dfc-w-2.5 dfc-h-2.5',
+    sm: 'dfc-w-2.5 dfc-h-2.5',
+    md: 'dfc-w-2.5 dfc-h-2.5',
+    lg: 'dfc-w-3 dfc-h-3',
+    xl: 'dfc-w-3 dfc-h-3',
   },
 };
 
@@ -41,9 +41,9 @@ const IconButton = forwardRef<HTMLButtonElement, Props>(
         data-testid={`icon-button-${_id}`}
         disabled={disabled}
         className={cx(
-          'flex flex-row items-center justify-center',
+          'dfc-flex dfc-flex-row dfc-items-center dfc-justify-center',
           `${classes.size[size]}`,
-          'rounded-full focus:outline-none select-none',
+          'dfc-rounded-full focus:dfc-outline-none dfc-select-none',
           {
             [classes.color.primary]: color === 'primary' && !outline,
             [classes.outline.primary]: outline && color === 'primary',
@@ -60,7 +60,7 @@ const IconButton = forwardRef<HTMLButtonElement, Props>(
             [classes.outline.success]: color === 'success' && outline,
 
             [classes.disabled]: disabled,
-            'dark:text-white dark:bg-gray-900 dark:hover:bg-gray-800 dark:focus:ring-2 dark:focus:ring-gray-400':
+            'dark:dfc-text-white dark:dfc-bg-gray-900 dark:hover:dfc-bg-gray-800 dark:focus:dfc-ring-2 dark:focus:dfc-ring-gray-400':
               outline,
           },
         )}

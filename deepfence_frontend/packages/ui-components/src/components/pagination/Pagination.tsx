@@ -31,11 +31,11 @@ const PageButton = memo(
         className={twMerge(
           // we donot want border to be overlap so we use border right here
           cx(
-            'flex justify-center items-center outline-none',
-            'px-3 py-1.5 border-r border-y border-gray-300 dark:border-gray-700',
-            'hover:bg-gray-100 hover:text-gray-700',
-            'dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white',
-            'focus:outline-none focus:ring-1 focus:ring-inset foucs:ring-blue-600',
+            'dfc-flex dfc-justify-center dfc-items-center dfc-outline-none',
+            'dfc-px-3 dfc-py-1.5 dfc-border-r dfc-border-y dfc-border-gray-300 dark:dfc-border-gray-700',
+            'hover:dfc-bg-gray-100 hover:dfc-text-gray-700',
+            'dark:dfc-border-gray-700 dark:hover:dfc-bg-gray-700 dark:hover:dfc-text-white',
+            'focus:dfc-outline-none focus:dfc-ring-1 focus:dfc-ring-inset foucs:dfc-ring-blue-600',
           ),
           className,
         )}
@@ -118,26 +118,26 @@ export const Pagination = ({
   }
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="dfc-flex dfc-justify-between dfc-items-center">
       <div
         className={`${Typography.weight.normal} ${
           Typography.size[sizing as keyof typeof Typography.size]
-        } text-gray-500 dark:text-gray-400`}
+        } dfc-text-gray-500 dark:dfc-text-gray-400`}
       >
         Showing{' '}
-        <span className="text-black dark:text-white">
+        <span className="dfc-text-black dark:dfc-text-white">
           {currentShowing[0]}-{currentShowing[1]}
         </span>
         <span> of</span>
-        <span className="text-black dark:text-white"> {totalRows}</span>
+        <span className="dfc-text-black dark:dfc-text-white"> {totalRows}</span>
       </div>
       <div
         className={cx(
-          `flex flex-row flex-nowrap ${Typography.weight.medium} ${
+          `dfc-flex dfc-flex-row fdfc-lex-nowrap ${Typography.weight.medium} ${
             Typography.size[sizing as keyof typeof Typography.size]
           }`,
-          'bg-white text-gray-500',
-          'dark:bg-gray-800 dark:text-gray-400',
+          'dfc-bg-white dfc-text-gray-500',
+          'dark:dfc-bg-gray-800 dark:dfc-text-gray-400',
         )}
       >
         <PageButton
@@ -145,7 +145,7 @@ export const Pagination = ({
           key={'Previous'}
           onPageChange={onPrevious}
           disabled={false}
-          className={cx('rounded-l border-l')}
+          className={cx('dfc-rounded-l dfc-border-l')}
         />
 
         {pagination?.map((page, index) => {
@@ -155,7 +155,9 @@ export const Pagination = ({
                 label={<HiDotsHorizontal />}
                 key={page + index}
                 disabled={true}
-                className={'px-2 py-1.5 focus:border-gray-300 focus:dark:border-gray-700'}
+                className={
+                  'dfc-px-2 dfc-py-1.5 focus:dfc-border-gray-300 focus:dark:dfc-border-gray-700'
+                }
                 data-testid="pagination-button-dots"
               />
             );
@@ -169,9 +171,9 @@ export const Pagination = ({
               }}
               disabled={false}
               className={cx({
-                'bg-blue-100 text-blue-600 dark:bg-gray-700 dark:text-white':
+                'dfc-bg-blue-100 dfc-text-blue-600 dark:dfc-bg-gray-700 dark:dfc-text-white':
                   page === currentPage,
-                'hover:bg-blue-100 hover:text-blue-600 hover:dark:bg-gray-700 dark:text-white':
+                'hover:dfc-bg-blue-100 hover:dfc-text-blue-600 hover:dark:dfc-bg-gray-700 dark:dfc-text-white':
                   page === currentPage,
               })}
             />
@@ -183,7 +185,7 @@ export const Pagination = ({
           key={'Next'}
           onPageChange={onNext}
           disabled={false}
-          className={cx('rounded-r')}
+          className={cx('dfc-rounded-r')}
         />
       </div>
     </div>

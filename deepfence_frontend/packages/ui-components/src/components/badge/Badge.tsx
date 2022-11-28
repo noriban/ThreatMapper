@@ -25,18 +25,18 @@ export interface BadgeProps extends Omit<ComponentProps<'span'>, 'ref' | 'color'
 
 const classes = {
   color: {
-    default: 'bg-gray-200 text-gray-900 dark:text-gray-900',
-    primary: 'bg-blue-200 text-blue-900 dark:text-blue-900',
-    success: 'bg-green-200 text-green-900 dark:text-green-900',
-    danger: 'bg-red-200 text-red-900 dark:text-red-900',
+    default: 'dfc-bg-gray-200 dfc-text-gray-900 dark:dfc-text-gray-900',
+    primary: 'dfc-bg-blue-200 dfc-text-blue-900 dark:dfc-text-blue-900',
+    success: 'dfc-bg-green-200 dfc-text-green-900 dark:dfc-text-green-900',
+    danger: 'dfc-bg-red-200 dfc-text-red-900 dark:dfc-text-red-900',
   },
   size: {
-    sm: `${Typography.size.sm} py-0.5 px-2.5`,
-    md: `${Typography.size.base} py-0.5 px-3`,
+    sm: `${Typography.size.sm} dfc-py-0.5 dfc-px-2.5`,
+    md: `${Typography.size.base} dfc-py-0.5 dfc-px-3`,
   },
   icon: {
-    sm: 'w-3.5 h-3.5',
-    md: 'w-4 h-4',
+    sm: 'dfc-w-3.5 dfc-h-3.5',
+    md: 'dfc-w-4 dfc-h-4',
   },
 };
 
@@ -64,7 +64,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
         <LabelPrimitive.Root
           className={twMerge(
             cx(
-              `${Typography.weight.normal} inline-flex gap-1.5 justify-center items-center rounded-md text-gray-900 dark:text-white`,
+              `${Typography.weight.normal} dfc-inline-flex dfc-gap-1.5 dfc-justify-center dfc-items-center dfc-rounded-md`,
               `${classes.size[sizing]}`,
               `${classes.color[color]}`,
             ),
@@ -87,7 +87,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
           </LabelPrimitive.Label>
           {isRemove && (
             <button
-              className="rounded ml-0.5 p-px hover:text-black hover:scale-105 focus:ring-1 focus:ring-blue-600 focus:outline-none "
+              className="dfc-rounded dfc-ml-0.5 dfc-p-px hover:text-black hover:scale-105 focus:dfc-ring-1 focus:dfc-ring-blue-600 focus:dfc-outline-none "
               onClick={() => onRemove?.({ id: _id, value: value })}
               name={label}
               aria-label={label}

@@ -26,30 +26,30 @@ const ModalHeader: FC<{ title?: string }> = ({ title }) => {
     <>
       <div
         className={cx({
-          'h-[76px]': title,
-          'h-[36px]': !title,
+          'dfc-h-[76px]': title,
+          'dfc-h-[36px]': !title,
         })}
       >
         {title && (
           <>
-            <DialogPrimitive.Title className={cx('p-6')} data-testid="modal-title">
+            <DialogPrimitive.Title className={cx('dfc-p-6')} data-testid="modal-title">
               {title}
             </DialogPrimitive.Title>
-            <Separator className="h-px block bg-gray-200 dark:bg-gray-600" />
+            <Separator className="dfc-h-px dfc-block dfc-bg-gray-200 dark:dfc-bg-gray-600" />
           </>
         )}
       </div>
       <DialogPrimitive.Close
         aria-label="Close"
         className={cx(
-          'h-36px rounded-lg cursor-pointer',
-          'text-gray-400 hover:text-gray-900 dark:hover:text-white',
-          'hover:bg-gray-200 dark:hover:bg-gray-600',
-          'absolute right-3.5 inline-flex items-center justify-center p-1',
-          'focus:outline-none focus:ring-1 foucs:ring-blue-800',
+          'dfc-h-36px dfc-rounded-lg dfc-cursor-pointer',
+          'dfc-text-gray-400 hover:dfc-text-gray-900 dark:hover:dfc-text-white',
+          'hover:dfc-bg-gray-200 dark:hover:dfc-bg-gray-600',
+          'dfc-absolute dfc-right-3.5 dfc-inline-flex dfc-items-center dfc-justify-center dfc-p-1',
+          'focus:dfc-outline-none focus:dfc-ring-1 foucs:dfc-ring-blue-800',
           {
-            'top-[22px]': title,
-            'top-[10px]': !title,
+            'dfc-top-[22px]': title,
+            'dfc-top-[10px]': !title,
           },
         )}
         id={'modal-close-button'}
@@ -73,8 +73,8 @@ const ModalFooter: FC<ChildrenType> = ({ children }) => {
   }
   return (
     <>
-      <Separator className="h-px block bg-gray-200 dark:bg-gray-600" />
-      <div className="p-6" data-testid="modal-footer">
+      <Separator className="dfc-h-px dfc-block dfc-bg-gray-200 dark:dfc-bg-gray-600" />
+      <div className="dfc-p-6" data-testid="modal-footer">
         {children}
       </div>
     </>
@@ -88,7 +88,7 @@ export const Modal: FC<ModalProps> = ({
   children,
   footer,
   elementToFocusOnCloseRef,
-  width = 'w-4/12', // 33.333333%
+  width = 'dfc-w-4/12', // 33.333333%
   open,
   ...rest
 }) => {
@@ -105,29 +105,29 @@ export const Modal: FC<ModalProps> = ({
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay
           className={cx(
-            'fixed inset-0 bg-black/50 dark:bg-black/50 flex justify-center items-center',
+            'dfc-fixed dfc-inset-0 dfc-bg-black/50 dark:dfc-bg-black/50 dfc-flex dfc-justify-center dfc-items-center',
             {
-              'animate-opacity-in': wasOpen,
+              'dfc-animate-opacity-in': wasOpen,
               // 'animate-opacity-out': !wasOpen, TODO: Add animation on close of modal
             },
           )}
         >
           <DialogPrimitive.Content
             className={cx(
-              'max-h-[90vh] relative flex flex-col overflow-x-hidden focus:outline-none',
-              'border rounded-lg border-gray-200 bg-white text-gray-900',
-              'dark:bg-gray-700 dark:border-gray-600 dark:text-white',
-              'max-w-[90%]',
+              'dfc-max-h-[90vh] dfc-relative dfc-flex dfc-flex-col dfc-overflow-x-hidden focus:dfc-outline-none',
+              'dfc-border dfc-rounded-lg dfc-border-gray-200 dfc-bg-white dfc-text-gray-900',
+              'dark:dfc-bg-gray-700 dark:dfc-border-gray-600 dark:dfc-text-white',
+              'dfc-max-w-[90%]',
               `${width}`,
               {
-                'animate-pop-in': wasOpen,
-                'animate-pop-out': !wasOpen,
+                'dfc-animate-pop-in': wasOpen,
+                'dfc-animate-pop-out': !wasOpen,
               },
             )}
             onCloseAutoFocus={() => elementToFocusOnCloseRef?.current?.focus()}
           >
             <ModalHeader title={title} />
-            <div className="p-6 overflow-y-auto h-full">{children}</div>
+            <div className="dfc-p-6 dfc-overflow-y-auto dfc-h-full">{children}</div>
             <ModalFooter>{footer}</ModalFooter>
           </DialogPrimitive.Content>
         </DialogPrimitive.Overlay>

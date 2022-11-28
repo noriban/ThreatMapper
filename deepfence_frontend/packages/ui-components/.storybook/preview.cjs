@@ -10,7 +10,7 @@ export const parameters = {
     },
   },
   darkMode: {
-    darkClass: 'dark',
+    darkClass: 'dfc-dark',
     classTarget: 'html',
     stylePreview: true,
     dark: { ...themes.dark, appContentBg: '#111928' },

@@ -35,7 +35,9 @@ const DefaultTemplate: ComponentStory<typeof Dropdown> = (args) => {
           <DropdwonItem>Third Action</DropdwonItem>
           <DropdwonItem>Fourth Action</DropdwonItem>
           <DropdownSeparator />
-          <DropdwonItem className="text-red-500 dark:text-red-500">Sign Out</DropdwonItem>
+          <DropdwonItem className="dfc-text-red-500 dark:dfc-text-red-500">
+            Sign Out
+          </DropdwonItem>
         </>
       }
     >
@@ -80,7 +82,7 @@ const TemplateForIcons: ComponentStory<typeof Dropdown> = (args) => {
             <span>Fourth Action</span>
           </DropdwonItem>
           <DropdownSeparator />
-          <DropdwonItem className="text-red-500 dark:text-red-500">
+          <DropdwonItem className="dfc-text-red-500 dark:dfc-text-red-500">
             <IconContext.Provider value={{ size: '18px' }}>
               <HiLogout />
             </IconContext.Provider>
@@ -115,7 +117,9 @@ const ControlledTemplate: ComponentStory<typeof Dropdown> = (args) => {
           <DropdwonItem>Third Action</DropdwonItem>
           <DropdwonItem>Fourth Action</DropdwonItem>
           <DropdownSeparator />
-          <DropdwonItem className="text-red-500 dark:text-red-500">Sign Out</DropdwonItem>
+          <DropdwonItem className="dfc-text-red-500 dark:dfc-text-red-500">
+            Sign Out
+          </DropdwonItem>
         </>
       }
     >

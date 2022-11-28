@@ -71,7 +71,7 @@ export const WithCloseAction = () => {
   const [badges, setBadges] = useState(dummy);
   return (
     <>
-      <div className="flex gap-2">
+      <div className="dfc-flex dfc-gap-2">
         {badges.map(({ id, label, value }, i) => (
           <Badge
             key={i}
@@ -90,7 +90,7 @@ export const WithCloseAction = () => {
           />
         ))}
       </div>
-      <div className="mt-5">
+      <div className="dfc-mt-5">
         <Button size="xs" outline onClick={() => setBadges(dummy)}>
           Reset remove
         </Button>
@@ -110,7 +110,7 @@ export const CustomColor = () => {
   const [badges] = useState(dummy);
   return (
     <>
-      <div className="flex gap-2">
+      <div className="dfc-flex dfc-gap-2">
         {badges.map(({ id, label, value }, i) => (
           <Badge
             key={i}
@@ -121,7 +121,7 @@ export const CustomColor = () => {
             sizing="md"
             icon={<HiInformationCircle />}
             isRemove={true}
-            className={'bg-lime-700 text-teal-300'}
+            className={'dfc-bg-lime-700 dfc-text-teal-300'}
           />
         ))}
       </div>

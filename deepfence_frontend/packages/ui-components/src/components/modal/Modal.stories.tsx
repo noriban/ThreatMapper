@@ -37,7 +37,7 @@ export const ModalWithTrigger = () => {
         onOpenChange={() => setOpen(false)}
         elementToFocusOnCloseRef={ref}
       >
-        <div className="dark:text-white">This is a content</div>
+        <div className="dark:dfc-text-white">This is a content</div>
       </Modal>
     </>
   );
@@ -58,7 +58,7 @@ export const WithoutTitle = () => {
         onOpenChange={() => setOpen(false)}
         elementToFocusOnCloseRef={ref}
       >
-        <div className="dark:text-white">This is a content</div>
+        <div className="dark:dfc-text-white">This is a content</div>
       </Modal>
     </>
   );
@@ -72,7 +72,7 @@ export const WithoutFooter = () => {
         Click to open
       </Button>
       <Modal title="Modal Title" open={open} onOpenChange={() => setOpen(false)}>
-        <div className="dark:text-white">This is a content</div>
+        <div className="dark:dfc-text-white">This is a content</div>
       </Modal>
     </>
   );
@@ -86,7 +86,7 @@ export const JustContentWithTrigger = () => {
         Click to open
       </Button>
       <Modal open={open} onOpenChange={() => setOpen(false)}>
-        <div className="dark:text-white">This is a content</div>
+        <div className="dark:dfc-text-white">This is a content</div>
       </Modal>
     </>
   );
@@ -104,7 +104,7 @@ export const LongContent = () => {
         footer={<div className={''}>This is Footer</div>}
         onOpenChange={() => setOpen(false)}
       >
-        <div className="dark:text-white">
+        <div className="dark:dfc-text-white">
           {Array.from(Array(20).keys()).map((k) => (
             <p key={k}>This is a content</p>
           ))}
@@ -126,11 +126,11 @@ export const FullWidth = () => {
         open={open}
         footer={<div className={''}>This is Footer</div>}
         onOpenChange={() => setOpen(false)}
-        width="w-full"
+        width="dfc-w-full"
       >
-        <div className="dark:text-white">
+        <div className="dark:dfc-text-white">
           {Array.from(Array(10).keys()).map((k) => (
-            <p className="text-center" key={k}>
+            <p className="dfc-text-center" key={k}>
               It is a long established fact that a reader will be distracted by the
               readable content of a page when looking at its layout
             </p>

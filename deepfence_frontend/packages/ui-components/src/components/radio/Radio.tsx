@@ -34,8 +34,8 @@ const Radio: FC<Props> = (props) => {
       data-testid={`radio-group-${name}`}
       value={selected}
       className={cx({
-        'flex flex-col space-y-2': !isRow(direction),
-        'flex flex-row space-x-2': isRow(direction),
+        'dfc-flex dfc-flex-col dfc-space-y-2': !isRow(direction),
+        'dfc-flex dfc-flex-row dfc-space-x-2': isRow(direction),
       })}
       {...rest}
     >
@@ -45,39 +45,39 @@ const Radio: FC<Props> = (props) => {
           const _id = id ? id : value;
 
           return (
-            <div key={_id} className="flex items-center">
+            <div key={_id} className="dfc-flex dfc-items-center">
               <RadioGroupPrimitive.Item
                 id={_id + ''}
                 value={value}
                 data-testid={`radio-item-${_id}`}
                 disabled={disabled}
                 className={cx(
-                  'rounded-full py-2 w-4 h-4 flex shrink-0',
-                  'radix-state-checked:bg-blue-600 dark:radix-state-checked:bg-blue-600',
-                  'focus:outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-2 dark:focus:ring-blue-800',
-                  'radix-state-unchecked:ring-1 radix-state-unchecked:ring-inset ring-gray-300 bg-gray-50 dark:radix-state-unchecked:ring-1 dark:ring-gray-600 dark:bg-gray-700',
-                  'radix-state-disabled:pointer-events-none',
-                  'disabled:cursor-not-allowed',
+                  'dfc-rounded-full dfc-py-2 dfc-w-4 dfc-h-4 dfc-flex dfc-shrink-0',
+                  'radix-state-checked:dfc-bg-blue-600 dark:radix-state-checked:dfc-bg-blue-600',
+                  'focus:dfc-outline-none focus:dfc-ring-2 focus:dfc-ring-blue-200 dark:focus:dfc-ring-2 dark:focus:dfc-ring-blue-800',
+                  'radix-state-unchecked:dfc-ring-1 radix-state-unchecked:dfc-ring-inset dfc-ring-gray-300 dfc-bg-gray-50 dark:radix-state-unchecked:dfc-ring-1 dark:dfc-ring-gray-600 dark:dfc-bg-gray-700',
+                  'radix-state-disabled:dfc-pointer-events-none',
+                  'disabled:dfc-cursor-not-allowed',
                 )}
               >
                 <RadioGroupPrimitive.Indicator
                   className={cx(
-                    'flex items-center justify-center w-full h-full relative shrink-0',
-                    'after:bg-white after:content-[""] dark:after:bg-gray-900',
-                    'after:block after:w-2 after:h-2 after:rounded-full',
-                    'radix-state-checked:bg-blue-800',
-                    'dark:radix-state-unchecked:bg-gray-700',
-                    'radix-state-disabled:pointer-events-none',
-                    'disabled:cursor-not-allowed',
+                    'dfc-flex dfc-items-center dfc-justify-center dfc-w-full dfc-h-full dfc-relative dfc-shrink-0',
+                    'after:dfc-bg-white after:dfc-content-[""] dark:after:dfc-bg-gray-900',
+                    'after:dfc-block after:dfc-w-2 after:dfc-h-2 after:dfc-rounded-full',
+                    'radix-state-checked:dfc-bg-blue-800',
+                    'dark:radix-state-unchecked:dfc-bg-gray-700',
+                    'radix-state-disabled:dfc-pointer-events-none',
+                    'disabled:dfc-cursor-not-allowed',
                   )}
                 />
               </RadioGroupPrimitive.Item>
               <Label
                 htmlFor={_id + ''}
                 className={cx(
-                  'px-2 text-gray-500 text-xs dark:text-gray-400 cursor-default',
+                  'dfc-px-2 dfc-text-gray-500 dfc-text-xs dark:dfc-text-gray-400 dfc-cursor-default',
                   {
-                    'cursor-not-allowed': disabled,
+                    'dfc-cursor-not-allowed': disabled,
                   },
                 )}
               >

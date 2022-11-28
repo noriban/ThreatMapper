@@ -261,6 +261,7 @@ module.exports = {
       },
     },
   },
+  prefix: 'dfc-',
   plugins: [
     tailwindRadix(),
     plugin(({ addVariant }) => {

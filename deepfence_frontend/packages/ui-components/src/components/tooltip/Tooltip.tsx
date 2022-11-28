@@ -37,23 +37,23 @@ export const Tooltip = (props: TooltipProps) => {
             sideOffset={4}
             side={placement}
             className={cx(
-              'radix-side-top:animate-slide-down-fade',
-              'radix-side-right:animate-slide-left-fade',
-              'radix-side-bottom:animate-slide-up-fade',
-              'radix-side-left:animate-slide-right-fade',
-              'inline-flex items-center rounded-lg px-3 py-2 shadow-sm',
-              'bg-gray-900 dark:bg-gray-700 max-w-xs',
+              'radix-side-top:dfc-animate-slide-down-fade',
+              'radix-side-right:dfc-animate-slide-left-fade',
+              'radix-side-bottom:dfc-animate-slide-up-fade',
+              'radix-side-left:dfc-animate-slide-right-fade',
+              'dfc-inline-flex dfc-items-center dfc-rounded-lg dfc-px-3 dfc-py-2 dfc-shadow-sm',
+              'dfc-bg-gray-900 dark:dfc-bg-gray-700 dfc-max-w-xs',
               Typography.leading.normal,
             )}
           >
             <TooltipPrimitive.Arrow
               height={6}
               width={14}
-              className="fill-gray-900 dark:fill-gray-700"
+              className="dfc-fill-gray-900 dark:dfc-fill-gray-700"
             />
             <span
               className={cx(
-                'block text-white',
+                'dfc-block dfc-text-white',
                 Typography.size.sm,
                 Typography.weight.medium,
               )}
