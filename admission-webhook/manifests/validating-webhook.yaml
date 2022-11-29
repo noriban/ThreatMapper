@@ -13,7 +13,7 @@ webhooks:
       - apiGroups: ["*"]
         apiVersions: ["v1"]
         operations: ["CREATE","UPDATE"]
-        resources: ["pods", "deployments"]
+        resources: ["pods", "deployments","statefulset","daemonset"]
         scope: "*"
     clientConfig:
       service:
