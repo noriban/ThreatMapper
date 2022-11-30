@@ -38,7 +38,7 @@ setup_metrics_server() {
     echo "check if metric server is installed"
 }
 
-detailed_setup() {
+detailed_setup_console() {
     helm repo add deepfence https://deepfence-helm-charts.s3.amazonaws.com/threatmapper
 
     # create values file
@@ -70,6 +70,10 @@ detailed_setup() {
         sed -i.bak -e "/^\([[:space:]]*containerdSock: \).*/s//\1true/" deepfence_console_values.yaml
         sed -i.bak -e "/^\([[:space:]]*dockerSock: \).*/s//\1false/" deepfence_console_values.yaml
     fi
+}
+
+install_router() {
+    helm install deepfence-router deepfence-router
 }
 
 while getopts "p:v:s:" o; do
@@ -122,9 +126,11 @@ do_install() {
         # helm install openebs --namespace openebs --repo "https://openebs.github.io/charts" openebs --set analytics.enabled=false
         # Wait for pods to start up
 
-        detailed_setup
-
+        detailed_setup_console
         helm install -f deepfence_console_values.yaml deepfence-console deepfence/deepfence-console --namespace default
+
+         install_router
+
     else
         printf "${RED}Unsupported platform! $PLATFORM${NOCOLOR}\n"
 
