@@ -15,9 +15,9 @@ import (
 type ImageSearchResponse struct {
 	Data struct {
 		Hits []struct {
-			Index  string `json:"_index"`
-			Source CVE    `json:"_source"`
-			Type   string `json:"_type"`
+			Index  string    `json:"_index"`
+			Source CVEFields `json:"_source"`
+			Type   string    `json:"_type"`
 		} `json:"hits"`
 		Total int `json:"total"`
 	} `json:"data"`
@@ -25,7 +25,7 @@ type ImageSearchResponse struct {
 	Success bool        `json:"success"`
 }
 
-type CVE struct {
+type CVEFields struct {
 	CveID           string  `json:"cve_id"`
 	CveOverallScore float64 `json:"cve_overall_score"`
 	CveSeverity     string  `json:"cve_severity"`
@@ -106,8 +106,8 @@ func (v *imageValidator) GetAccessToken() (string, error) {
 
 // get image details from console
 // cache image details for some time
-func (v *imageValidator) fetchImageCVEDetails(image string) ([]CVE, error) {
-	var cveData []CVE
+func (v *imageValidator) fetchImageCVEDetails(image string) ([]CVEFields, error) {
+	var cveData []CVEFields
 	payload := NewImageSearchRequest(image)
 	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
@@ -141,7 +141,7 @@ func (v *imageValidator) fetchImageCVEDetails(image string) ([]CVE, error) {
 		var respData ImageSearchResponse
 		err = json.Unmarshal(respBody, &respData)
 		if err != nil {
-			return []CVE{}, err
+			return []CVEFields{}, err
 		}
 		for _, h := range respData.Data.Hits {
 			cveData = append(cveData, h.Source)
@@ -151,8 +151,8 @@ func (v *imageValidator) fetchImageCVEDetails(image string) ([]CVE, error) {
 	return cveData, fmt.Errorf("%s", resp.Status)
 }
 
-func (v *imageValidator) get(image string) []CVE {
-	item := v.cache.Get(image, ttlcache.WithDisableTouchOnHit[string, []CVE]())
+func (v *imageValidator) get(image string) []CVEFields {
+	item := v.cache.Get(image, ttlcache.WithDisableTouchOnHit[string, []CVEFields]())
 	if item != nil {
 		return item.Value()
 	}

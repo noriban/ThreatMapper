@@ -21,7 +21,7 @@ type imageValidator struct {
 	Client       client.Client
 	decoder      *admission.Decoder
 	console      string
-	cache        *ttlcache.Cache[string, []CVE]
+	cache        *ttlcache.Cache[string, []CVEFields]
 	cacheTTL     time.Duration
 	accessTokens *tokens
 }

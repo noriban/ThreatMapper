@@ -8,22 +8,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
-func NewCache(ctx context.Context, ttl time.Duration) *ttlcache.Cache[string, []CVE] {
+func NewCache(ctx context.Context, ttl time.Duration) *ttlcache.Cache[string, []CVEFields] {
 	cacheLog := log.Log.WithName("cache")
 	cache := ttlcache.New(
-		ttlcache.WithTTL[string, []CVE](ttl),
-		ttlcache.WithDisableTouchOnHit[string, []CVE](),
-		ttlcache.WithCapacity[string, []CVE](250),
+		ttlcache.WithTTL[string, []CVEFields](ttl),
+		ttlcache.WithDisableTouchOnHit[string, []CVEFields](),
+		ttlcache.WithCapacity[string, []CVEFields](250),
 	)
 
 	cache.OnInsertion(
-		func(ctx context.Context, item *ttlcache.Item[string, []CVE]) {
+		func(ctx context.Context, item *ttlcache.Item[string, []CVEFields]) {
 			cacheLog.Info("key inserted", "image", item.Key(), "expires", item.ExpiresAt())
 		},
 	)
 
 	cache.OnEviction(
-		func(ctx context.Context, reason ttlcache.EvictionReason, item *ttlcache.Item[string, []CVE]) {
+		func(ctx context.Context, reason ttlcache.EvictionReason, item *ttlcache.Item[string, []CVEFields]) {
 			cacheLog.Info("key evicted", "image", item.Key(), "reason", reason)
 		},
 	)

@@ -9,6 +9,10 @@ all: clean build
 build:
 	CGO_ENABLED=0 go build -o webhook *.go
 
+.PHONY: test
+test:
+	go test -v ./...
+
 .PHONY: clean
 clean:
 	rm webhook
