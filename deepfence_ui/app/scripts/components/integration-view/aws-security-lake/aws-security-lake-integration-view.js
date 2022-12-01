@@ -531,7 +531,7 @@ class AWSSecurityLakeIntegrationView extends React.Component {
   }
 
   getIntegrationTableView() {
-    const results = this.props.availableAWSSecurityHubIntegrations.reduce((acc,data) => {
+    const results = this.props.availableAWSSecurityLakeIntegrations.reduce((acc,data) => {
       acc = [...acc, {
         ...data,
         filters: data.filters.aws_account_id,
@@ -572,16 +572,16 @@ class AWSSecurityLakeIntegrationView extends React.Component {
   }
 
   render() {
-    const { availableAWSSecurityHubIntegrations } = this.props;
+    const { availableAWSSecurityLakeIntegrations } = this.props;
     return (
       <div className="email-integration-view-wrapper">
         <div className="integration-form-section">
           {this.getIntegrationFormView()}
         </div>
         <div className="integration-list-section">
-          {isDataAvailable(availableAWSSecurityHubIntegrations)
+          {isDataAvailable(availableAWSSecurityLakeIntegrations)
             ? this.getIntegrationTableView()
-            : this.getTableEmptyState(availableAWSSecurityHubIntegrations)}
+            : this.getTableEmptyState(availableAWSSecurityLakeIntegrations)}
         </div>
       </div>
     );
@@ -593,7 +593,7 @@ function mapStateToProps(state) {
     isSuccess: state.get('isSuccess'),
     isError: state.get('isError'),
     integrationAddResponse: state.get('integrationAddResponse'),
-    availableAWSSecurityHubIntegrations: state.get('availableAWSSecurityHubIntegrations'),
+    availableAWSSecurityLakeIntegrations: state.get('availableAWSSecurityLakeIntegrations'),
     licenseResponse: state.get('licenseResponse'),
     nodeFilters: state.getIn(['nodesView', 'topologyFilters', allNodeType]),
   };
