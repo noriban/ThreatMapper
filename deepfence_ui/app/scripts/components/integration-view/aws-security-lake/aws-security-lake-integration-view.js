@@ -365,9 +365,10 @@ class AWSSecurityLakeIntegrationView extends React.Component {
                             )
                           }
                           value={cloudTrailValue[resource.name]}
-                          isMulti
                           />
-                      {index === 0 && <div style={{ fontSize: '12px', paddingTop: '8px', paddingLeft: '8px' }}>Account owner that performs tasks requiring unrestricted access</div>}
+                      {index === 0 && <div style={{ fontSize: '12px', paddingTop: '8px', paddingLeft: '8px' }}>
+                        Amazon Security Lake must be enabled for this account and the given credentials should have access to write data to the given account&apos;s data lake.
+                      </div>}
                     </div>
                   ))}
                   {submitted &&
@@ -403,7 +404,11 @@ class AWSSecurityLakeIntegrationView extends React.Component {
                       autoComplete="off"
                     />
                   </label>
-                  <div style={{ fontSize: '12px', paddingLeft: '8px' }}>User within an account that performs daily tasks.</div>
+                  <div style={{ fontSize: '12px', paddingLeft: '8px' }}>{
+                  `Provide a role that Security Lake will use to run glue crawlers in your accounts. 
+                  This role must have the AWSGlueServiceRole managed policy attached to it. 
+                  It must allow full access to your data lake and the trust policy must include the Glue service principal. 
+                  If you have used your own encryption keys, this role must allow access to kms:Decrypt.`}</div>
                   {submitted && !role && (
                     <div className="field-error">Glue IAM Role ARN is required</div>
                   )}
