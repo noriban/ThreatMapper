@@ -29,6 +29,9 @@ import shutil
 import networkx as nx
 import time
 from collections import defaultdict
+import pandas as pd
+import boto3
+import awswrangler as wr
 
 
 requests.packages.urllib3.disable_warnings()
@@ -1188,3 +1191,12 @@ def get_top_exploitable_vulnerabilities(number, time_unit, lucene_query_string, 
         else:
             vulnerability['_source']['rank'] = rank
     return uniq_top_vulnerabilities[:size]
+
+def send_and_parquet_it(access_key,secret_key,region,s3_url_with_filename,data=[]):
+    try:
+        boto_session = boto3.Session(aws_access_key_id=access_key,aws_secret_access_key=secret_key,region_name=region)
+        df = pd.json_normalize(data)
+        res = wr.s3.to_parquet(df, s3_url_with_filename,boto3_session=boto_session)
+        return res
+    except Exception as e:
+        return e
