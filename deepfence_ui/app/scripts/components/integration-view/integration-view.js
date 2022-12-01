@@ -21,6 +21,7 @@ import GoogleChronicleEndpointView from './google-chronicle-view/index';
 import JiraIntegrationView from './jira-integration-view';
 import SumoLogicView from './sumo-logic-view';
 import AWSSecurityHub from './aws-security-hub/aws-security-hub-integration-view';
+import AWSSecurityLake from './aws-security-lake/aws-security-lake-integration-view';
 import Reports from './reports/reports';
 import { getIntegrations } from '../../utils/web-api-utils';
 
@@ -225,6 +226,9 @@ class IntegrationView extends React.Component {
       }
       case 'aws-security-hub': {
         return <AWSSecurityHub />
+      }
+      case 'aws-security-lake': {
+        return <AWSSecurityLake />
       }
       default: {
         null;

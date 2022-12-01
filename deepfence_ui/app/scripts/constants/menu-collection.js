@@ -5,6 +5,7 @@ import SPLUNK_LOGO from '../../images/splunk-logo.png';
 import ELASTICSEARCH_LOGO from '../../images/elasticsearch-logo.png';
 import AWS_S3_LOGO from '../../images/aws-s3-logo.png';
 import AWS_SECURITY_HUB_LOGO from '../../images/security-hub.png';
+import AWS_SECURITY_LAKE_LOGO from '../../images/aws-security-lake.png';
 import JIRA_LOGO from '../../images/jira.png';
 import SUMO_LOGIC_LOGO from '../../images/sumo-logic.png';
 import HTTP_LOGO from '../../images/http.png';
@@ -51,6 +52,9 @@ export const INTEGRATION_MENU_COLLECTION = [
   },
   {
     name: 'aws-security-hub', isActive: true, icon: AWS_SECURITY_HUB_LOGO, displayName: 'AWS Security Hub', category: 'siem', bgcolor: 'white', parent: 'SIEM'
+  },
+  {
+    name: 'aws-security-lake', isActive: true, icon: AWS_SECURITY_LAKE_LOGO , displayName: 'Amazon Security Lake', category: 'siem', bgcolor: '#e67c33', parent: 'SIEM'
   },
 ];
 
