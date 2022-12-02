@@ -583,7 +583,7 @@ export function rootReducer(state = initialState, action) {
       );
       state = state.set(
         'availableAWSSecurityLakeIntegrations',
-        action.response.aws_security_hub
+        action.response.amazon_security_lake
       );
       state = state.set('IntegrationStatus', action.response);
       return state;
