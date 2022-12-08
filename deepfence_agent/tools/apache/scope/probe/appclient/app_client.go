@@ -205,6 +205,7 @@ func (c *appClient) Details() (xfer.Details, error) {
 
 func (c *appClient) doWithBackoff(msg string, f func() (bool, error)) {
 	if !c.retainGoroutine() {
+		log.Info("1")
 		return
 	}
 	defer c.releaseGoroutine()
@@ -214,9 +215,12 @@ func (c *appClient) doWithBackoff(msg string, f func() (bool, error)) {
 	for {
 		done, err := f()
 		if done {
+			log.Info("2")
 			return
 		}
 		if err == nil {
+			log.Info("3")
+			log.Info(err)
 			backoff = initialBackoff
 			continue
 		}
@@ -226,6 +230,7 @@ func (c *appClient) doWithBackoff(msg string, f func() (bool, error)) {
 			// further delays. Moreover, any delays between publishing
 			// reports that exceed the app.window (defaults to 15s)
 			// cause the UI to display no data, which is debilitating.
+			log.Infof("this is the error %s",err)
 			log.Errorf("Error doing %s for %s: %v", msg, c.hostname, err)
 			backoff = initialBackoff
 			continue
@@ -247,8 +252,12 @@ func (c *appClient) controlConnection() (bool, error) {
 	headers := http.Header{}
 	c.ProbeConfig.authorizeHeaders(headers)
 	url := c.wsURL("/topology-api/control/ws")
+	log.Info(url)
+	log.Info(c.ProbeConfig)
+	log.Info(headers)
 	conn, _, err := xfer.DialWS(&c.wsDialer, url, headers)
 	if err != nil {
+		log.Info("from connection function err %s", err)
 		return false, err
 	}
 	defer conn.Close()
@@ -263,13 +272,16 @@ func (c *appClient) controlConnection() (bool, error) {
 	codec := xfer.NewJSONWebsocketCodec(conn)
 	server := rpc.NewServer()
 	if err := server.RegisterName("control", xfer.ControlHandlerFunc(doControl)); err != nil {
+		log.Infof("this is the error %s", err)
 		return false, err
 	}
 
 	// Will return false if we are exiting
 	if !c.registerConn("control", conn) {
+		log.Info(7)
 		return true, nil
 	}
+
 	defer c.closeConn("control")
 
 	server.ServeCodec(codec)
@@ -280,6 +292,7 @@ func (c *appClient) ControlConnection() {
 	go func() {
 		log.Infof("Control connection to %s starting", c.hostname)
 		defer log.Infof("Control connection to %s exiting", c.hostname)
+		defer log.Info("it is not being called")
 		c.doWithBackoff("controls", c.controlConnection)
 	}()
 }

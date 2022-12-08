@@ -11,6 +11,11 @@ import (
 	"github.com/ugorji/go/codec"
 
 	"github.com/weaveworks/common/mtime"
+	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"github.com/hashicorp/go-cleanhttp"
+	"net"
 )
 
 const (
@@ -69,11 +74,50 @@ type WSDialer interface {
 // origin (Origin), subprotocols (Sec-WebSocket-Protocol) and cookies (Cookie).
 // Use the response.Header to get the selected subprotocol
 // (Sec-WebSocket-Protocol) and cookies (Set-Cookie).
+
+// func DialWS(d WSDialer, urlStr string, requestHeader http.Header) (Websocket, *http.Response, error) {
+// 	wsConn, resp, err := d.Dial(urlStr, requestHeader)
+// 	if err != nil {
+// 		return nil, resp, err
+// 	}
+// 	return Ping(wsConn), resp, nil
+// }
+
+func getHTTPTransport(hostname string) *http.Transport {
+	var certPool *x509.CertPool
+	transport := cleanhttp.DefaultTransport()
+	transport.DialContext = (&net.Dialer{
+		Timeout:   5 * time.Second,
+		KeepAlive: 30 * time.Second,
+	}).DialContext
+	transport.TLSClientConfig = &tls.Config{
+		RootCAs:    certPool,
+		ServerName: hostname,
+	}
+	return transport
+}
+
 func DialWS(d WSDialer, urlStr string, requestHeader http.Header) (Websocket, *http.Response, error) {
-	wsConn, resp, err := d.Dial(urlStr, requestHeader)
+	ctx := context.Background()
+
+	// (omit)... signal handling
+	endpointUrl := "wss://167.71.236.9:443/topology-api/control/ws"
+	log.Info(d)
+	httpTransport := getHTTPTransport("167.71.236.9:443")
+	dialer := websocket.Dialer{TLSClientConfig:  httpTransport.TLSClientConfig,HandshakeTimeout: 12 * time.Second,}
+	// dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	headers := http.Header{}
+	headers.Set("deepfence-key", "60080f87-c170-4acb-b548-02ad02d0f3dd")
+	headers.Set("X-Deepfence-Discovery-Id", "3394c0eb49a1c4d1")
+	headers.Set("X-Deepfence-Discovery-Version", "0b979199")
+	headers.Set("user-agent", "Deepfence_Discovery/0b979199")
+
+	wsConn, resp, err := dialer.DialContext(ctx, endpointUrl, nil)
 	if err != nil {
+		log.Infof("this has come again to the error %s", err)
 		return nil, resp, err
 	}
+	defer wsConn.Close()
 	return Ping(wsConn), resp, nil
 }
 
