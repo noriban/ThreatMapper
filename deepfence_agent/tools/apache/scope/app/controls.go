@@ -69,7 +69,10 @@ func handleControl(cr ControlRouter) CtxHandlerFunc {
 func handleProbeWS(cr ControlRouter) CtxHandlerFunc {
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		probeID := r.Header.Get(xfer.ScopeProbeIDHeader)
+		log.Infof("all the heeadre are %v", r.Header)
+		log.Infof("probid is %v", probeID)
 		if probeID == "" {
+			log.Info("there is no probe is so return")
 			respondWith(ctx, w, http.StatusBadRequest, xfer.ScopeProbeIDHeader)
 			return
 		}
@@ -80,7 +83,8 @@ func handleProbeWS(cr ControlRouter) CtxHandlerFunc {
 			return
 		}
 		defer conn.Close()
-
+		log.Info("here")
+		defer log.Info("defer is being called")
 		codec := xfer.NewJSONWebsocketCodec(conn)
 		client := rpc.NewClientWithCodec(codec)
 		defer client.Close()
@@ -88,11 +92,14 @@ func handleProbeWS(cr ControlRouter) CtxHandlerFunc {
 		id, err := cr.Register(ctx, probeID, func(req xfer.Request) xfer.Response {
 			var res xfer.Response
 			if err := client.Call("control.Handle", req, &res); err != nil {
+				log.Infof("come to here and err is %v",err)
 				return xfer.ResponseError(err)
 			}
+			log.Infof("response is %v",res)
 			return res
 		})
 		if err != nil {
+			log.Info("400 bad request")
 			respondWith(ctx, w, http.StatusBadRequest, err)
 			return
 		}

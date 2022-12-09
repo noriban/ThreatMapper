@@ -67,6 +67,7 @@ type appClient struct {
 // NewAppClient makes a new appClient.
 func NewAppClient(pc ProbeConfig, hostname string, target url.URL, control xfer.ControlHandler) (AppClient, error) {
 	httpTransport := pc.getHTTPTransport(hostname)
+	log.Infof("hostname: %s", hostname)
 	httpClient := cleanhttp.DefaultClient()
 	httpClient.Transport = httpTransport
 	httpClient.Timeout = httpClientTimeout
@@ -220,7 +221,6 @@ func (c *appClient) doWithBackoff(msg string, f func() (bool, error)) {
 		}
 		if err == nil {
 			log.Info("3")
-			log.Info(err)
 			backoff = initialBackoff
 			continue
 		}
@@ -252,9 +252,8 @@ func (c *appClient) controlConnection() (bool, error) {
 	headers := http.Header{}
 	c.ProbeConfig.authorizeHeaders(headers)
 	url := c.wsURL("/topology-api/control/ws")
-	log.Info(url)
-	log.Info(c.ProbeConfig)
-	log.Info(headers)
+	log.Infof("c.ProbeConfig %v", c.ProbeConfig)
+	log.Infof("headers are: %v", headers)
 	conn, _, err := xfer.DialWS(&c.wsDialer, url, headers)
 	if err != nil {
 		log.Info("from connection function err %s", err)

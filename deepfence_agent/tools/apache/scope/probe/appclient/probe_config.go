@@ -63,13 +63,28 @@ func (pc ProbeConfig) getHTTPTransport(hostname string) *http.Transport {
 		Timeout:   dialTimeout,
 		KeepAlive: 30 * time.Second,
 	}).DialContext
-	if pc.Insecure {
-		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	} else {
-		transport.TLSClientConfig = &tls.Config{
-			RootCAs:    certPool,
-			ServerName: hostname,
-		}
+	
+	transport.TLSClientConfig = &tls.Config{
+		RootCAs:    certPool,
+		ServerName: hostname,
+		InsecureSkipVerify: pc.Insecure,
 	}
+	
 	return transport
 }
+
+// func (pc ProbeConfig) getHTTPTransport(hostname string) *http.Transport {
+// 	transport := cleanhttp.DefaultTransport()
+// 	transport.DialContext = (&net.Dialer{
+// 		Timeout:   5 * time.Second,
+// 		KeepAlive: 30 * time.Second,
+// 	}).DialContext
+
+// 	transport.TLSClientConfig = &tls.Config{
+// 		RootCAs: x509.NewCertPool(),
+// 		ServerName: hostname,
+// 		InsecureSkipVerify: pc.Insecure,
+// 	}
+
+// 	return transport
+// }

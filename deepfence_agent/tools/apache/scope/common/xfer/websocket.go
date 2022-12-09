@@ -10,12 +10,14 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/ugorji/go/codec"
 
-	"github.com/weaveworks/common/mtime"
 	"context"
+
+	"github.com/weaveworks/common/mtime"
 	"crypto/tls"
 	"crypto/x509"
-	"github.com/hashicorp/go-cleanhttp"
 	"net"
+	"github.com/hashicorp/go-cleanhttp"
+	// "github.com/certifi/gocertifi"
 )
 
 const (
@@ -68,6 +70,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request, responseHeader http.Header)
 // WSDialer can dial a new websocket
 type WSDialer interface {
 	Dial(urlStr string, requestHeader http.Header) (*websocket.Conn, *http.Response, error)
+	DialContext(ctx context.Context, urlStr string, requestHeader http.Header) (*websocket.Conn, *http.Response, error)
 }
 
 // DialWS creates a new client connection. Use requestHeader to specify the
@@ -84,16 +87,24 @@ type WSDialer interface {
 // }
 
 func getHTTPTransport(hostname string) *http.Transport {
-	var certPool *x509.CertPool
+	// var certPool *x509.CertPool
+
+	// certPool, err := gocertifi.CACerts()
+	// if err != nil {
+	// 	log.Infof("error inside the gocertifi %s", err)
+	// }
 	transport := cleanhttp.DefaultTransport()
 	transport.DialContext = (&net.Dialer{
 		Timeout:   5 * time.Second,
 		KeepAlive: 30 * time.Second,
 	}).DialContext
+
 	transport.TLSClientConfig = &tls.Config{
-		RootCAs:    certPool,
+		RootCAs: x509.NewCertPool(),
 		ServerName: hostname,
+		InsecureSkipVerify: true,
 	}
+
 	return transport
 }
 
@@ -103,21 +114,17 @@ func DialWS(d WSDialer, urlStr string, requestHeader http.Header) (Websocket, *h
 	// (omit)... signal handling
 	endpointUrl := "wss://167.71.236.9:443/topology-api/control/ws"
 	log.Info(d)
-	httpTransport := getHTTPTransport("167.71.236.9:443")
-	dialer := websocket.Dialer{TLSClientConfig:  httpTransport.TLSClientConfig,HandshakeTimeout: 12 * time.Second,}
-	// dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	headers := http.Header{}
-	headers.Set("deepfence-key", "60080f87-c170-4acb-b548-02ad02d0f3dd")
-	headers.Set("X-Deepfence-Discovery-Id", "3394c0eb49a1c4d1")
-	headers.Set("X-Deepfence-Discovery-Version", "0b979199")
-	headers.Set("user-agent", "Deepfence_Discovery/0b979199")
 
-	wsConn, resp, err := dialer.DialContext(ctx, endpointUrl, nil)
+	httpTransport := getHTTPTransport("167.71.236.9")
+	dialer := websocket.Dialer{TLSClientConfig:  httpTransport.TLSClientConfig,HandshakeTimeout: 12 * time.Second,}
+
+	
+	log.Infof("all request heres are %v", requestHeader)
+	wsConn, resp, err := dialer.DialContext(ctx, endpointUrl, requestHeader)
 	if err != nil {
-		log.Infof("this has come again to the error %s", err)
+		log.Infof("this has come again to the error %s and %v", err, resp)
 		return nil, resp, err
 	}
-	defer wsConn.Close()
 	return Ping(wsConn), resp, nil
 }
 
