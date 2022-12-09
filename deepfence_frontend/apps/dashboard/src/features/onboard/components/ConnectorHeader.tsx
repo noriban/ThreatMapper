@@ -53,42 +53,44 @@ export const ConnectorHeader = ({ title, description }: ConnectorHeaderProps) =>
         {title}
       </h1>
       <p
-        className={`${Typography.size.base} ${Typography.weight.normal} mt-1.5 mb-4 leading-6 dark:text-gray-400`}
+        className={`${Typography.size.base} ${Typography.weight.normal} mt-1.5 mb-4 dark:text-gray-400 text-gray-900`}
       >
         {description}
       </p>
-      <Breadcrumb separator={<HiChevronDoubleRight />} outline>
-        <BreadcrumbLink>
-          <Link
-            to={canRoute(location.pathname).addConnector}
-            className={cx({
-              ['text-blue-600']: isAddConnectorRoutePath(),
-            })}
-          >
-            Add a connector
-          </Link>
-        </BreadcrumbLink>
-        <BreadcrumbLink>
-          <Link
-            to={canRoute(location.pathname).scanResult}
-            className={cx({
-              ['text-blue-400']: isScanRoutePath(),
-            })}
-          >
-            Scan Infrastructure
-          </Link>
-        </BreadcrumbLink>
-        <BreadcrumbLink>
-          <Link
-            to={canRoute(location.pathname).viewResult}
-            className={cx({
-              ['text-blue-400']: isViewResultsRoutePath(),
-            })}
-          >
-            View Scan Results
-          </Link>
-        </BreadcrumbLink>
-      </Breadcrumb>
+      <div className="mb-4">
+        <Breadcrumb separator={<HiChevronDoubleRight />} outline>
+          <BreadcrumbLink>
+            <Link
+              to={canRoute(location.pathname).addConnector}
+              className={cx({
+                ['text-blue-600']: isAddConnectorRoutePath(),
+              })}
+            >
+              Add a connector
+            </Link>
+          </BreadcrumbLink>
+          <BreadcrumbLink>
+            <Link
+              to={canRoute(location.pathname).scanResult}
+              className={cx({
+                ['text-blue-400']: isScanRoutePath(),
+              })}
+            >
+              Scan Infrastructure
+            </Link>
+          </BreadcrumbLink>
+          <BreadcrumbLink>
+            <Link
+              to={canRoute(location.pathname).viewResult}
+              className={cx({
+                ['text-blue-400']: isViewResultsRoutePath(),
+              })}
+            >
+              View Scan Results
+            </Link>
+          </BreadcrumbLink>
+        </Breadcrumb>
+      </div>
     </div>
   );
 };

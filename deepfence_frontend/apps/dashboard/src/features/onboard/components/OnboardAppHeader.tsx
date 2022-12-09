@@ -9,13 +9,14 @@ import {
   Separator,
 } from 'ui-components';
 
-import LogoDarkBlue from '../../../assets/logo-deepfence-dark-blue.svg';
+import LogoDeepfenceDarkBlue from '../../../assets/logo-deepfence-dark-blue.svg';
+import LogoDeepfenceWhite from '../../../assets/logo-deepfence-white.svg';
 import { useThemeMode } from '../../../theme/ThemeContext';
 import storage from '../../../utils/storage';
 
 export const OnboardAppHeader = () => {
   const navigate = useNavigate();
-  const { toggleMode } = useThemeMode(true);
+  const { toggleMode, mode } = useThemeMode(true);
 
   const logout = () => {
     storage.clearAuth();
@@ -23,11 +24,11 @@ export const OnboardAppHeader = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-90 h-[49px] fixed top-0 w-full">
-      <div className="h-12 flex items-center mx-16">
+    <div className="bg-white dark:bg-gray-90 h-[80px] fixed top-0 w-full">
+      <div className="h-full flex items-center mx-16">
         <div className="mr-auto">
           <img
-            src={LogoDarkBlue}
+            src={mode === 'dark' ? LogoDeepfenceWhite : LogoDeepfenceDarkBlue}
             alt="Deefence Logo"
             width="46.95"
             height="29"

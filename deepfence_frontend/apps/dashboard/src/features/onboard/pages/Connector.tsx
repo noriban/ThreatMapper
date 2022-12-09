@@ -116,8 +116,8 @@ const connectors = {
 
 const Cloud = () => {
   return (
-    <Card className="w-full sm:w-1/3 h-[552px] mb-[44px] pb-5 relative">
-      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center">
+    <Card className="w-full sm:w-1/3">
+      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center border-b border-gray-200 dark:border-[#3D3D3D]">
         <img
           src={LogoCloudConnector}
           alt="Cloud Connector"
@@ -131,9 +131,9 @@ const Cloud = () => {
           Cloud
         </span>
       </div>
-      <div className="mt-6 absolute top-0 w-full h-full overflow-y-scroll">
+      <div>
         <p
-          className={`p-6 text-center ${Typography.size.base} ${Typography.weight.normal} leading-6 text-gray-700 dark:text-gray-300 mt-14`}
+          className={`p-6 text-center ${Typography.size.base} ${Typography.weight.normal} leading-6 text-gray-700 dark:text-gray-300`}
         >
           Connect an AWS, GCP, or Azure cloud account to check for compliance
           misconfigurations.
@@ -149,8 +149,8 @@ const Cloud = () => {
 };
 const Host = () => {
   return (
-    <Card className="w-full sm:w-1/3 h-[552px] mb-[44px] pb-5 relative">
-      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center">
+    <Card className="w-full sm:w-1/3">
+      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center border-b border-gray-200 dark:border-[#3D3D3D]">
         <img
           src={LogoHostConnector}
           alt="Cloud Connector"
@@ -164,9 +164,9 @@ const Host = () => {
           Host
         </span>
       </div>
-      <div className="mt-6 absolute top-0 w-full h-full overflow-y-scroll">
+      <div>
         <p
-          className={`p-6 text-center ${Typography.size.base} ${Typography.weight.normal} leading-6 text-gray-700 dark:text-gray-300 mt-14`}
+          className={`p-6 text-center ${Typography.size.base} ${Typography.weight.normal} leading-6 text-gray-700 dark:text-gray-300`}
         >
           Connect a K8s cluster, Docker container, or Linux host to check for
           vulnerabilities, secrets, malware, and compliance misconfigurations.
@@ -182,8 +182,8 @@ const Host = () => {
 };
 const Registries = () => {
   return (
-    <Card className="w-full sm:w-1/3 h-[552px] mb-[40px] pb-5 relative">
-      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center">
+    <Card className="w-full sm:w-1/3">
+      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center border-b border-gray-200 dark:border-[#3D3D3D]">
         <img
           src={LogoRegistryConnector}
           alt="Cloud Connector"
@@ -197,9 +197,9 @@ const Registries = () => {
           Registry
         </span>
       </div>
-      <div className="mt-6 absolute top-0 w-full h-full overflow-y-scroll">
+      <div>
         <p
-          className={`p-6 text-center ${Typography.size.base} ${Typography.weight.normal} leading-6 text-gray-700 dark:text-gray-300 mt-14`}
+          className={`p-6 text-center ${Typography.size.base} ${Typography.weight.normal} leading-6 text-gray-700 dark:text-gray-300`}
         >
           Connect a registry to scan images for vulnerabilities.
           <br></br>
@@ -228,7 +228,7 @@ const tabs = [
 
 export const AddConnector = () => {
   return (
-    <div className="flex flex-col sm:flex-row gap-x-2">
+    <div className="flex flex-col sm:flex-row gap-x-2 mb-[77px]">
       <Cloud />
       <Host />
       <Registries />
@@ -250,7 +250,7 @@ export const Connector = () => {
         defaultValue={tab}
         tabs={tabs}
         onValueChange={(tab) => setTab(tab)}
-        size="xs"
+        size="md"
       >
         <div className="h-full dark:text-white mt-8">
           {tab === 'add' && <AddConnector />}
