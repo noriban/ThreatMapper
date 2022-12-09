@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { HiChevronDoubleRight } from 'react-icons/hi';
+import { HiChevronRight } from 'react-icons/hi';
 import { Link, useLocation } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbLink, Typography } from 'ui-components';
 
@@ -57,8 +57,8 @@ export const ConnectorHeader = ({ title, description }: ConnectorHeaderProps) =>
       >
         {description}
       </p>
-      <div className="mb-4">
-        <Breadcrumb separator={<HiChevronDoubleRight />} outline>
+      <div className="mb-8">
+        <Breadcrumb separator={<HiChevronRight />} outline>
           <BreadcrumbLink>
             <Link
               to={canRoute(location.pathname).addConnector}

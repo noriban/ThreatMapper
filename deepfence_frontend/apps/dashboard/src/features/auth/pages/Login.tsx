@@ -62,14 +62,17 @@ export const Login = () => {
               to="/auth/forgot-password"
               className={cx(
                 `${Typography.size.xs} `,
-                'mr-auto bg-transparent text-blue-600',
+                'mr-auto bg-transparent text-blue-600 dark:text-blue-400',
               )}
             >
               Forgot password?
             </Link>
             <Link
               to="/auth/register"
-              className={cx(`${Typography.size.xs} `, 'bg-transparent text-blue-600')}
+              className={cx(
+                `${Typography.size.xs} `,
+                'bg-transparent text-blue-600 dark:text-blue-400',
+              )}
             >
               Register
             </Link>
@@ -81,7 +84,7 @@ export const Login = () => {
             to="/register"
             className={cx(
               `${Typography.size.xs} `,
-              'mt-[26px] bg-transparent text-center text-blue-600',
+              'mt-[26px] bg-transparent text-center text-blue-600 dark:text-blue-400',
             )}
           >
             Single Sign-On (SSO)

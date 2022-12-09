@@ -11,16 +11,16 @@ import {
 
 import LogoDeepfenceDarkBlue from '../../../assets/logo-deepfence-dark-blue.svg';
 import LogoDeepfenceWhite from '../../../assets/logo-deepfence-white.svg';
-import { useThemeMode } from '../../../theme/ThemeContext';
+import { useTheme } from '../../../theme/ThemeContext';
 import storage from '../../../utils/storage';
 
 export const OnboardAppHeader = () => {
   const navigate = useNavigate();
-  const { toggleMode, mode } = useThemeMode(true);
+  const { toggleMode, mode } = useTheme();
 
   const logout = () => {
     storage.clearAuth();
-    navigate('/login');
+    navigate('/auth/login');
   };
 
   return (

@@ -20,7 +20,7 @@ export const AWSConnection = () => {
         <CloudFormation />
         <Terraform />
       </div>
-      <Button onClick={goback} outline size="xs" className="absolute left-5 bottom-5">
+      <Button onClick={goback} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </div>

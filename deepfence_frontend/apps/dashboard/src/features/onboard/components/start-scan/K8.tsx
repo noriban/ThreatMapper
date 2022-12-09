@@ -23,7 +23,7 @@ export const K8 = () => {
         description="Deploy all modules for Deepfence Compliance Scanner for a single account. For information on AWS Organization and account types, see AWS docs."
       />
 
-      <Button onClick={goback} outline size="xs" className="absolute left-5 bottom-5">
+      <Button onClick={goback} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </div>

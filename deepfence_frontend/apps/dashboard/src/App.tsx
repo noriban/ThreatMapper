@@ -11,9 +11,9 @@ const Fallback = () => {
 };
 
 function App() {
-  const { toggleMode } = useThemeMode(true);
+  const { toggleMode, mode } = useThemeMode(true);
   return (
-    <ThemeProvider value={{ toggleMode }}>
+    <ThemeProvider value={{ toggleMode, mode }}>
       <div className="dark:bg-gray-900 bg-white">
         <Suspense fallback={<Fallback />}>
           <RouterProvider router={router} />

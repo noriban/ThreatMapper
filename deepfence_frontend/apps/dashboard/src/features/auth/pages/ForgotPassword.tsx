@@ -60,7 +60,7 @@ export const ForgotPassword = () => {
               to="/auth/login"
               className={cx(
                 `${Typography.size.xs} `,
-                'mt-[26px] bg-transparent text-center text-blue-500',
+                'mt-[26px] bg-transparent text-center text-blue-600 dark:text-blue-400',
               )}
             >
               Back to Login
