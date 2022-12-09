@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { IconContext } from 'react-icons';
 import { HiOutlineArrowCircleRight } from 'react-icons/hi';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, Tabs, Typography } from 'ui-components';
 
 import LogoAws from '../../../assets/logo-aws.svg';
@@ -19,7 +19,7 @@ import { ConnectorHeader } from '../components/ConnectorHeader';
 interface CardConnectProps {
   path: string;
   label: string;
-  icon: SVGElement;
+  icon: string;
 }
 
 const CardConnect = ({ label, path, icon }: CardConnectProps) => {
@@ -228,7 +228,7 @@ const tabs = [
 
 export const AddConnector = () => {
   return (
-    <div className="flex flex-col sm:flex-row gap-x-2 mb-[77px]">
+    <div className="flex flex-col sm:flex-row gap-x-2">
       <Cloud />
       <Host />
       <Registries />

@@ -18,7 +18,7 @@ export const OnboardLayout = () => {
   return (
     <div>
       <OnboardAppHeader />
-      <div className="mx-16 pt-[80px] overflow-scroll">
+      <div className="mx-16 pt-[80px] pb-8 min-h-screen">
         <Outlet />
       </div>
     </div>

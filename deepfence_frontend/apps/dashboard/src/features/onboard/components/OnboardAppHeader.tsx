@@ -45,6 +45,7 @@ export const OnboardAppHeader = () => {
           </IconContext.Provider>
           <Dropdown
             triggerAsChild
+            align="end"
             content={
               <>
                 <DropdownItem onClick={toggleMode}>

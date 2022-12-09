@@ -14,7 +14,7 @@ function App() {
   const { toggleMode } = useThemeMode(true);
   return (
     <ThemeProvider value={{ toggleMode }}>
-      <div className="h-screen dark:bg-gray-900 bg-white overflow-scroll">
+      <div className="dark:bg-gray-900 bg-white">
         <Suspense fallback={<Fallback />}>
           <RouterProvider router={router} />
         </Suspense>
