@@ -1,14 +1,24 @@
 import './index.css';
 
+import { Suspense } from 'react';
 import { RouterProvider } from 'react-router-dom';
 
 import { router } from './routes';
-import { ThemeProvider } from './theme/ThemeContext';
+import { ThemeProvider, useThemeMode } from './theme/ThemeContext';
+
+const Fallback = () => {
+  return <div>.....</div>;
+};
 
 function App() {
+  const { toggleMode } = useThemeMode(true);
   return (
-    <ThemeProvider value={{}}>
-      <RouterProvider router={router} />
+    <ThemeProvider value={{ toggleMode }}>
+      <div className="h-screen dark:bg-gray-900 bg-white overflow-scroll">
+        <Suspense fallback={<Fallback />}>
+          <RouterProvider router={router} />
+        </Suspense>
+      </div>
     </ThemeProvider>
   );
 }

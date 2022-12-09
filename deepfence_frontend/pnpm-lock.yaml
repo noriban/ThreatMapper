@@ -49,6 +49,7 @@ importers:
       vite: ^3.2.3
       vitest: ^0.25.3
       whatwg-fetch: ^3.6.2
+      zod: ^3.19.1
     dependencies:
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/user-event': 14.4.3
@@ -58,6 +59,7 @@ importers:
       react-icons: 4.7.1_react@18.2.0
       react-router-dom: 6.4.4_biqbaboplfbrettd7655fr4n2y
       ui-components: link:../../packages/ui-components
+      zod: 3.19.1
     devDependencies:
       '@openapitools/openapi-generator-cli': 2.5.2
       '@playwright/test': 1.28.1
@@ -14874,6 +14876,10 @@ packages:
     optionalDependencies:
       commander: 2.20.3
     dev: true
+
+  /zod/3.19.1:
+    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+    dev: false
 
   /zwitch/1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}

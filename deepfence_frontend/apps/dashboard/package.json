@@ -24,7 +24,8 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-router-dom": "^6.4.4",
-    "ui-components": "workspace:*"
+    "ui-components": "workspace:*",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.5.2",
