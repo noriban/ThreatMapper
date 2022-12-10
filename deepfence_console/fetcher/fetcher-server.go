@@ -32,6 +32,7 @@ const (
 	redisVulnerabilityChannel = "vulnerability_task_queue"
 	redisCloudTrailChannel    = "cloudtrail_task_queue"
 	redisComplianceChannel    = "compliance_task_queue"
+	redisSecretChannel        = "secret_task_queue"
 )
 
 var (
@@ -48,6 +49,7 @@ var (
 	complianceIndexName          = convertRootESIndexToCustomerSpecificESIndex("compliance")
 	complianceLogsIndexName      = convertRootESIndexToCustomerSpecificESIndex("compliance-scan-logs")
 	cloudTrailAlertsIndexName    = convertRootESIndexToCustomerSpecificESIndex("cloudtrail-alert")
+	secretIndexName              = convertRootESIndexToCustomerSpecificESIndex("secret-scan")
 	resourceToNodeTypeMap        = map[string]string{"CloudWatch": "aws_cloudwatch_log_group", "VPC": "aws_vpc", "CloudTrail": "aws_cloudtrail_trail", "Config": "aws_config_rule", "KMS": "aws_kms_key", "S3": "aws_s3_bucket", "IAM": "aws_iam_user", "EBS": "aws_ebs_volume", "RDS": "aws_rds_db_cluster"}
 )
 
@@ -150,6 +152,44 @@ type CloudComplianceDoc struct {
 	ControlID           string `json:"control_id"`
 	Description         string `json:"description"`
 	Severity            string `json:"severity"`
+}
+
+type SecretScanDocMatch struct {
+	RelativeEndingIndex int    `json:"relative_ending_index,omitempty"`
+	FullFilename        string `json:"full_filename"`
+	MatchedContent      string `json:"matched_content"`
+}
+
+type SecretScanDocRule struct {
+	Id               int    `json:"id"`
+	Name             string `json:"name"`
+	Part             string `json:"part"`
+	SignatureToMatch string `json:"signature_to_match"`
+}
+
+type SecretScanDocSeverity struct {
+	Level string  `json:"level"`
+	Score float64 `json:"score"`
+}
+
+type SecretScanDoc struct {
+	DocId                 string                `json:"doc_id"`
+	Type                  string                `json:"type"`
+	TimeStamp             int64                 `json:"time_stamp"`
+	Timestamp             string                `json:"@timestamp"`
+	Count                 int                   `json:"count,omitempty"`
+	ImageLayerId          string                `json:"ImageLayerId"`
+	Match                 SecretScanDocMatch    `json:"Match"`
+	Rule                  SecretScanDocRule     `json:"Rule"`
+	Severity              SecretScanDocSeverity `json:"severity"`
+	ContainerName         string                `json:"container_name"`
+	HostName              string                `json:"host_name"`
+	KubernetesClusterName string                `json:"kubernetes_cluster_name"`
+	Masked                string                `json:"masked"`
+	NodeID                string                `json:"node_id"`
+	NodeName              string                `json:"node_name"`
+	NodeType              string                `json:"node_type"`
+	ScanID                string                `json:"scan_id"`
 }
 
 type WebIdentitySessionContext struct {
@@ -1230,6 +1270,49 @@ func ingestInBackground(docType string, body []byte) error {
 		log.Printf("cloudtrail alert bulk response Succeeded=%d Failed=%d\n", len(bulkResp.Succeeded()), len(failed))
 		for _, r := range failed {
 			log.Printf("error cloudtrail-alert doc %s %s", r.Error.Type, r.Error.Reason)
+		}
+	} else if docType == secretIndexName {
+		var secretDocs []SecretScanDoc
+		err := json.Unmarshal(body, &secretDocs)
+		if err != nil {
+			return err
+		}
+		bulkService := elastic.NewBulkService(esClient)
+		for _, secretDoc := range secretDocs {
+			docId := fmt.Sprintf("%x", md5.Sum([]byte(secretDoc.ScanID+secretDoc.NodeID+secretDoc.Match.MatchedContent+secretDoc.Match.FullFilename)))
+			secretDoc.DocId = docId
+			event, err := json.Marshal(secretDoc)
+			if err == nil {
+				bulkIndexReq := elastic.NewBulkUpdateRequest()
+				bulkIndexReq.Index(secretIndexName).Id(docId).
+					Script(elastic.NewScriptStored("default_upsert").Param("event", secretDoc)).
+					Upsert(secretDoc).ScriptedUpsert(true).RetryOnConflict(3)
+				bulkService.Add(bulkIndexReq)
+				retryCount := 0
+				for {
+					_, err = redisConn.Do("PUBLISH", redisSecretChannel, string(event))
+					if err == nil {
+						break
+					}
+					if retryCount > 1 {
+						fmt.Println(fmt.Sprintf("Error publishing secret document to %s - exiting", redisSecretChannel), err)
+						break
+					}
+					fmt.Println(fmt.Sprintf("Error publishing secret document to %s - trying again", redisSecretChannel), err)
+					retryCount += 1
+					time.Sleep(5 * time.Second)
+				}
+			}
+		}
+		bulkResp, err := bulkService.Do(context.Background())
+		if err != nil {
+			log.Println("err secret " + err.Error())
+		}
+		failed := bulkResp.Failed()
+		log.Printf("secret bulk response Succeeded=%d Failed=%d\n",
+			len(bulkResp.Succeeded()), len(failed))
+		for _, r := range failed {
+			log.Printf("error secret doc %s %s", r.Error.Type, r.Error.Reason)
 		}
 	} else {
 		bulkService := elastic.NewBulkService(esClient)

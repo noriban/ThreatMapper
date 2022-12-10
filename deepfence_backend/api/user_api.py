@@ -18,7 +18,7 @@ from models.user_activity_log import UserActivityLog
 from collections import defaultdict
 from models.integration import Integration
 from models.notification import VulnerabilityNotification, UserActivityNotification, CloudtrailAlertNotification, \
-     ComplianceReportNotification
+     ComplianceReportNotification, SecretNotification
 from utils.common import password_policy_check, unique_execution_id, \
     mask_url, mask_api_key
 from utils.custom_exception import InvalidUsage, NotFound, Forbidden, MultipleCompaniesFound, DFError
@@ -33,7 +33,8 @@ from utils.constants import INTEGRATION_TYPE_GOOGLE_CHRONICLE, USER_ROLES, SECRE
     NOTIFICATION_TYPE_USER_ACTIVITY, NOTIFICATION_TYPE_VULNERABILITY, NOTIFICATION_TYPES, \
     TOPOLOGY_USER_HOST_COUNT_MAP_REDIS_KEY, INTEGRATION_FILTER_TYPES, DEEPFENCE_KEY, DEEPFENCE_COMMUNITY_EMAIL, \
     INVITE_EXPIRY, CVE_ES_TYPE, NOTIFICATION_TYPE_CLOUDTRAIL_ALERT, FILTER_TYPE_CLOUDTRAIL_TRAIL, \
-    INTEGRATION_TYPE_AWS_SECURITY_HUB, FILTER_TYPE_AWS_ACCOUNT_ID, NOTIFICATION_TYPE_COMPLIANCE
+    INTEGRATION_TYPE_AWS_SECURITY_HUB, FILTER_TYPE_AWS_ACCOUNT_ID, NOTIFICATION_TYPE_COMPLIANCE, \
+    NOTIFICATION_TYPE_SECRET
 from utils import constants
 from config.redisconfig import redis
 from utils.response import set_response
@@ -1395,6 +1396,9 @@ class IntegrationView(MethodView):
             for notif in ComplianceReportNotification.query.filter(
                     ComplianceReportNotification.user_id.in_(active_user_ids)).all():
                 response[notif.integration.integration_type].append(notif.pretty_print())
+            for notif in SecretNotification.query.filter(
+                    SecretNotification.user_id.in_(active_user_ids)).all():
+                response[notif.integration.integration_type].append(notif.pretty_print())
         else:
             for notif in user.vulnerability_notifications:
                 response[notif.integration.integration_type].append(notif.pretty_print())
@@ -1403,6 +1407,8 @@ class IntegrationView(MethodView):
             for notif in user.cloudtrail_alert_notification:
                 response[notif.integration.integration_type].append(notif.pretty_print())
             for notif in user.compliance_report_notifications:
+                response[notif.integration.integration_type].append(notif.pretty_print())
+            for notif in user.secret_notifications:
                 response[notif.integration.integration_type].append(notif.pretty_print())
 
         for integration_type, notifications in response.items():
@@ -1529,6 +1535,8 @@ class IntegrationView(MethodView):
             notification = CloudtrailAlertNotification.query.filter_by(id=id).one_or_none()
         elif notification_type == NOTIFICATION_TYPE_COMPLIANCE:
             notification = ComplianceReportNotification.query.filter_by(id=id).one_or_none()
+        elif notification_type == NOTIFICATION_TYPE_SECRET:
+            notification = SecretNotification.query.filter_by(id=id).one_or_none()
 
         notification_json = None
         if notification is not None:
@@ -2089,6 +2097,8 @@ class IntegrationView(MethodView):
             create_notification(CloudtrailAlertNotification)
         elif notification_type == NOTIFICATION_TYPE_COMPLIANCE:
             create_notification(ComplianceReportNotification)
+        elif notification_type == NOTIFICATION_TYPE_SECRET:
+            create_notification(SecretNotification)
 
     @jwt_required()
     @non_read_only_user
