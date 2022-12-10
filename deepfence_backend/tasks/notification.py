@@ -499,6 +499,17 @@ def send_aws_security_hub_notification(self, security_hub_conf, payload, notific
 
 
 @celery_app.task(bind=True, default_retry_delay=1 * 60)
+def send_amazon_security_lake_notification(self, security_lake_conf, payload, notification_id, resource_type):
+    with app.app_context():
+        try:
+            app.logger.info("Security Lake Params: {} {} {} {}".format(security_lake_conf, len(payload),
+                                                                       notification_id, resource_type))
+        except Exception as exc:
+            app.logger.error("Security Lake notification failed, error:[{}]".format(exc))
+            save_integrations_status(notification_id, resource_type, "Error in Security Lake: {0}".format(exc))
+
+
+@celery_app.task(bind=True, default_retry_delay=1 * 60)
 def send_notification_to_es(self, es_conf, payloads, notification_id, resource_type):
     with app.app_context():
         try:

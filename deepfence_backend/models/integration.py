@@ -6,7 +6,7 @@ from sys import getsizeof
 from utils.constants import INTEGRATION_TYPE_EMAIL, INTEGRATION_TYPE_ES, INTEGRATION_TYPE_HTTP, INTEGRATION_TYPE_JIRA, \
     INTEGRATION_TYPE_PAGERDUTY, INTEGRATION_TYPE_S3, INTEGRATION_TYPE_SLACK, INTEGRATION_TYPE_SPLUNK, \
     INTEGRATION_TYPE_SUMO_LOGIC, INTEGRATION_TYPE_MICROSOFT_TEAMS, INTEGRATION_TYPE_GOOGLE_CHRONICLE, \
-    INTEGRATION_TYPE_AWS_SECURITY_HUB
+    INTEGRATION_TYPE_AWS_SECURITY_HUB, INTEGRATION_TYPE_AMAZON_SECURITY_LAKE
 
 
 class IntegrationTypes(object):
@@ -149,6 +149,8 @@ class IntegrationTypes(object):
             return MicrosoftTeams(config)
         elif integration_type == INTEGRATION_TYPE_AWS_SECURITY_HUB:
             return AwsSecurityHub(config)
+        elif integration_type == INTEGRATION_TYPE_AMAZON_SECURITY_LAKE:
+            return AmazonSecurityLake(config)
         else:
             raise Exception("Integration type: {0} - not found".format(integration_type))
 
@@ -295,6 +297,20 @@ class AwsSecurityHub(IntegrationTypes):
         from tasks.notification import send_aws_security_hub_notification
         send_aws_security_hub_notification(self.pretty_print(), content_json["contents"], notification_id,
                                            resource_type)
+
+
+class AmazonSecurityLake(IntegrationTypes):
+    integration_type = INTEGRATION_TYPE_AMAZON_SECURITY_LAKE
+
+    def __init__(self, config):
+        super(AmazonSecurityLake, self).__init__(config)
+
+    def send(self, content_json, **kwargs):
+        notification_id = kwargs["notification_id"]
+        resource_type = kwargs["resource_type"]
+        from tasks.notification import send_amazon_security_lake_notification
+        send_amazon_security_lake_notification(self.pretty_print(), content_json["contents"], notification_id,
+                                               resource_type)
 
 
 class Elasticsearch(IntegrationTypes):
