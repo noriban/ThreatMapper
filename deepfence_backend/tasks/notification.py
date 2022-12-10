@@ -556,7 +556,7 @@ def map_payload_to_findings(payload, resource_type, region, account_id):
                 "Id": "{}/{}/{}".format(region, account_id, compliance["doc_id"]),
                 "Resources": resources,
                 "SchemaVersion": "2018-10-08",
-                "Severity": {"Label": compliance["status"].upper(), "Original": str(compliance["test_severity"])},
+                "Severity": {"Label": "MEDIUM", "Original": "medium"},
                 "Types": [COMPLIANCE_TYPE_ASFF_MAPPING.get(compliance["compliance_check_type"])],
                 "Compliance": {
                     "Status": COMPLIANCE_STATUS_ASFF_MAPPING.get(compliance["status"])
@@ -572,10 +572,6 @@ def send_aws_security_hub_notification(self, security_hub_conf, payload, notific
     with app.app_context():
         try:
             import boto3
-
-            def default(o):
-                if isinstance(o, (datetime.date, datetime.datetime)):
-                    return o.isoformat()
 
             security_hub_client = boto3.client('securityhub', aws_access_key_id=security_hub_conf["aws_access_key"],
                                                region_name=security_hub_conf["region_name"],
