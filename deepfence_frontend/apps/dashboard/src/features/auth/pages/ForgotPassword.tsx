@@ -19,7 +19,7 @@ export const ForgotPassword = () => {
   const fetcher = useFetcher();
   const { data, state } = fetcher;
   return (
-    <div className="h-full flex items-center justify-center">
+    <div className="h-screen flex items-center justify-center">
       <fetcher.Form method="post">
         <Card className="w-[384px] p-8">
           <div className="text-center">
@@ -34,12 +34,12 @@ export const ForgotPassword = () => {
           <h1
             className={cx(
               `${Typography.size['2xl']} ${Typography.weight.medium}`,
-              'dark:text-white text-center leading-6 mb-6 mt-2',
+              'text-center leading-6 mb-6 mt-2',
             )}
           >
             Forgot Password
           </h1>
-          <p className={`${Typography.size.sm} mb-2.5 dark:text-white`}>
+          <p className={`${Typography.size.sm} mb-2.5`}>
             Provide the email registered with your account.
           </p>
           <TextInput
@@ -53,14 +53,14 @@ export const ForgotPassword = () => {
           />
 
           <div className="flex flex-col w-full mt-6">
-            <Button size="md" color="primary" className="w-full">
+            <Button size="md" color="primary" className="w-full mb-4">
               Send Link
             </Button>
             <Link
               to="/auth/login"
               className={cx(
                 `${Typography.size.xs} `,
-                'mt-[26px] bg-transparent text-center text-blue-600 dark:text-blue-400',
+                'bg-transparent text-center text-blue-600 dark:text-blue-400',
               )}
             >
               Back to Login

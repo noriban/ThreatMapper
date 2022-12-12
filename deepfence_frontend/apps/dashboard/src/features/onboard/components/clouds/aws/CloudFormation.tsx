@@ -45,9 +45,13 @@ export const CloudFormation = () => {
       <Accordion type="multiple">
         <AccordionItem value={'Connect via Cloud Formation'}>
           <AccordionTrigger>Connect via Cloud Formation</AccordionTrigger>
-          <AccordionContent className={`${Typography.size.base}`}>
-            <p>Connect to your AWS Cloud Account via Cloud Formation.</p>
-            <p>
+          <AccordionContent
+            className={`${Typography.size.base} ${Typography.weight.normal}`}
+          >
+            <p className="px-5 pt-5">
+              Connect to your AWS Cloud Account via Cloud Formation.
+            </p>
+            <p className="px-5 pb-5">
               Find out more information by{' '}
               <Link to="/" className="text-blue-500">
                 reading our documentation

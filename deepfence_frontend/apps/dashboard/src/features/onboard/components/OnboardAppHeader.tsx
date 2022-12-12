@@ -54,7 +54,7 @@ export const OnboardAppHeader = () => {
                 </DropdownItem>
 
                 <DropdownSeparator />
-                <DropdownItem onClick={logout} className="text-red-700">
+                <DropdownItem onClick={logout} className="text-red-700 dark:text-red-500">
                   <HiLogout />
                   Logout
                 </DropdownItem>

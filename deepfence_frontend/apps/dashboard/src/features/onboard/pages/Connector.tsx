@@ -17,6 +17,7 @@ import LogoLinux from '../../../assets/logo-linux.svg';
 import LogoRegistryConnector from '../../../assets/logo-registry-connector.svg';
 import { useTheme } from '../../../theme/ThemeContext';
 import { ConnectorHeader } from '../components/ConnectorHeader';
+import { NoConnectors } from '../components/connectors/NoConnectors';
 
 interface CardConnectProps {
   path: string;
@@ -152,7 +153,6 @@ const Host = () => {
 };
 const Registries = () => {
   const { mode } = useTheme();
-  console.log(mode);
   const connectors = [
     {
       icon: mode === 'dark' ? LogoAwsWhite : LogoAws,
@@ -210,8 +210,8 @@ const Registries = () => {
           &nbsp;
         </p>
         <div className="flex flex-col mx-6">
-          {connectors.map((connector) => {
-            return <CardConnect {...connector} key={connector.label} />;
+          {connectors.map((connector, index) => {
+            return <CardConnect {...connector} key={connector.label + index} />;
           })}
         </div>
       </div>
@@ -231,7 +231,6 @@ const tabs = [
 ];
 
 export const AddConnector = () => {
-  console.log('========');
   return (
     <div className="flex flex-col sm:flex-row gap-x-2">
       <Cloud />
@@ -243,7 +242,6 @@ export const AddConnector = () => {
 
 export const Connector = () => {
   const [tab, setTab] = useState('add');
-  console.log('connnnn');
 
   return (
     <>
@@ -260,7 +258,11 @@ export const Connector = () => {
       >
         <div className="h-full dark:text-white mt-8">
           {tab === 'add' && <AddConnector />}
-          {tab === 'connected' && <>connected tabs</>}
+          {tab === 'connected' && (
+            <>
+              <NoConnectors />
+            </>
+          )}
         </div>
       </Tabs>
     </>

@@ -55,7 +55,7 @@ export const Register = () => {
   const { data, state } = fetcher;
 
   return (
-    <div className="h-full flex items-center justify-center">
+    <div className="h-screen flex items-center justify-center overflow-y-scroll">
       <fetcher.Form method="post">
         <div className="pt-24">
           <Card className="w-[384px] mb-4 p-8 ">
@@ -71,7 +71,7 @@ export const Register = () => {
             <h1
               className={cx(
                 `${Typography.size['2xl']} ${Typography.weight.medium}`,
-                'dark:text-white text-center leading-6 mb-6 mt-2',
+                'text-center leading-6 mb-6 mt-2',
               )}
             >
               Register for Deepfence
@@ -122,7 +122,7 @@ export const Register = () => {
               </Button>
             </div>
             <div
-              className={`py-4 flex flex-col text-center ${Typography.size.xs} dark:text-white leading-6`}
+              className={`py-4 flex flex-col text-center ${Typography.size.xs} leading-6`}
             >
               By Signing up you agree to our
               <Link to="/" className="text-blue-600 dark:text-blue-400">
@@ -130,7 +130,7 @@ export const Register = () => {
               </Link>
             </div>
             <div
-              className={`flex flex-row justify-center dark:text-white ${Typography.size.xs} leading-6`}
+              className={`flex flex-row justify-center ${Typography.size.xs} leading-6`}
             >
               Already have an account?
               <Link to="/auth/login" className="text-blue-600 dark:text-blue-400">

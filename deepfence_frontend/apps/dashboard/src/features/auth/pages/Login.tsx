@@ -12,9 +12,7 @@ export const loginAction = async ({
   params: Record<string, unknown>;
 }) => {
   storage.setAuth({ isLogin: true });
-  return redirect('/onboard', {
-    status: 302,
-  });
+  return redirect('/onboard/add-connectors', 302);
 };
 
 export const Login = () => {
@@ -22,7 +20,7 @@ export const Login = () => {
   const { data, state } = fetcher;
 
   return (
-    <div className="h-full flex items-center justify-center">
+    <div className={cx('h-screen flex items-center justify-center')}>
       <fetcher.Form method="post">
         <Card className="w-[384px] p-8">
           <div className="text-center">
@@ -37,7 +35,7 @@ export const Login = () => {
           <h1
             className={cx(
               `${Typography.size['2xl']} ${Typography.weight.medium}`,
-              'dark:text-white text-center leading-6 mb-6 mt-2',
+              'text-center leading-6 mb-6 mt-2',
             )}
           >
             Log In to Deepfence
@@ -77,14 +75,14 @@ export const Login = () => {
               Register
             </Link>
           </div>
-          <Button size="md" color="primary" className="w-full">
+          <Button size="md" color="primary" className="w-full mb-4">
             Log In
           </Button>
           <Link
             to="/register"
             className={cx(
               `${Typography.size.xs} `,
-              'mt-[26px] bg-transparent text-center text-blue-600 dark:text-blue-400',
+              'bg-transparent justify-center text-blue-600 dark:text-blue-400 flex',
             )}
           >
             Single Sign-On (SSO)

@@ -1,20 +1,18 @@
-import { useEffect } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Separator } from 'ui-components';
+import { Outlet, redirect } from 'react-router-dom';
 
-import { ROUTE_ADD_CONNECTORS, ROUTE_ONBOARD } from '../../../routes/private';
 import { OnboardAppHeader } from '../components/OnboardAppHeader';
 
+export const rootOnboardLoader = async ({ request }: any) => {
+  const index = request.url.lastIndexOf('/');
+  const subpath = request.url.substring(index);
+
+  if (subpath === '/onboard' || subpath === '/onboard/') {
+    return redirect('/onboard/add-connectors', 302);
+  }
+  return null;
+};
+
 export const OnboardLayout = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (location.pathname === ROUTE_ONBOARD) {
-      navigate(`${ROUTE_ONBOARD}/${ROUTE_ADD_CONNECTORS}`);
-    }
-  }, []);
-
   return (
     <div>
       <OnboardAppHeader />
