@@ -284,7 +284,7 @@ func Test_evaluate(t *testing.T) {
 				data:      []CVEFields{},
 			},
 			allowed: false,
-			reason:  "namespace in [test]",
+			reason:  "namespace in [test],image in [nginx]",
 		},
 		{
 			name: "match multiple policies 3",
@@ -310,7 +310,7 @@ func Test_evaluate(t *testing.T) {
 				data:      []CVEFields{},
 			},
 			allowed: false,
-			reason:  "image in [nginx]",
+			reason:  "image in [nginx],namespace in [test]",
 		},
 		{
 			name: "does not match",
