@@ -129,12 +129,14 @@ type CloudResource struct {
 	VpcID                          string           `json:"vpc_id,omitempty"`
 	AllowBlobPublicAccess          string           `json:"allow_blob_public_access,omitempty"`
 	PublicAccess                   string           `json:"public_access,omitempty"`
+	AttachedPolicyArns             *json.RawMessage `json:"attached_policy_arns,omitempty"`
 	GroupId                        string           `json:"group_id,omitempty"`
 	CidrIpv4                       string           `json:"cidr_ipv4,omitempty"`
 	TaskDefinition                 *json.RawMessage `json:"task_definition,omitempty"`
 	VpcOptions                     *json.RawMessage `json:"vpc_options,omitempty"`
 	Policy                         *json.RawMessage `json:"policy,omitempty"`
 	PolicyStd                      *json.RawMessage `json:"policy_std,omitempty"`
+	InstanceProfileArns            *json.RawMessage `json:"instance_profile_arns"`
 	PublicIps                      *json.RawMessage `json:"public_ips,omitempty"`
 	NetworkInterfaces              *json.RawMessage `json:"network_interfaces,omitempty"`
 	IamPolicy                      *json.RawMessage `json:"iam_policy,omitempty"`
@@ -142,10 +144,12 @@ type CloudResource struct {
 	IngressSettings                string           `json:"ingress_settings,omitempty"`
 	SecurityGroups                 *json.RawMessage `json:"security_groups,omitempty"`
 	VpcSecurityGroups              *json.RawMessage `json:"vpc_security_groups,omitempty"`
+	Containers                     *json.RawMessage `json:"containers,omitempty"`
 	ContainerDefinitions           *json.RawMessage `json:"container_definitions,omitempty"`
 	EventNotificationConfiguration *json.RawMessage `json:"event_notification_configuration,omitempty"`
 	ResourcesVpcConfig             *json.RawMessage `json:"resource_vpc_config,omitempty"`
 	NetworkConfiguration           *json.RawMessage `json:"network_configuration,omitempty"`
+	IamInstanceProfileArn          string           `json:"iam_instance_profile_arn"`
 }
 
 type SecretStruct struct {
@@ -234,10 +238,13 @@ func (c *CloudResource) ToMap() map[string]interface{} {
 	bb = convertStructFieldToJSONString(bb, "security_groups")
 	bb = convertStructFieldToJSONString(bb, "vpc_security_groups")
 	bb = convertStructFieldToJSONString(bb, "container_definitions")
+	bb = convertStructFieldToJSONString(bb, "containers")
 	bb = convertStructFieldToJSONString(bb, "event_notification_configuration")
 	bb = convertStructFieldToJSONString(bb, "resource_vpc_config")
 	bb = convertStructFieldToJSONString(bb, "network_configuration")
 	bb = convertStructFieldToJSONString(bb, "policy_std")
+	bb = convertStructFieldToJSONString(bb, "instance_profile_arns")
+	bb = convertStructFieldToJSONString(bb, "attached_policy_arns")
 
 	return bb
 }
