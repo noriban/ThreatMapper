@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/certifi/gocertifi"
+	// "github.com/certifi/gocertifi"
 	"github.com/hashicorp/go-cleanhttp"
 
 	"github.com/weaveworks/scope/common/xfer"
@@ -21,13 +21,13 @@ const (
 
 var certPool *x509.CertPool
 
-func init() {
-	var err error
-	certPool, err = gocertifi.CACerts()
-	if err != nil {
-		panic(err)
-	}
-}
+// func init() {
+// 	var err error
+// 	certPool, err = gocertifi.CACerts()
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// }
 
 // ProbeConfig contains all the info needed for a probe to do HTTP requests
 type ProbeConfig struct {

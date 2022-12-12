@@ -38,6 +38,7 @@ const (
 	// reasonable amount of time to respond to a ping.
 	//pingPeriod = ((pongWait - writeWait) * 2 / 3)
 	pingPeriod = 55 * time.Second
+
 )
 
 // Websocket exposes the bits of *websocket.Conn we actually use.
@@ -89,12 +90,6 @@ type WSDialer interface {
 // }
 
 func getHTTPTransport(hostname string) *http.Transport {
-	// var certPool *x509.CertPool
-
-	// certPool, err := gocertifi.CACerts()
-	// if err != nil {
-	// 	log.Infof("error inside the gocertifi %s", err)
-	// }
 	transport := cleanhttp.DefaultTransport()
 	transport.DialContext = (&net.Dialer{
 		Timeout:   5 * time.Second,
@@ -106,21 +101,15 @@ func getHTTPTransport(hostname string) *http.Transport {
 		ServerName: hostname,
 		InsecureSkipVerify: true,
 	}
-
 	return transport
 }
 
-func DialWS(d WSDialer, urlStr string, requestHeader http.Header) (Websocket, *http.Response, error) {
+func DialWS(_ WSDialer, urlStr string, requestHeader http.Header) (Websocket, *http.Response, error) {
 	ctx := context.Background()
-
-	// (omit)... signal handling
-	// endpointUrl := "wss://167.71.236.9:443/topology-api/control/ws"
 	var hostname string = os.Getenv("MGMT_CONSOLE_URL")
-	log.Info(d,urlStr,hostname)
+	log.Info(urlStr,hostname)
 	httpTransport := getHTTPTransport(hostname)
 	dialer := websocket.Dialer{TLSClientConfig:  httpTransport.TLSClientConfig,HandshakeTimeout: 12 * time.Second,}
-
-	
 	log.Infof("all request heres are %v", requestHeader)
 	wsConn, resp, err := dialer.DialContext(ctx, urlStr, requestHeader)
 	if err != nil {
