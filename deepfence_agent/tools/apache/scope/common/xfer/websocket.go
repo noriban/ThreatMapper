@@ -3,6 +3,7 @@ package xfer
 import (
 	"io"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -12,11 +13,12 @@ import (
 
 	"context"
 
-	"github.com/weaveworks/common/mtime"
 	"crypto/tls"
 	"crypto/x509"
 	"net"
+
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/weaveworks/common/mtime"
 	// "github.com/certifi/gocertifi"
 )
 
@@ -112,15 +114,15 @@ func DialWS(d WSDialer, urlStr string, requestHeader http.Header) (Websocket, *h
 	ctx := context.Background()
 
 	// (omit)... signal handling
-	endpointUrl := "wss://167.71.236.9:443/topology-api/control/ws"
-	log.Info(d)
-
-	httpTransport := getHTTPTransport("167.71.236.9")
+	// endpointUrl := "wss://167.71.236.9:443/topology-api/control/ws"
+	var hostname string = os.Getenv("MGMT_CONSOLE_URL")
+	log.Info(d,urlStr,hostname)
+	httpTransport := getHTTPTransport(hostname)
 	dialer := websocket.Dialer{TLSClientConfig:  httpTransport.TLSClientConfig,HandshakeTimeout: 12 * time.Second,}
 
 	
 	log.Infof("all request heres are %v", requestHeader)
-	wsConn, resp, err := dialer.DialContext(ctx, endpointUrl, requestHeader)
+	wsConn, resp, err := dialer.DialContext(ctx, urlStr, requestHeader)
 	if err != nil {
 		log.Infof("this has come again to the error %s and %v", err, resp)
 		return nil, resp, err
