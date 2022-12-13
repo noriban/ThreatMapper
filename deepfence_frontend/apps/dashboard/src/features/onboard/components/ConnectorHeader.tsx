@@ -47,7 +47,7 @@ export const ConnectorHeader = ({ title, description }: ConnectorHeaderProps) =>
 
   return (
     <div className="pt-8">
-      <h1 className={`${Typography.size['3xl']} text-black dark:text-white`}>{title}</h1>
+      <h1 className={`text-[32px] text-black dark:text-white`}>{title}</h1>
       <p
         className={`${Typography.size.base} ${Typography.weight.normal} mt-1.5 mb-4 dark:text-gray-400 text-gray-900`}
       >

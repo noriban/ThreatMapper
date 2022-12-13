@@ -3,6 +3,7 @@ import { HiLogout, HiMoon, HiOutlineBell } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
+  Button,
   Dropdown,
   DropdownItem,
   DropdownSeparator,
@@ -26,7 +27,7 @@ export const OnboardAppHeader = () => {
   return (
     <div className="bg-white dark:bg-gray-90 h-[64px] fixed top-0 w-full">
       <div className="h-full flex items-center mx-16">
-        <div className="mr-auto">
+        <div className="mr-auto flex">
           <img
             src={mode === 'dark' ? LogoDeepfenceWhite : LogoDeepfenceDarkBlue}
             alt="Deefence Logo"
@@ -34,6 +35,9 @@ export const OnboardAppHeader = () => {
             height="29"
             className="m-auto"
           />
+          <Button color="primary" outline size="xs" className="ml-5 rounded-[22px]">
+            Go to Dashboard
+          </Button>
         </div>
         <div className="flex items-center gap-4">
           <IconContext.Provider

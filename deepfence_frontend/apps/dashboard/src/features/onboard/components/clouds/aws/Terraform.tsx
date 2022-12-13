@@ -113,7 +113,7 @@ $ terraform apply`;
                   color="primary"
                   className="ml-auto"
                   onClick={() => {
-                    navigate('/onboard/choose-scan');
+                    navigate('/onboard/choose-scan/cloud/aws');
                   }}
                 >
                   Go to connectors

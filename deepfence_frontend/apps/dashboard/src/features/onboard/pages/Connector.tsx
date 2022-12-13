@@ -28,7 +28,7 @@ interface CardConnectProps {
 const CardConnect = ({ label, path, icon }: CardConnectProps) => {
   const navigate = useNavigate();
   const handleSelection = () => {
-    navigate(`cloud/${path}`);
+    navigate(`${path}`);
   };
 
   return (
@@ -55,17 +55,17 @@ const Cloud = () => {
     {
       icon: mode === 'dark' ? LogoAwsWhite : LogoAws,
       label: 'Amazon Web Services (AWS)',
-      path: 'aws',
+      path: 'cloud/aws',
     },
     {
       icon: LogoGoogle,
       label: 'Google Cloud Platform',
-      path: 'gcp',
+      path: 'cloud/gcp',
     },
     {
       icon: LogoAzure,
       label: 'Microsoft Azure',
-      path: 'azure',
+      path: 'cloud/azure',
     },
   ];
   return (
@@ -105,12 +105,12 @@ const Host = () => {
     {
       icon: LogoK8,
       label: 'Kubernetes Clusters',
-      path: 'host-k8',
+      path: 'host/k8s',
     },
     {
       icon: LogoDocker,
       label: 'Docker Container',
-      path: 'host-docker',
+      path: 'docker',
     },
     {
       icon: LogoLinux,
@@ -157,7 +157,7 @@ const Registries = () => {
     {
       icon: mode === 'dark' ? LogoAwsWhite : LogoAws,
       label: 'Amazon Elastic Container Registry',
-      path: 'registry-k8',
+      path: 'registry/amazon-ecr',
     },
     {
       icon: LogoAzureRegistry,

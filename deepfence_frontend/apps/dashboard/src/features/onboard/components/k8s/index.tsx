@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'ui-components';
 
-import { ConnectorHeader } from '../../ConnectorHeader';
+import { ConnectorHeader } from '../ConnectorHeader';
 import { K8Connection } from './K8Connection';
 
 export const K8sConnection = () => {

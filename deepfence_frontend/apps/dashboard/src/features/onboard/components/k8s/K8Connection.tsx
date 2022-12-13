@@ -13,8 +13,8 @@ import {
   Typography,
 } from 'ui-components';
 
-import { CopyToClipboardIcon } from '../../../../../components/CopyToClipboardIcon';
-import { isInvalidInput } from '../../../../../utils/validator';
+import { CopyToClipboardIcon } from '../../../../components/CopyToClipboardIcon';
+import { validateWhiteSpace } from '../../../../utils/validator';
 
 const containerRuntimeDropdown = [
   {
@@ -77,11 +77,11 @@ const InformationForm = memo(
     const [error, setError] = useState('');
 
     useEffect(() => {
-      if (isInvalidInput(clusterName)) {
+      if (validateWhiteSpace(clusterName)) {
         setError('Spaces are not allowed in cluster name.');
-      } else if (isInvalidInput(namespace)) {
+      } else if (validateWhiteSpace(namespace)) {
         setError('Spaces are not allowed in namespace.');
-      } else if (isInvalidInput(socketPath)) {
+      } else if (validateWhiteSpace(socketPath)) {
         setError('Spaces are not allowed in socket path.');
       } else {
         setError('');
@@ -105,10 +105,10 @@ const InformationForm = memo(
     };
 
     useMemo(() => {
-      const _clusterName = isInvalidInput(clusterName) ? defaultCluster : clusterName;
-      const _namespace = isInvalidInput(namespace) ? defaultNamespace : namespace;
+      const _clusterName = validateWhiteSpace(clusterName) ? defaultCluster : clusterName;
+      const _namespace = validateWhiteSpace(namespace) ? defaultNamespace : namespace;
 
-      const _socketPath = isInvalidInput(socketPath)
+      const _socketPath = validateWhiteSpace(socketPath)
         ? socketMap[containerRuntime].path
         : socketPath;
 

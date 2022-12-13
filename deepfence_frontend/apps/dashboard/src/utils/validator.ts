@@ -3,7 +3,7 @@ import { z } from 'zod';
 // not white space on input
 const regex = /^\S*$/;
 
-export const isInvalidInput = (value: string) => {
+export const validateWhiteSpace = (value: string) => {
   const schema = z.string().min(1).trim().regex(regex);
   try {
     schema.parse(value);
