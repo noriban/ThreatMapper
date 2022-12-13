@@ -26,8 +26,8 @@ export const ForgotPassword = () => {
             <img
               src={LogoDarkBlue}
               alt="Deefence Logo"
-              width={'55.46'}
-              height={'34.74'}
+              width="55.46'"
+              height="34.74"
               className="m-auto"
             />
           </div>

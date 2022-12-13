@@ -39,7 +39,7 @@ export const AccordionItem = (props: AccordionItemProps) => {
       value={value}
       className={twMerge(
         cx(
-          'w-full overflow-hidden text-gray-900 dark:text-white dark:bg-gray-800 border-b last:border-b-0', // border bottom on each header trigger except last
+          'w-full overflow-hidden text-gray-900 bg-gray-100 dark:text-white dark:bg-gray-800 border-b last:border-b-0', // border bottom on each header trigger except last
           'border-gray-200 dark:border-gray-700 dark:border-opacity-50',
           className,
         ),

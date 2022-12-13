@@ -55,10 +55,14 @@ export const ChooseScan = ({ connectorType, icon }: ChooseScanProps) => {
           <span className={`${Typography.size.lg} ${Typography.weight.medium}`}>
             {connectorType}
           </span>
-          <span>Account Id: 22222</span>
+          <span
+            className={`${Typography.size.base} ${Typography.weight.medium} text-gray-500`}
+          >
+            Account Id: 22222
+          </span>
         </div>
         <div>
-          <Button className="ml-auto" color="primary" size="xs">
+          <Button className="ml-auto" color="primary" size="xs" outline>
             Swith connector
           </Button>
         </div>
@@ -73,10 +77,12 @@ export const ChooseScan = ({ connectorType, icon }: ChooseScanProps) => {
                 {scan.scanType}
               </h2>
               <Separator />
-              <p className={`${Typography.size.lg} ${Typography.weight.normal} py-2`}>
+              <p className={`${Typography.size.base} ${Typography.weight.normal} py-2`}>
                 {scan.description}
               </p>
-              <div className="mb-4 text-gray-500 dark:text-gray-400">
+              <div
+                className={`mb-4 text-gray-500 dark:text-gray-400 ${Typography.size.sm} ${Typography.weight.normal}`}
+              >
                 Last scan:&nbsp;{scan.lastScaned}
               </div>
               <Button size="sm" color="primary">

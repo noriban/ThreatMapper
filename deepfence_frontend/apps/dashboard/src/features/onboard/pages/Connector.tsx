@@ -70,7 +70,7 @@ const Cloud = () => {
   ];
   return (
     <Card className="w-full sm:w-1/3">
-      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center border-b border-gray-200 dark:border-[#3D3D3D]">
+      <div className="py-4 bg-gray-50 dark:bg-gray-14 items-center flex justify-center border-b border-gray-200 dark:border-gray-14">
         <img
           src={LogoCloudConnector}
           alt="Cloud Connector"
@@ -121,7 +121,7 @@ const Host = () => {
 
   return (
     <Card className="w-full sm:w-1/3">
-      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center border-b border-gray-200 dark:border-[#3D3D3D]">
+      <div className="py-4 bg-gray-50 dark:bg-gray-14 items-center flex justify-center border-b border-gray-200 dark:border-gray-14">
         <img
           src={LogoHostConnector}
           alt="Cloud Connector"
@@ -187,7 +187,7 @@ const Registries = () => {
   ];
   return (
     <Card className="w-full sm:w-1/3">
-      <div className="py-4 bg-gray-50 dark:bg-[#3D3D3D] items-center flex justify-center border-b border-gray-200 dark:border-[#3D3D3D]">
+      <div className="py-4 bg-gray-50 dark:bg-gray-14 items-center flex justify-center border-b border-gray-200 dark:border-gray-14">
         <img
           src={LogoRegistryConnector}
           alt="Cloud Connector"

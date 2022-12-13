@@ -24,7 +24,7 @@ export const OnboardAppHeader = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-90 h-[80px] fixed top-0 w-full">
+    <div className="bg-white dark:bg-gray-90 h-[64px] fixed top-0 w-full">
       <div className="h-full flex items-center mx-16">
         <div className="mr-auto">
           <img
@@ -67,7 +67,7 @@ export const OnboardAppHeader = () => {
           </Dropdown>
         </div>
       </div>
-      <Separator className="h-px bg-gray-200 dark:bg-gray-700" />
+      <Separator />
     </div>
   );
 };

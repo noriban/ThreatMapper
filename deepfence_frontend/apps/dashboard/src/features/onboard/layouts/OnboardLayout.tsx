@@ -15,10 +15,10 @@ export const rootOnboardLoader = async ({ request }: any) => {
 export const OnboardLayout = () => {
   return (
     <div>
-      <OnboardAppHeader />
-      <div className="mx-16 pt-[80px] pb-8 min-h-screen">
+      <div className="mx-16 pt-[64px] pb-8 min-h-screen">
         <Outlet />
       </div>
+      <OnboardAppHeader />
     </div>
   );
 };

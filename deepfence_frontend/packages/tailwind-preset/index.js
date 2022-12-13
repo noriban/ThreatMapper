@@ -53,8 +53,9 @@ module.exports = {
         white: '#ffffff',
         black: '#000000',
         gray: {
+          14: '#3D3D3D', // from new design
           50: '#F9FAFB',
-          90: '#262626',
+          90: '#262626', // from new design
           100: '#F3F4F6',
           200: '#E5E7EB',
           300: '#D1D5DB',

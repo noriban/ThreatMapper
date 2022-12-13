@@ -22,7 +22,7 @@ export const CardHeader = ({ title, icon }: CardLayoutProps) => {
         )}
         <span>{title}</span>
       </div>
-      <Separator className="bg-gray-100 h-px" />
+      <Separator />
     </>
   );
 };
