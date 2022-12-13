@@ -28,7 +28,7 @@ const scanTypeList: ScanTypeListProps[] = [
     description: `A few words about the compliance scan and why you need to use it.`,
     lastScaned: '3:00pm on 11/22/2022',
     buttonText: 'Configure Compliance Scan',
-    redirect: '/onboard/choose-scan/cloud/aws/configure',
+    redirect: '/onboard/choose-scan/k8s/configure',
   },
   {
     scanType: 'Secrets Scan',
@@ -116,7 +116,7 @@ const ScanList = () => {
     </div>
   );
 };
-export const AWSChooseScan = ({ connectorType, icon }: ChooseScanProps) => {
+export const K8ChooseScan = ({ connectorType, icon }: ChooseScanProps) => {
   const navigate = useNavigate();
   const goback = () => {
     navigate(-1);

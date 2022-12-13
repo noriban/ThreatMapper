@@ -9,6 +9,9 @@ export const K8sConnection = () => {
   const goback = () => {
     navigate(-1);
   };
+  const goNext = () => {
+    navigate('/onboard/choose-scan/k8s');
+  };
   return (
     <div>
       <ConnectorHeader
@@ -18,9 +21,14 @@ export const K8sConnection = () => {
       <div className="flex gap-x-2 flex-col sm:flex-row flex-1">
         <K8Connection />
       </div>
-      <Button onClick={goback} outline size="xs" className="mt-16">
-        Cancel
-      </Button>
+      <div className="flex flex-row mt-16">
+        <Button onClick={goback} outline size="xs">
+          Cancel
+        </Button>
+        <Button onClick={goNext} color="primary" size="xs" className="ml-auto">
+          Continue
+        </Button>
+      </div>
     </div>
   );
 };

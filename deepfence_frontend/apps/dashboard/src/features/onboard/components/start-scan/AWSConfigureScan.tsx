@@ -1,5 +1,6 @@
 import { IconContext } from 'react-icons';
 import { HiPlusCircle } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 import { Button, Typography } from 'ui-components';
 
 const scanType = [
@@ -24,6 +25,10 @@ const scanType = [
 ];
 
 export const AWSConfigureScan = () => {
+  const navigate = useNavigate();
+  const goback = () => {
+    navigate(-1);
+  };
   return (
     <>
       <div className="mt-8 flex gap-4">
@@ -40,9 +45,14 @@ export const AWSConfigureScan = () => {
           </Button>
         ))}
       </div>
-      <p className={`${Typography.size.lg} ${Typography.weight.medium} mt-4`}>
+      <p
+        className={`${Typography.size.lg} ${Typography.weight.medium} mt-4 dark:text-white`}
+      >
         Please select at least one compliance type.
       </p>
+      <Button onClick={goback} outline size="xs" className="mt-16">
+        Cancel
+      </Button>
     </>
   );
 };

@@ -215,7 +215,7 @@ ${socketMap.containerd.command}="${defaultSocketPath}" \\
   const [clipboardCopied, copyToClipboard] = useCopyToClipboard();
 
   return (
-    <div className="w-full sm:w-1/2">
+    <div className="w-full">
       <Accordion type="multiple">
         <AccordionItem value={'Connect via Kubernetes Scanner'}>
           <AccordionTrigger>Connect via Kubernetes Scanner</AccordionTrigger>

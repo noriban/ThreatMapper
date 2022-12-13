@@ -2,6 +2,7 @@ import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 // Update this import
 import LogoAws from '../assets/logo-aws.svg';
+import LogoK8 from '../assets/logo-k8.svg';
 import { AWSConnection } from '../features/onboard/components/clouds/aws';
 import { AzureConnection } from '../features/onboard/components/clouds/azure/AzureConnection';
 import { DockerConnection } from '../features/onboard/components/clouds/docker/DockerConnection';
@@ -10,6 +11,8 @@ import { K8sConnection } from '../features/onboard/components/k8s';
 import { AmazonECRConnection } from '../features/onboard/components/registries';
 import { AWSChooseScan } from '../features/onboard/components/start-scan/AWSChooseScan';
 import { AWSConfigureScan } from '../features/onboard/components/start-scan/AWSConfigureScan';
+import { K8ChooseScan } from '../features/onboard/components/start-scan/K8ChooseScan';
+import { K8sConfigureScan } from '../features/onboard/components/start-scan/K8sConfigureScan';
 import {
   OnboardLayout,
   rootOnboardLoader,
@@ -81,8 +84,21 @@ export const privateRoutes: RouteObject[] = [
             ),
           },
           {
+            path: 'k8s',
+            element: (
+              <K8ChooseScan
+                connectorType="Kubernetes"
+                icon={<img src={LogoK8} alt="logo" />}
+              />
+            ),
+          },
+          {
             path: 'cloud/aws/configure',
             element: <AWSConfigureScan />,
+          },
+          {
+            path: 'k8s/configure',
+            element: <K8sConfigureScan />,
           },
         ],
       },
