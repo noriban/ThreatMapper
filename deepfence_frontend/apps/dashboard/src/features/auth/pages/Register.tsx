@@ -55,7 +55,7 @@ export const Register = () => {
   const { data, state } = fetcher;
 
   return (
-    <div className="h-screen flex items-center justify-center overflow-y-scroll">
+    <div className="h-screen flex items-center justify-center overflow-y-auto">
       <fetcher.Form method="post">
         <div className="pt-24">
           <Card className="w-[384px] mb-4 p-8 ">

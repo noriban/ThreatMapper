@@ -3,22 +3,22 @@ import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 // Update this import
 import LogoAws from '../assets/logo-aws.svg';
 import LogoK8 from '../assets/logo-k8.svg';
-import { AWSConnection } from '../features/onboard/components/clouds/aws';
-import { AzureConnection } from '../features/onboard/components/clouds/azure/AzureConnection';
-import { DockerConnection } from '../features/onboard/components/clouds/docker/DockerConnection';
-import { GCPConnection } from '../features/onboard/components/clouds/gcp/GCPConnection';
-import { K8sConnection } from '../features/onboard/components/k8s';
-import { AmazonECRConnection } from '../features/onboard/components/registries';
-import { AWSChooseScan } from '../features/onboard/components/start-scan/AWSChooseScan';
-import { AWSConfigureScan } from '../features/onboard/components/start-scan/AWSConfigureScan';
-import { K8ChooseScan } from '../features/onboard/components/start-scan/K8ChooseScan';
-import { K8sConfigureScan } from '../features/onboard/components/start-scan/K8sConfigureScan';
+import { InfraScanLayout } from '../features/onboard/layouts/InfraScanLayout';
 import {
   OnboardLayout,
   rootOnboardLoader,
 } from '../features/onboard/layouts/OnboardLayout';
-import { ChooseScanLayout } from '../features/onboard/pages/ChooseScan';
+import { AmazonECRConnector } from '../features/onboard/pages/AmazonECRConnector';
+import { AWSChooseScan } from '../features/onboard/pages/AWSChooseScan';
+import { AWSConnector } from '../features/onboard/pages/AWSConnector';
+import { AWSInfraScanConfigure } from '../features/onboard/pages/AWSInfraScanConfigure';
+import { AzureConnector } from '../features/onboard/pages/AzureConnector';
 import { Connector } from '../features/onboard/pages/Connector';
+import { DockerConnector } from '../features/onboard/pages/DockerConnector';
+import { GCPConnector } from '../features/onboard/pages/GCPConnector';
+import { K8ChooseScan } from '../features/onboard/pages/K8ChooseScan';
+import { K8sConnector } from '../features/onboard/pages/K8sConnector';
+import { K8sInfraScanConfigure } from '../features/onboard/pages/K8sInfraScanConfigure';
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -46,33 +46,33 @@ export const privateRoutes: RouteObject[] = [
           },
           {
             path: 'cloud/aws',
-            element: <AWSConnection />,
+            element: <AWSConnector />,
           },
           {
             path: 'cloud/gcp',
-            element: <GCPConnection />,
+            element: <GCPConnector />,
           },
           {
             path: 'cloud/azure',
-            element: <AzureConnection />,
+            element: <AzureConnector />,
           },
           {
             path: 'host/k8s',
-            element: <K8sConnection />,
+            element: <K8sConnector />,
           },
           {
             path: 'docker',
-            element: <DockerConnection />,
+            element: <DockerConnector />,
           },
           {
             path: 'registry/amazon-ecr',
-            element: <AmazonECRConnection />,
+            element: <AmazonECRConnector />,
           },
         ],
       },
       {
-        path: 'choose-scan',
-        element: <ChooseScanLayout />,
+        path: 'scan-infrastructure',
+        element: <InfraScanLayout />,
         children: [
           {
             path: 'cloud/aws',
@@ -94,17 +94,13 @@ export const privateRoutes: RouteObject[] = [
           },
           {
             path: 'cloud/aws/configure',
-            element: <AWSConfigureScan />,
+            element: <AWSInfraScanConfigure />,
           },
           {
             path: 'k8s/configure',
-            element: <K8sConfigureScan />,
+            element: <K8sInfraScanConfigure />,
           },
         ],
-      },
-      {
-        path: 'scan-infrastructure',
-        element: 'Scan Infrastructure',
       },
       {
         path: 'view-scan-results',

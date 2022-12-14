@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 
 import { ConnectorHeader } from '../components/ConnectorHeader';
 
-export const ChooseScanLayout = () => {
+export const InfraScanLayout = () => {
   return (
     <div>
       <ConnectorHeader

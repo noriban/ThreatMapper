@@ -69,7 +69,7 @@ export const ConnectorHeader = ({ title, description }: ConnectorHeaderProps) =>
             <Link
               to={canRoute(location.pathname).scanResult}
               className={cx({
-                ['text-blue-400']: isScanRoutePath(),
+                ['text-blue-600']: isScanRoutePath(),
               })}
             >
               Scan Infrastructure
@@ -79,7 +79,7 @@ export const ConnectorHeader = ({ title, description }: ConnectorHeaderProps) =>
             <Link
               to={canRoute(location.pathname).viewResult}
               className={cx({
-                ['text-blue-400']: isViewResultsRoutePath(),
+                ['text-blue-600']: isViewResultsRoutePath(),
               })}
             >
               View Scan Results

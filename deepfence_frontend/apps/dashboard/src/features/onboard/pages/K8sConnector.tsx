@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'ui-components';
 
-import { ConnectorHeader } from '../ConnectorHeader';
-import { K8Connection } from './K8Connection';
+import { ConnectorHeader } from '../components/ConnectorHeader';
+import { K8ConnectorForm } from '../components/connectors/k8s/K8ConnectorForm';
 
-export const K8sConnection = () => {
+export const K8sConnector = () => {
   const navigate = useNavigate();
   const goback = () => {
     navigate(-1);
   };
   const goNext = () => {
-    navigate('/onboard/choose-scan/k8s');
+    navigate('/onboard/scan-infrastructure/k8s');
   };
   return (
     <div>
@@ -19,7 +19,7 @@ export const K8sConnection = () => {
         description="Deploy all modules for Deepfence Compliance Scanner for a single account. For information on AWS Organization and account types, see AWS docs."
       />
       <div className="flex gap-x-2 flex-col sm:flex-row flex-1">
-        <K8Connection />
+        <K8ConnectorForm />
       </div>
       <div className="flex flex-row mt-16">
         <Button onClick={goback} outline size="xs">

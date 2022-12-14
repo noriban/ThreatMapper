@@ -1,28 +1,5 @@
-import { IconContext } from 'react-icons';
-import { HiPlusCircle } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { Button, Checkbox, Switch, Typography } from 'ui-components';
-
-const scanType = [
-  {
-    name: 'CIS',
-  },
-  {
-    name: 'GDPR',
-  },
-  {
-    name: 'HIPPA',
-  },
-  {
-    name: 'PIC',
-  },
-  {
-    name: 'SOC2',
-  },
-  {
-    name: 'NIST',
-  },
-];
 
 const packages = [
   {
@@ -54,7 +31,7 @@ const packages = [
   },
 ];
 
-export const K8sConfigureScan = () => {
+export const K8sInfraScanConfigure = () => {
   const navigate = useNavigate();
   const goback = () => {
     navigate(-1);

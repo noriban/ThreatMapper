@@ -12,7 +12,7 @@ import {
   Typography,
 } from 'ui-components';
 
-import { CopyToClipboardIcon } from '../../../../../components/CopyToClipboardIcon';
+import { CopyToClipboardIcon } from '../../../../../../components/CopyToClipboardIcon';
 
 export const Terraform = memo(() => {
   const [clipboardCopied, copyToClipboard] = useCopyToClipboard();
@@ -66,7 +66,7 @@ $ terraform apply`;
               <Card className="w-full relative">
                 <pre
                   className={cx(
-                    'p-4 overflow-scroll',
+                    'p-4 overflow-auto',
                     `${Typography.weight.normal} ${Typography.size.sm} `,
                   )}
                 >
@@ -113,7 +113,7 @@ $ terraform apply`;
                   color="primary"
                   className="ml-auto"
                   onClick={() => {
-                    navigate('/onboard/choose-scan/cloud/aws');
+                    navigate('/onboard/scan-infrastructure/cloud/aws');
                   }}
                 >
                   Go to connectors

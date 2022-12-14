@@ -24,7 +24,7 @@ const scanType = [
   },
 ];
 
-export const AWSConfigureScan = () => {
+export const AWSInfraScanConfigure = () => {
   const navigate = useNavigate();
   const goback = () => {
     navigate(-1);

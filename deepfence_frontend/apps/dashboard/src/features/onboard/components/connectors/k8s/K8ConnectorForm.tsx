@@ -13,8 +13,8 @@ import {
   Typography,
 } from 'ui-components';
 
-import { CopyToClipboardIcon } from '../../../../components/CopyToClipboardIcon';
-import { validateWhiteSpace } from '../../../../utils/validator';
+import { CopyToClipboardIcon } from '../../../../../components/CopyToClipboardIcon';
+import { validateWhiteSpace } from '../../../../../utils/validator';
 
 const containerRuntimeDropdown = [
   {
@@ -196,7 +196,7 @@ ${sockCommand}="${_socketPath}" \\
   },
 );
 
-export const K8Connection = () => {
+export const K8ConnectorForm = () => {
   const [instruction, setInstruction] =
     useState(`helm repo add deepfence https://deepfence-helm-charts.s3.amazonaws.com/threatmapper
 helm repo update
@@ -253,7 +253,7 @@ ${socketMap.containerd.command}="${defaultSocketPath}" \\
                 <div className="p-4 pr-10">
                   <pre
                     className={cx(
-                      'overflow-scroll',
+                      'overflow-auto',
                       `${Typography.weight.normal} ${Typography.size.sm} `,
                     )}
                   >
