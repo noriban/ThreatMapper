@@ -1,5 +1,4 @@
 import { HiPlusCircle } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 import { Button, Card, Separator, Typography } from 'ui-components';
 
 import { usePageNavigation } from '../../../utils/navigation';
@@ -72,10 +71,8 @@ const SelectedAccountCard = ({ icon, connectorType }: ChooseScanProps) => {
 };
 
 const ScanList = () => {
-  const navigate = useNavigate();
-  const goNext = (path: string) => {
-    navigate(path);
-  };
+  const { navigate } = usePageNavigation();
+
   return (
     <div className="flex gap-5">
       {scanTypeList.map(
@@ -106,7 +103,7 @@ const ScanList = () => {
                 size="sm"
                 color="primary"
                 onClick={() => {
-                  goNext(redirect);
+                  navigate(redirect);
                 }}
               >
                 {buttonText}&nbsp;{<HiPlusCircle />}
