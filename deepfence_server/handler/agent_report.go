@@ -53,7 +53,7 @@ func (h *Handler) IngestAgentReport(w http.ResponseWriter, r *http.Request) {
 	//	reader = io.TeeReader(r.Body, gzip.NewWriter(buf))
 	//}
 
-	ctx := directory.NewAccountContext()
+	ctx := r.Context()
 
 	//contentType := r.Header.Get("Content-Type")
 	//var isMsgpack int
@@ -108,7 +108,9 @@ func (h *Handler) IngestAgentReport(w http.ResponseWriter, r *http.Request) {
 		nodeId = v.ID
 	}
 	nodeId = strings.Split(nodeId, ";")[0]
-	log.Warn().Msgf("NodeId: %v", nodeId)
+	if len(rpt.Host.Nodes) != 1 {
+		log.Warn().Msgf("Multiple NodeId foudn, taking: %v", nodeId)
+	}
 
 	actions, err := controls.GetAgentActions(ctx, nodeId)
 	if err != nil {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -20,15 +19,15 @@ var (
 		Name: "consumer_group_lag",
 		Help: "Consumer group lag per topic",
 	}, []string{"topic"})
-	cveMasked = promauto.NewCounter(prometheus.CounterOpts{
+	vulnerabilitiesMasked = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "cve_masked_total",
 		Help: "Total number of cve records masked",
 	})
-	cveProcessed = promauto.NewCounter(prometheus.CounterOpts{
+	vulnerabilitiesProcessed = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "cve_scan_total",
 		Help: "Total number of cve records processed",
 	})
-	cveLogsProcessed = promauto.NewCounter(prometheus.CounterOpts{
+	vulnerabilityLogsProcessed = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "cve_scan_logs_total",
 		Help: "Total number of cve log records processed",
 	})
@@ -78,9 +77,9 @@ var (
 	})
 )
 
-func getLagByTopic(ctx context.Context, kafkaBrokers string, groupID string) {
+func getLagByTopic(ctx context.Context, kafkaBrokers []string, groupID string) {
 	opts := []kgo.Opt{
-		kgo.SeedBrokers(strings.Split(kafkaBrokers, ",")...),
+		kgo.SeedBrokers(kafkaBrokers...),
 		kgo.WithLogger(kgoLogger),
 	}
 	client, err := kgo.NewClient(opts...)

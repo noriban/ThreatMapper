@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"strings"
 
 	"github.com/deepfence/ThreatMapper/deepfence_utils/utils"
 	"github.com/twmb/franz-go/pkg/kgo"
@@ -10,7 +9,7 @@ import (
 
 func startKafkaConsumers(
 	ctx context.Context,
-	brokers string,
+	brokers []string,
 	topics []string,
 	group string,
 ) {
@@ -20,7 +19,7 @@ func startKafkaConsumers(
 	log.Info("group ID: ", group)
 
 	opts := []kgo.Opt{
-		kgo.SeedBrokers(strings.Split(brokers, ",")...),
+		kgo.SeedBrokers(brokers...),
 		kgo.ConsumerGroup(group),
 		kgo.ConsumeTopics(topics...),
 		kgo.ClientID(group),
@@ -68,9 +67,9 @@ func processRecord(r *kgo.Record) {
 	tenant := tenantID(r.Headers)
 
 	switch r.Topic {
-	case utils.CVE_SCAN:
-		cveProcessed.Inc()
-		cveProcessor.processCVE(tenant, r.Value)
+	case utils.VULNERABILITY_SCAN:
+		vulnerabilitiesProcessed.Inc()
+		vulnerabilityProcessor.processVulnerability(tenant, r.Value)
 
 	case utils.SECRET_SCAN:
 		secretProcessed.Inc()

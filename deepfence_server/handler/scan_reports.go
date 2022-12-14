@@ -8,41 +8,84 @@ import (
 
 	"github.com/deepfence/ThreatMapper/deepfence_server/controls"
 	"github.com/deepfence/ThreatMapper/deepfence_server/ingesters"
+	"github.com/deepfence/ThreatMapper/deepfence_server/model"
 	ctl "github.com/deepfence/ThreatMapper/deepfence_utils/controls"
-	"github.com/deepfence/ThreatMapper/deepfence_utils/directory"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/log"
+	httpext "github.com/go-playground/pkg/v5/net/http"
 	"github.com/twmb/franz-go/pkg/kgo"
 )
 
-func (h *Handler) StartCVEScanHandler(w http.ResponseWriter, r *http.Request) {
-	start_scan(w, r, ctl.StartCVEScan)
+func (h *Handler) StartVulnerabilityScanHandler(w http.ResponseWriter, r *http.Request) {
+	req, err := extractScanTrigger(w, r)
+	if err != nil {
+		return
+	}
+	startScan(w, r, req.NodeId, ctl.StartVulnerabilityScan, "")
 }
 
 func (h *Handler) StartSecretScanHandler(w http.ResponseWriter, r *http.Request) {
-	start_scan(w, r, ctl.StartSecretScan)
+
+	req, err := extractScanTrigger(w, r)
+	if err != nil {
+		return
+	}
+
+	internal_req := ctl.StartSecretScanRequest{
+		ResourceId:   req.ResourceId,
+		ResourceType: req.ResourceType,
+		BinArgs:      req.BinArgs,
+		Hostname:     req.Hostname,
+	}
+
+	b, err := json.Marshal(internal_req)
+
+	if err != nil {
+		httpext.JSON(w, http.StatusInternalServerError, model.Response{Success: false})
+		return
+	}
+
+	startScan(w, r, req.NodeId, ctl.StartSecretScan, string(b))
 }
 
 func (h *Handler) StartComplianceScanHandler(w http.ResponseWriter, r *http.Request) {
-	start_scan(w, r, ctl.StartComplianceScan)
+	req, err := extractScanTrigger(w, r)
+	if err != nil {
+		return
+	}
+	startScan(w, r, req.NodeId, ctl.StartComplianceScan, "")
 }
 
-func start_scan(w http.ResponseWriter, r *http.Request, action ctl.ActionID) {
-	err := r.ParseForm()
+func (h *Handler) StartMalwareScanHandler(w http.ResponseWriter, r *http.Request) {
+	req, err := extractScanTrigger(w, r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	node_id := r.Form.Get("node_id")
-	if node_id == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	startScan(w, r, req.NodeId, ctl.StartMalwareScan, "")
+}
 
-	ctx := directory.NewAccountContext()
-	err = controls.SetAgentActions(ctx, node_id, []ctl.Action{
+func (h *Handler) StopVulnerabilityScanHandler(w http.ResponseWriter, r *http.Request) {
+	stopScan(w, r, ctl.StartVulnerabilityScan)
+}
+
+func (h *Handler) StopSecretScanHandler(w http.ResponseWriter, r *http.Request) {
+	stopScan(w, r, ctl.StartSecretScan)
+}
+
+func (h *Handler) StopComplianceScanHandler(w http.ResponseWriter, r *http.Request) {
+	stopScan(w, r, ctl.StartComplianceScan)
+}
+
+func (h *Handler) StopMalwareScanHandler(w http.ResponseWriter, r *http.Request) {
+	stopScan(w, r, ctl.StartMalwareScan)
+}
+
+func startScan(w http.ResponseWriter, r *http.Request, nodeId string, action ctl.ActionID, payload string) {
+
+	ctx := r.Context()
+	err := controls.SetAgentActions(ctx, nodeId, []ctl.Action{
 		{
 			ID:             action,
-			RequestPayload: "",
+			RequestPayload: payload,
 		},
 	})
 
@@ -73,7 +116,8 @@ func ingest_scan_report[T any](respWrite http.ResponseWriter, req *http.Request,
 		http.Error(respWrite, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
-	ctx := directory.NewAccountContext()
+
+	ctx := req.Context()
 
 	var data T
 	err = json.Unmarshal(body, &data)
@@ -91,8 +135,8 @@ func ingest_scan_report[T any](respWrite http.ResponseWriter, req *http.Request,
 	fmt.Fprintf(respWrite, "Ok")
 }
 
-func (h *Handler) IngestCVEReportHandler(w http.ResponseWriter, r *http.Request) {
-	ingester := ingesters.NewCVEIngester()
+func (h *Handler) IngestVulnerabilityReportHandler(w http.ResponseWriter, r *http.Request) {
+	ingester := ingesters.NewVulnerabilityIngester()
 	ingest_scan_report_kafka(w, r, ingester, h.IngestChan)
 }
 
@@ -124,7 +168,8 @@ func ingest_scan_report_kafka[T any](respWrite http.ResponseWriter, req *http.Re
 		http.Error(respWrite, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
-	ctx := directory.NewAccountContext()
+
+	ctx := req.Context()
 
 	var data T
 	err = json.Unmarshal(body, &data)
@@ -140,4 +185,20 @@ func ingest_scan_report_kafka[T any](respWrite http.ResponseWriter, req *http.Re
 
 	respWrite.WriteHeader(http.StatusOK)
 	fmt.Fprintf(respWrite, "Ok")
+}
+
+func stopScan(w http.ResponseWriter, r *http.Request, action ctl.ActionID) {
+	//	Stopping scan is on best-effort basis, not guaranteed
+}
+
+func extractScanTrigger(w http.ResponseWriter, r *http.Request) (model.ScanTrigger, error) {
+	defer r.Body.Close()
+	var req model.ScanTrigger
+	err := httpext.DecodeJSON(r, httpext.NoQueryParams, MaxPostRequestSize, &req)
+
+	if err != nil {
+		log.Error().Msgf("%v", err)
+		httpext.JSON(w, http.StatusBadRequest, model.Response{Success: false})
+	}
+	return req, err
 }

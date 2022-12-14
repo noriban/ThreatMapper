@@ -5,19 +5,22 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"regexp"
+	"strconv"
+	"time"
+
+	"github.com/deepfence/ThreatMapper/deepfence_utils/directory"
+	"github.com/deepfence/ThreatMapper/deepfence_utils/log"
 	postgresqlDb "github.com/deepfence/ThreatMapper/deepfence_utils/postgresql/postgresql-db"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/utils"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"regexp"
-	"strconv"
-	"time"
 )
 
 const (
 	AdminRole         = "admin"
-	UserRole          = "user"
+	StandardUserRole  = "standard-user"
 	ReadOnlyRole      = "read-only-user"
 	bcryptCost        = 11
 	GrantTypePassword = "password"
@@ -25,7 +28,9 @@ const (
 )
 
 var (
-	ErrorMessage = map[string]string{
+	AccessTokenExpiry  = time.Minute * 30
+	RefreshTokenExpiry = time.Hour * 24
+	ErrorMessage       = map[string]string{
 		"first_name": "should only contain alphabets, numbers, space and hyphen",
 		"last_name":  "should only contain alphabets, numbers, space and hyphen",
 		"company":    "should only contain alphabets, numbers and valid characters",
@@ -38,13 +43,14 @@ var (
 )
 
 type ApiToken struct {
-	ApiToken        uuid.UUID `json:"api_token"`
-	ID              int64     `json:"id"`
-	Name            string    `json:"name"`
-	CompanyID       int32     `json:"company_id"`
-	RoleID          int32     `json:"role_id"`
-	GroupID         int32     `json:"group_id"`
-	CreatedByUserID int64     `json:"created_by_user_id"`
+	ApiToken         uuid.UUID `json:"api_token"`
+	ID               int64     `json:"id"`
+	Name             string    `json:"name"`
+	CompanyID        int32     `json:"company_id"`
+	RoleID           int32     `json:"role_id"`
+	GroupID          int32     `json:"group_id"`
+	CreatedByUserID  int64     `json:"created_by_user_id"`
+	CompanyNamespace string    `json:"company_namespace"`
 }
 
 func (a *ApiToken) GetUser(ctx context.Context, pgClient *postgresqlDb.Queries) (*User, error) {
@@ -63,6 +69,7 @@ func (a *ApiToken) GetUser(ctx context.Context, pgClient *postgresqlDb.Queries) 
 		Role:                token.RoleName,
 		RoleID:              token.RoleID,
 		PasswordInvalidated: token.UserPasswordInvalidated,
+		CompanyNamespace:    token.CompanyNamespace,
 	}
 	return &u, nil
 }
@@ -86,10 +93,11 @@ type Company struct {
 	ID          int32  `json:"id"`
 	Name        string `json:"name"`
 	EmailDomain string `json:"email_domain"`
+	Namespace   string `json:"namespace"`
 }
 
 func (c *Company) Create(ctx context.Context, pgClient *postgresqlDb.Queries) (*postgresqlDb.Company, error) {
-	company, err := pgClient.CreateCompany(ctx, postgresqlDb.CreateCompanyParams{Name: c.Name, EmailDomain: c.EmailDomain})
+	company, err := pgClient.CreateCompany(ctx, postgresqlDb.CreateCompanyParams{Name: c.Name, EmailDomain: c.EmailDomain, Namespace: c.Namespace})
 	if err != nil {
 		return nil, err
 	}
@@ -167,6 +175,7 @@ type User struct {
 	Role                string            `json:"role"`
 	RoleID              int32             `json:"role_id"`
 	PasswordInvalidated bool              `json:"password_invalidated"`
+	CompanyNamespace    string            `json:"-"`
 }
 
 func (u *User) SetPassword(inputPassword string) error {
@@ -230,6 +239,7 @@ func (u *User) LoadFromDbByEmail(ctx context.Context, pgClient *postgresqlDb.Que
 	u.Role = user.RoleName
 	u.RoleID = user.RoleID
 	u.PasswordInvalidated = user.PasswordInvalidated
+	u.CompanyNamespace = user.CompanyNamespace
 	_ = json.Unmarshal(user.GroupIds, &u.Groups)
 	return nil
 }
@@ -257,7 +267,7 @@ func (u *User) Create(ctx context.Context, pgClient *postgresqlDb.Queries) (*pos
 }
 
 func (u *User) GetAccessToken(tokenAuth *jwtauth.JWTAuth, grantType string) (*ResponseAccessToken, error) {
-	accessTokenID, accessToken, err := u.CreatePasswordGrantAccessToken(tokenAuth, grantType)
+	accessTokenID, accessToken, err := u.CreateAccessToken(tokenAuth, grantType)
 	if err != nil {
 		return nil, err
 	}
@@ -268,45 +278,44 @@ func (u *User) GetAccessToken(tokenAuth *jwtauth.JWTAuth, grantType string) (*Re
 	return &ResponseAccessToken{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }
 
-func (u *User) CreatePasswordGrantAccessToken(tokenAuth *jwtauth.JWTAuth, grantType string) (string, string, error) {
+func (u *User) CreateAccessToken(tokenAuth *jwtauth.JWTAuth, grantType string) (string, string, error) {
 	accessTokenID := utils.NewUUIDString()
-	var expiry time.Duration
-	if grantType == GrantTypeAPIToken {
-		expiry = time.Hour * 24 * 365 // 1 year
-	} else {
-		expiry = time.Hour * 24 // 1 day
+	claims := map[string]interface{}{
+		"id":                   accessTokenID,
+		"user_id":              u.ID,
+		"first_name":           u.FirstName,
+		"last_name":            u.LastName,
+		"role":                 u.Role,
+		"company_id":           u.CompanyID,
+		"company":              u.Company,
+		"email":                u.Email,
+		"is_active":            u.IsActive,
+		"grant_type":           grantType,
+		directory.NamespaceKey: u.CompanyNamespace,
 	}
-	_, s, err := tokenAuth.Encode(map[string]interface{}{
-		"date":       time.Now().UTC(),
-		"expires_in": expiry,
-		"id":         accessTokenID,
-		"user_id":    u.ID,
-		"first_name": u.FirstName,
-		"last_name":  u.LastName,
-		"role":       u.Role,
-		"company_id": u.CompanyID,
-		"company":    u.Company,
-		"email":      u.Email,
-		"is_active":  u.IsActive,
-		"grant_type": grantType,
-	})
+	log.Debug().Msgf("CLAIMS = %v", claims)
+	jwtauth.SetIssuedNow(claims)
+	jwtauth.SetExpiryIn(claims, AccessTokenExpiry)
+	_, accessToken, err := tokenAuth.Encode(claims)
 	if err != nil {
 		return "", "", err
 	}
-	return accessTokenID, s, nil
+	return accessTokenID, accessToken, nil
 }
 
 func (u *User) CreateRefreshToken(tokenAuth *jwtauth.JWTAuth, accessTokenID string, grantType string) (string, error) {
-	_, s, err := tokenAuth.Encode(map[string]interface{}{
-		"date":       time.Now().UTC(),
-		"expires_in": time.Hour * 24 * 7,
-		"token_id":   accessTokenID,
-		"id":         utils.NewUUIDString(),
-		"user_id":    u.ID,
-		"grant_type": grantType,
-	})
+	claims := map[string]interface{}{
+		"token_id":             accessTokenID,
+		"user":                 u.ID,
+		"type":                 "refresh_token",
+		"grant_type":           grantType,
+		directory.NamespaceKey: u.CompanyNamespace,
+	}
+	jwtauth.SetIssuedNow(claims)
+	jwtauth.SetExpiryIn(claims, RefreshTokenExpiry)
+	_, refreshToken, err := tokenAuth.Encode(claims)
 	if err != nil {
 		return "", err
 	}
-	return s, nil
+	return refreshToken, nil
 }

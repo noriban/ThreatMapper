@@ -1,11 +1,29 @@
 p, admin, user, delete
 p, admin, user, write
 p, admin, user, read
-p, user, user, write
-p, user, user, read
+p, standard-user, user, write
+p, standard-user, user, read
 p, read-only-user, user, read
 
 p, admin, all-users, write
-p, admin, all-users, write
 p, admin, all-users, read
-p, user, all-users, read
+p, standard-user, all-users, read
+
+p, admin, scan, start
+p, admin, scan, stop
+p, standard-user, scan, start
+p, standard-user, scan, stop
+
+p, admin, scan-report, delete
+p, admin, scan-report, mask
+p, admin, scan-report, unmask
+p, admin, scan-report, ingest
+p, standard-user, scan-report, mask
+p, standard-user, scan-report, unmask
+p, standard-user, scan-report, ingest
+
+p, admin, agent-report, ingest
+p, standard-user, agent-report, ingest
+
+p, admin, cloud-report, ingest
+p, standard-user, cloud-report, ingest

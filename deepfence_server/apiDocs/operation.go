@@ -11,11 +11,7 @@ import (
 )
 
 type RawReport struct {
-	Payload string `json:"payload"`
-}
-
-type ScanTrigger struct {
-	NodeId string `json:"node_id"`
+	Payload string `json:"payload" required:"true"`
 }
 
 func (d *OpenApiDocs) AddUserAuthOperations() {
@@ -23,8 +19,11 @@ func (d *OpenApiDocs) AddUserAuthOperations() {
 		"Register User", "First user registration. Further users needs to be invited.",
 		http.StatusOK, []string{tagUser}, nil, nil, new(model.UserRegisterRequest), model.Response{Success: true, Data: model.ResponseAccessToken{}})
 	d.AddOperation("authToken", http.MethodPost, "/deepfence/auth/token",
-		"API Auth Token", "Get auth token for API access",
+		"Get Access Token for API Token", "Get access token for programmatic API access, by providing API Token",
 		http.StatusOK, []string{tagAuthentication}, nil, nil, new(model.ApiAuthRequest), model.Response{Success: true, Data: model.ResponseAccessToken{}})
+	d.AddOperation("authTokenRefresh", http.MethodPost, "/deepfence/auth/token/refresh",
+		"Refresh access token", "Reissue access token using refresh token",
+		http.StatusOK, []string{tagAuthentication}, nil, bearerToken, nil, model.Response{Success: true, Data: model.ResponseAccessToken{}})
 	d.AddOperation("login", http.MethodPost, "/deepfence/user/login",
 		"Login API", "Login API",
 		http.StatusOK, []string{tagAuthentication}, nil, nil, new(model.LoginRequest), model.Response{Success: true, Data: model.ResponseAccessToken{}})
@@ -63,9 +62,9 @@ func (d *OpenApiDocs) AddIngestersOperations() {
 		"Ingest Topology Data", "Ingest data reported by one Agent",
 		http.StatusOK, []string{tagTopology}, nil, bearerToken, new(RawReport), new(controls.AgentControls))
 
-	d.AddOperation("ingestCVEs", http.MethodPost, "/deepfence/ingest/cves",
-		"Ingest CVEs", "Ingest CVEs found while scanning the agent",
-		http.StatusOK, []string{tagVulnerability}, nil, bearerToken, new([]ingesters.DfCveStruct), nil)
+	d.AddOperation("ingestVulnerabilities", http.MethodPost, "/deepfence/ingest/vulnerabilities",
+		"Ingest Vulnerabilities", "Ingest vulnerabilities found while scanning the agent host or containers",
+		http.StatusOK, []string{tagVulnerability}, nil, bearerToken, new([]ingesters.DfVulnerabilityStruct), nil)
 
 	d.AddOperation("ingestSecrets", http.MethodPost, "/deepfence/ingest/secrets",
 		"Ingest Secrets", "Ingest secrets found while scanning the agent",
@@ -86,16 +85,32 @@ func (d *OpenApiDocs) AddIngestersOperations() {
 }
 
 func (d *OpenApiDocs) AddScansOperations() {
-	d.AddOperation("startCVEScan", http.MethodGet, "/deepfence/scan/start/cves",
-		"Start CVE Scan", "Start CVE Scan on agent",
-		http.StatusOK, []string{tagVulnerability}, nil, bearerToken, new(ScanTrigger), nil)
+	// Start scan
+	d.AddOperation("startVulnerabilityScan", http.MethodPost, "/deepfence/scan/start/vulnerability",
+		"Start Vulnerability Scan", "Start Vulnerability Scan on agent or registry",
+		http.StatusAccepted, []string{tagVulnerability}, nil, bearerToken, new(model.ScanTrigger), nil)
+	d.AddOperation("startSecretScan", http.MethodPost, "/deepfence/scan/start/secret",
+		"Start Secret Scan", "Start Secret Scan on agent or registry",
+		http.StatusAccepted, []string{tagSecretScan}, nil, bearerToken, new(model.ScanTrigger), nil)
+	d.AddOperation("startComplianceScan", http.MethodPost, "/deepfence/scan/start/compliance",
+		"Start Compliance Scan", "Start Compliance Scan on agent or registry",
+		http.StatusAccepted, []string{tagCompliance}, nil, bearerToken, new(model.ScanTrigger), nil)
+	d.AddOperation("startMalwareScan", http.MethodPost, "/deepfence/scan/start/malware",
+		"Start Malware Scan", "Start Malware Scan on agent or registry",
+		http.StatusAccepted, []string{tagMalwareScan}, nil, bearerToken, new(model.ScanTrigger), nil)
 
-	d.AddOperation("startSecretScan", http.MethodGet, "/deepfence/scan/start/secrets",
-		"Start Secret Scan", "Start Secret Scan on agent",
-		http.StatusOK, []string{tagSecretScan}, nil, bearerToken, new(ScanTrigger), nil)
-
-	d.AddOperation("startComplianceScan", http.MethodGet, "/deepfence/scan/start/compliances",
-		"Start Compliance Scan", "Start Compliance Scan on agent",
-		http.StatusOK, []string{tagCompliance}, nil, bearerToken, new(ScanTrigger), nil)
+	// Stop scan
+	d.AddOperation("stopVulnerabilityScan", http.MethodGet, "/deepfence/scan/stop/vulnerability",
+		"Stop Vulnerability Scan", "Stop Vulnerability Scan on agent or registry",
+		http.StatusAccepted, []string{tagVulnerability}, nil, bearerToken, new(model.ScanTrigger), nil)
+	d.AddOperation("stopSecretScan", http.MethodGet, "/deepfence/scan/stop/secret",
+		"Stop Secret Scan", "Stop Secret Scan on agent or registry",
+		http.StatusAccepted, []string{tagSecretScan}, nil, bearerToken, new(model.ScanTrigger), nil)
+	d.AddOperation("stopComplianceScan", http.MethodGet, "/deepfence/scan/stop/compliance",
+		"Stop Compliance Scan", "Stop Compliance Scan on agent or registry",
+		http.StatusAccepted, []string{tagCompliance}, nil, bearerToken, new(model.ScanTrigger), nil)
+	d.AddOperation("stopMalwareScan", http.MethodGet, "/deepfence/scan/stop/malware",
+		"Stop Malware Scan", "Stop Malware Scan on agent or registry",
+		http.StatusAccepted, []string{tagMalwareScan}, nil, bearerToken, new(model.ScanTrigger), nil)
 
 }

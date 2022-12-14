@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
@@ -44,6 +45,8 @@ const (
 
 	kubernetesRoleHost    = "host"
 	kubernetesRoleCluster = "cluster"
+
+	authCheckPeriod = time.Second * 10
 )
 
 var (
@@ -107,8 +110,8 @@ func checkFlagsRequiringRoot(flags probeFlags) {
 }
 
 func setControls() {
-	err := controls.RegisterControl(ctl.StartCVEScan, func(req ctl.StartCVEScanRequest) error {
-		log.Info("Start CVE Scan")
+	err := controls.RegisterControl(ctl.StartVulnerabilityScan, func(req ctl.StartVulnerabilityScanRequest) error {
+		log.Info("Start Vulnerability Scan")
 		//TODO
 		return nil
 	})
@@ -116,15 +119,18 @@ func setControls() {
 		log.Errorf("set controls: %v", err)
 	}
 	err = controls.RegisterControl(ctl.StartSecretScan, func(req ctl.StartSecretScanRequest) error {
-		log.Info("Start Secret Scan")
-		//TODO
-		return nil
+		return host.StartSecretsScan(req)
 	})
 	if err != nil {
 		log.Errorf("set controls: %v", err)
 	}
 	err = controls.RegisterControl(ctl.StartComplianceScan, func(req ctl.StartComplianceScanRequest) error {
 		log.Info("Start Compliance Scan")
+		//TODO
+		return nil
+	})
+	err = controls.RegisterControl(ctl.StartMalwareScan, func(req ctl.StartMalwareScanRequest) error {
+		log.Info("Start Malware Scan")
 		//TODO
 		return nil
 	})
@@ -236,7 +242,18 @@ func probeMain(flags probeFlags, targets []appclient.Target) {
 			controls.DummyPipeClient
 		})
 	} else {
-		multiClients := appclient.NewOpenapiClient() //appclient.NewMultiAppClient(clientFactory, flags.noControls)
+		var multiClients *appclient.OpenapiClient
+		for {
+			multiClients, err = appclient.NewOpenapiClient()
+			if err == nil {
+				break
+			} else if errors.Is(err, appclient.AuthError) {
+				log.Warnln("Failed to authenticate. Retrying...")
+				time.Sleep(authCheckPeriod)
+			} else {
+				log.Fatalf("Fatal: %v", err)
+			}
+		}
 		defer multiClients.Stop()
 
 		//dnsLookupFn := net.LookupIP

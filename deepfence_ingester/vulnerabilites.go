@@ -1,16 +1,11 @@
-package ingesters
+package main
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/deepfence/ThreatMapper/deepfence_utils/directory"
-	"github.com/deepfence/ThreatMapper/deepfence_utils/log"
-	"github.com/deepfence/ThreatMapper/deepfence_utils/utils"
-	"github.com/twmb/franz-go/pkg/kgo"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 )
-
-type CVEIngester struct{}
 
 type DfCveStruct struct {
 	Count                      int      `json:"count"`
@@ -43,37 +38,74 @@ type DfCveStruct struct {
 	ExploitPOC                 string   `json:"exploit_poc"`
 }
 
-func NewCVEIngester() KafkaIngester[[]DfCveStruct] {
-	return &CVEIngester{}
+func (s *BulkProcessor) processVulnerability(tenantID string, cve []byte) {
+	var cveStruct DfCveStruct
+	err := json.Unmarshal(cve, &cveStruct)
+	if err != nil {
+		log.Errorf("error unmarshal cve data: %s", err)
+		return
+	}
+
+	// log.Info(toJSON(cveStruct))
+
+	s.Add(NewBulkRequest(tenantID, cveStruct.ToMap()))
+
 }
 
-func (tc *CVEIngester) Ingest(
-	ctx context.Context,
-	cs []DfCveStruct,
-	ingestC chan *kgo.Record,
-) error {
-
-	tenantID, err := directory.ExtractNamespace(ctx)
+func commitFuncVulnerabilities(ns string, data []map[string]interface{}) error {
+	ctx := directory.NewContextWithNameSpace(directory.NamespaceID(ns))
+	driver, err := directory.Neo4jClient(ctx)
 	if err != nil {
 		return err
 	}
 
-	rh := []kgo.RecordHeader{
-		{Key: "tenant_id", Value: []byte(tenantID)},
+	session := driver.NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+
+	tx, err := session.BeginTransaction()
+	if err != nil {
+		return err
+	}
+	defer tx.Close()
+
+	if _, err = tx.Run("UNWIND $batch as row MERGE (n:Cve{node_id:row.cve_id}) SET n+= row",
+		map[string]interface{}{"batch": data}); err != nil {
+		log.Error(err)
 	}
 
-	for _, c := range cs {
-		cb, err := json.Marshal(c)
-		if err != nil {
-			log.Error().Msg(err.Error())
-		} else {
-			ingestC <- &kgo.Record{
-				Topic:   utils.CVE_SCAN,
-				Value:   cb,
-				Headers: rh,
-			}
-		}
+	if _, err = tx.Run("MATCH (n:Cve) MERGE (m:CveScan{node_id: n.scan_id, host_name:n.host_name, time_stamp: timestamp()}) MERGE (m) -[:DETECTED]-> (n)",
+		map[string]interface{}{}); err != nil {
+		log.Error(err)
 	}
 
+	if _, err = tx.Run("MATCH (n:CveScan) MERGE (m:Node{node_id: n.host_name}) MERGE (n) -[:SCANNED]-> (m)",
+		map[string]interface{}{}); err != nil {
+		log.Error(err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		log.Error(err)
+	}
 	return nil
+}
+
+func CVEsToMaps(ms []DfCveStruct) []map[string]interface{} {
+	res := []map[string]interface{}{}
+	for _, v := range ms {
+		res = append(res, v.ToMap())
+	}
+	return res
+}
+
+func (c *DfCveStruct) ToMap() map[string]interface{} {
+	out, err := json.Marshal(*c)
+	if err != nil {
+		return nil
+	}
+	bb := map[string]interface{}{}
+	_ = json.Unmarshal(out, &bb)
+	return bb
 }
