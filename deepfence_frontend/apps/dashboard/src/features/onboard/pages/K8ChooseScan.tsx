@@ -2,6 +2,8 @@ import { HiPlusCircle } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, Separator, Typography } from 'ui-components';
 
+import { usePageNavigation } from '../../../utils/navigation';
+
 type ChooseScanProps = {
   connectorType: string;
   icon?: React.ReactNode;
@@ -117,15 +119,13 @@ const ScanList = () => {
   );
 };
 export const K8ChooseScan = ({ connectorType, icon }: ChooseScanProps) => {
-  const navigate = useNavigate();
-  const goback = () => {
-    navigate(-1);
-  };
+  const { goBack } = usePageNavigation();
+
   return (
     <>
       <SelectedAccountCard connectorType={connectorType} icon={icon} />
       <ScanList />
-      <Button onClick={goback} outline size="xs" className="mt-16">
+      <Button onClick={goBack} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </>

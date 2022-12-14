@@ -1,15 +1,11 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from 'ui-components';
 
+import { usePageNavigation } from '../../../utils/navigation';
 import { ConnectorHeader } from '../components/ConnectorHeader';
 import { DockerConnectorForm } from '../components/connectors/docker/DockerConnectorForm';
 
 export const DockerConnector = () => {
-  const navigate = useNavigate();
-
-  const goback = () => {
-    navigate(-1);
-  };
+  const { goBack } = usePageNavigation();
 
   return (
     <div className="w-full">
@@ -19,7 +15,7 @@ export const DockerConnector = () => {
       />
       <DockerConnectorForm />
 
-      <Button onClick={goback} outline size="xs" className="mt-16">
+      <Button onClick={goBack} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </div>

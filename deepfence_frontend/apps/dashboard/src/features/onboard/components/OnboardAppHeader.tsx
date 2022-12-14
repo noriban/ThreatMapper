@@ -1,6 +1,5 @@
 import { IconContext } from 'react-icons';
 import { HiLogout, HiMoon, HiOutlineBell } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -13,10 +12,11 @@ import {
 import LogoDeepfenceDarkBlue from '../../../assets/logo-deepfence-dark-blue.svg';
 import LogoDeepfenceWhite from '../../../assets/logo-deepfence-white.svg';
 import { useTheme } from '../../../theme/ThemeContext';
+import { usePageNavigation } from '../../../utils/navigation';
 import storage from '../../../utils/storage';
 
 export const OnboardAppHeader = () => {
-  const navigate = useNavigate();
+  const { navigate } = usePageNavigation();
   const { toggleMode, mode } = useTheme();
 
   const logout = () => {

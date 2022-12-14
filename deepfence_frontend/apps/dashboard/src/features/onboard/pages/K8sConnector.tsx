@@ -1,14 +1,12 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from 'ui-components';
 
+import { usePageNavigation } from '../../../utils/navigation';
 import { ConnectorHeader } from '../components/ConnectorHeader';
 import { K8ConnectorForm } from '../components/connectors/k8s/K8ConnectorForm';
 
 export const K8sConnector = () => {
-  const navigate = useNavigate();
-  const goback = () => {
-    navigate(-1);
-  };
+  const { goBack, navigate } = usePageNavigation();
+
   const goNext = () => {
     navigate('/onboard/scan-infrastructure/k8s');
   };
@@ -22,7 +20,7 @@ export const K8sConnector = () => {
         <K8ConnectorForm />
       </div>
       <div className="flex flex-row mt-16">
-        <Button onClick={goback} outline size="xs">
+        <Button onClick={goBack} outline size="xs">
           Cancel
         </Button>
         <Button onClick={goNext} color="primary" size="xs" className="ml-auto">

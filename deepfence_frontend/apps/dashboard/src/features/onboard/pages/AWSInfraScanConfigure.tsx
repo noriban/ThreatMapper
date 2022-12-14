@@ -1,7 +1,8 @@
 import { IconContext } from 'react-icons';
 import { HiPlusCircle } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 import { Button, Typography } from 'ui-components';
+
+import { usePageNavigation } from '../../../utils/navigation';
 
 const scanType = [
   {
@@ -25,10 +26,7 @@ const scanType = [
 ];
 
 export const AWSInfraScanConfigure = () => {
-  const navigate = useNavigate();
-  const goback = () => {
-    navigate(-1);
-  };
+  const { goBack } = usePageNavigation();
   return (
     <>
       <div className="mt-8 flex gap-4">
@@ -50,7 +48,7 @@ export const AWSInfraScanConfigure = () => {
       >
         Please select at least one compliance type.
       </p>
-      <Button onClick={goback} outline size="xs" className="mt-16">
+      <Button onClick={goBack} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </>

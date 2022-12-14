@@ -1,15 +1,12 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from 'ui-components';
 
+import { usePageNavigation } from '../../../utils/navigation';
 import { ConnectorHeader } from '../components/ConnectorHeader';
 import { CloudFormation } from '../components/connectors/clouds/aws/CloudFormation';
 import { Terraform } from '../components/connectors/clouds/aws/Terraform';
 
 export const AWSConnector = () => {
-  const navigate = useNavigate();
-  const goback = () => {
-    navigate(-1);
-  };
+  const { goBack } = usePageNavigation();
   return (
     <div>
       <ConnectorHeader
@@ -20,7 +17,7 @@ export const AWSConnector = () => {
         <CloudFormation />
         <Terraform />
       </div>
-      <Button onClick={goback} outline size="xs" className="mt-16">
+      <Button onClick={goBack} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </div>

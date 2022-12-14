@@ -1,5 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import { Button, Checkbox, Switch, Typography } from 'ui-components';
+
+import { usePageNavigation } from '../../../utils/navigation';
 
 const packages = [
   {
@@ -32,10 +33,7 @@ const packages = [
 ];
 
 export const K8sInfraScanConfigure = () => {
-  const navigate = useNavigate();
-  const goback = () => {
-    navigate(-1);
-  };
+  const { goBack } = usePageNavigation();
   return (
     <>
       <section>
@@ -71,7 +69,7 @@ export const K8sInfraScanConfigure = () => {
           <Checkbox label={'Priority Scan'} />
         </div>
       </section>
-      <Button onClick={goback} outline size="xs" className="mt-16">
+      <Button onClick={goBack} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </>

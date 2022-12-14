@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { IconContext } from 'react-icons';
 import { HiOutlineArrowCircleRight } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 import { Card, Tabs, Typography } from 'ui-components';
 
 import LogoAws from '../../../assets/logo-aws.svg';
@@ -16,6 +15,7 @@ import LogoK8 from '../../../assets/logo-k8.svg';
 import LogoLinux from '../../../assets/logo-linux.svg';
 import LogoRegistryConnector from '../../../assets/logo-registry-connector.svg';
 import { useTheme } from '../../../theme/ThemeContext';
+import { usePageNavigation } from '../../../utils/navigation';
 import { ConnectorHeader } from '../components/ConnectorHeader';
 import { NoConnectors } from '../components/connectors/NoConnectors';
 
@@ -26,7 +26,7 @@ interface CardConnectProps {
 }
 
 const CardConnect = ({ label, path, icon }: CardConnectProps) => {
-  const navigate = useNavigate();
+  const { navigate } = usePageNavigation();
   const handleSelection = () => {
     navigate(`${path}`);
   };

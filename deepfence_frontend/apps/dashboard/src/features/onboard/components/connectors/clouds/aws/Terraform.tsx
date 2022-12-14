@@ -1,6 +1,5 @@
 import cx from 'classnames';
 import { memo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCopyToClipboard } from 'react-use';
 import {
   Accordion,
@@ -13,10 +12,11 @@ import {
 } from 'ui-components';
 
 import { CopyToClipboardIcon } from '../../../../../../components/CopyToClipboardIcon';
+import { usePageNavigation } from '../../../../../../utils/navigation';
 
 export const Terraform = memo(() => {
   const [clipboardCopied, copyToClipboard] = useCopyToClipboard();
-  const navigate = useNavigate();
+  const { navigate } = usePageNavigation();
   const code = `provider "aws" {
   region = "<AWS-REGION>; eg. us-east-1"
 }

@@ -1,14 +1,12 @@
 import cx from 'classnames';
 import { IconContext } from 'react-icons';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 import { Button, Typography } from 'ui-components';
 
+import { usePageNavigation } from '../../../../utils/navigation';
+
 export const NoConnectors = () => {
-  const navigate = useNavigate();
-  const goBack = () => {
-    navigate(-1);
-  };
+  const { goBack } = usePageNavigation();
   return (
     <div className="flex flex-col items-center h-full w-full justify-center">
       <IconContext.Provider

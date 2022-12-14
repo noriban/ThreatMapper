@@ -1,16 +1,11 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from 'ui-components';
 
+import { usePageNavigation } from '../../../utils/navigation';
 import { ConnectorHeader } from '../components/ConnectorHeader';
 import { AmazonECRConnectorForm } from '../components/connectors/registries';
 
 export const AmazonECRConnector = () => {
-  const navigate = useNavigate();
-
-  const goback = () => {
-    navigate(-1);
-  };
-
+  const { goBack } = usePageNavigation();
   return (
     <div className="w-full">
       <ConnectorHeader
@@ -19,10 +14,10 @@ export const AmazonECRConnector = () => {
       />
       <AmazonECRConnectorForm />
       <div className="flex mt-16">
-        <Button onClick={goback} outline size="xs">
+        <Button onClick={goBack} outline size="xs">
           Cancel
         </Button>
-        <Button onClick={goback} color="primary" size="xs" className="ml-auto">
+        <Button onClick={goBack} color="primary" size="xs" className="ml-auto">
           Save Credentials And Go To Connectors
         </Button>
       </div>

@@ -1,14 +1,11 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from 'ui-components';
 
+import { usePageNavigation } from '../../../utils/navigation';
 import { ConnectorHeader } from '../components/ConnectorHeader';
 import { GCPConnectorForm } from '../components/connectors/clouds/gcp/GCPConnectorForm';
 
 export const GCPConnector = () => {
-  const navigate = useNavigate();
-  const goback = () => {
-    navigate(-1);
-  };
+  const { goBack } = usePageNavigation();
 
   return (
     <div className="w-full">
@@ -18,7 +15,7 @@ export const GCPConnector = () => {
       />
       <GCPConnectorForm />
 
-      <Button onClick={goback} outline size="xs" className="mt-16">
+      <Button onClick={goBack} outline size="xs" className="mt-16">
         Cancel
       </Button>
     </div>
