@@ -1,8 +1,19 @@
-import { OnboardLayout } from '../features/onboard/layouts/OnboardLayout';
+import { RouteObject } from 'react-router-dom';
 
-export const privateRoutes = [
+import { OnboardLayout } from '../features/onboard/layouts/OnboardLayout';
+import { toplogyLoader } from '../features/topology/loader/topologyLoader';
+import { TopologyGraph } from '../features/topology/pages/TopologyGraph';
+
+export const privateRoutes: RouteObject[] = [
   {
-    path: '/onboard',
+    path: '/',
     element: <OnboardLayout />,
+    children: [
+      {
+        path: 'topology',
+        element: <TopologyGraph />,
+        loader: toplogyLoader,
+      },
+    ],
   },
 ];

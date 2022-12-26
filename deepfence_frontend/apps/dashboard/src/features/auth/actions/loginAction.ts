@@ -13,9 +13,12 @@ export const loginAction = async ({
   const formData = await request.formData();
   const body = Object.fromEntries(formData);
   try {
-    await authenticationApi.login({
+    const data = await authenticationApi.login({
       modelLoginRequest: body,
     });
+    const access_token = data?.data?.access_token ?? '';
+    const refresh_token = data?.data?.refresh_token ?? '';
+    storage.setAuth({ isLogin: true, access_token, refresh_token });
   } catch (e) {
     const error = e as ResponseError;
     const response: ModelResponse = await error.response.json();
@@ -24,6 +27,6 @@ export const loginAction = async ({
       message: response.message,
     };
   }
-  storage.setAuth({ isLogin: true });
-  return redirect('/onboard', 302);
+
+  return redirect('/topology', 302);
 };

@@ -2,6 +2,8 @@ const storagePrefix = 'deefence_';
 
 export type AuthUserType = {
   isLogin: boolean;
+  access_token: string;
+  refresh_token: string;
 };
 
 const storage = {
