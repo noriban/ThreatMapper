@@ -13,135 +13,94 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { IngestersSecretMatch } from './IngestersSecretMatch';
-import {
-    IngestersSecretMatchFromJSON,
-    IngestersSecretMatchFromJSONTyped,
-    IngestersSecretMatchToJSON,
-} from './IngestersSecretMatch';
-import type { IngestersSecretRule } from './IngestersSecretRule';
-import {
-    IngestersSecretRuleFromJSON,
-    IngestersSecretRuleFromJSONTyped,
-    IngestersSecretRuleToJSON,
-} from './IngestersSecretRule';
-import type { IngestersSecretSeverity } from './IngestersSecretSeverity';
-import {
-    IngestersSecretSeverityFromJSON,
-    IngestersSecretSeverityFromJSONTyped,
-    IngestersSecretSeverityToJSON,
-} from './IngestersSecretSeverity';
-
 /**
  * 
  * @export
- * @interface IngestersSecret
+ * @interface IngestersSecretScanStatus
  */
-export interface IngestersSecret {
+export interface IngestersSecretScanStatus {
     /**
      * 
      * @type {Date}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     timestamp?: Date;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
-     */
-    ImageLayerId?: string;
-    /**
-     * 
-     * @type {IngestersSecretMatch}
-     * @memberof IngestersSecret
-     */
-    Match?: IngestersSecretMatch;
-    /**
-     * 
-     * @type {IngestersSecretRule}
-     * @memberof IngestersSecret
-     */
-    Rule?: IngestersSecretRule;
-    /**
-     * 
-     * @type {IngestersSecretSeverity}
-     * @memberof IngestersSecret
-     */
-    Severity?: IngestersSecretSeverity;
-    /**
-     * 
-     * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     container_name?: string;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     host_name?: string;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     kubernetes_cluster_name?: string;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     masked?: string;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     node_id?: string;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     node_name?: string;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     node_type?: string;
     /**
      * 
      * @type {string}
-     * @memberof IngestersSecret
+     * @memberof IngestersSecretScanStatus
      */
     scan_id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IngestersSecretScanStatus
+     */
+    scan_status?: string;
 }
 
 /**
- * Check if a given object implements the IngestersSecret interface.
+ * Check if a given object implements the IngestersSecretScanStatus interface.
  */
-export function instanceOfIngestersSecret(value: object): boolean {
+export function instanceOfIngestersSecretScanStatus(value: object): boolean {
     let isInstance = true;
 
     return isInstance;
 }
 
-export function IngestersSecretFromJSON(json: any): IngestersSecret {
-    return IngestersSecretFromJSONTyped(json, false);
+export function IngestersSecretScanStatusFromJSON(json: any): IngestersSecretScanStatus {
+    return IngestersSecretScanStatusFromJSONTyped(json, false);
 }
 
-export function IngestersSecretFromJSONTyped(json: any, ignoreDiscriminator: boolean): IngestersSecret {
+export function IngestersSecretScanStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean): IngestersSecretScanStatus {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
         'timestamp': !exists(json, '@timestamp') ? undefined : (new Date(json['@timestamp'])),
-        'ImageLayerId': !exists(json, 'ImageLayerId') ? undefined : json['ImageLayerId'],
-        'Match': !exists(json, 'Match') ? undefined : IngestersSecretMatchFromJSON(json['Match']),
-        'Rule': !exists(json, 'Rule') ? undefined : IngestersSecretRuleFromJSON(json['Rule']),
-        'Severity': !exists(json, 'Severity') ? undefined : IngestersSecretSeverityFromJSON(json['Severity']),
         'container_name': !exists(json, 'container_name') ? undefined : json['container_name'],
         'host_name': !exists(json, 'host_name') ? undefined : json['host_name'],
         'kubernetes_cluster_name': !exists(json, 'kubernetes_cluster_name') ? undefined : json['kubernetes_cluster_name'],
@@ -150,10 +109,11 @@ export function IngestersSecretFromJSONTyped(json: any, ignoreDiscriminator: boo
         'node_name': !exists(json, 'node_name') ? undefined : json['node_name'],
         'node_type': !exists(json, 'node_type') ? undefined : json['node_type'],
         'scan_id': !exists(json, 'scan_id') ? undefined : json['scan_id'],
+        'scan_status': !exists(json, 'scan_status') ? undefined : json['scan_status'],
     };
 }
 
-export function IngestersSecretToJSON(value?: IngestersSecret | null): any {
+export function IngestersSecretScanStatusToJSON(value?: IngestersSecretScanStatus | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -163,10 +123,6 @@ export function IngestersSecretToJSON(value?: IngestersSecret | null): any {
     return {
         
         '@timestamp': value.timestamp === undefined ? undefined : (value.timestamp.toISOString()),
-        'ImageLayerId': value.ImageLayerId,
-        'Match': IngestersSecretMatchToJSON(value.Match),
-        'Rule': IngestersSecretRuleToJSON(value.Rule),
-        'Severity': IngestersSecretSeverityToJSON(value.Severity),
         'container_name': value.container_name,
         'host_name': value.host_name,
         'kubernetes_cluster_name': value.kubernetes_cluster_name,
@@ -175,6 +131,7 @@ export function IngestersSecretToJSON(value?: IngestersSecret | null): any {
         'node_name': value.node_name,
         'node_type': value.node_type,
         'scan_id': value.scan_id,
+        'scan_status': value.scan_status,
     };
 }
 

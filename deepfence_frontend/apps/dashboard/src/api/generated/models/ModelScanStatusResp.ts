@@ -16,42 +16,42 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface ApiDocsRawReport
+ * @interface ModelScanStatusResp
  */
-export interface ApiDocsRawReport {
+export interface ModelScanStatusResp {
     /**
      * 
      * @type {string}
-     * @memberof ApiDocsRawReport
+     * @memberof ModelScanStatusResp
      */
-    payload: string;
+    status: string;
 }
 
 /**
- * Check if a given object implements the ApiDocsRawReport interface.
+ * Check if a given object implements the ModelScanStatusResp interface.
  */
-export function instanceOfApiDocsRawReport(value: object): boolean {
+export function instanceOfModelScanStatusResp(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "payload" in value;
+    isInstance = isInstance && "status" in value;
 
     return isInstance;
 }
 
-export function ApiDocsRawReportFromJSON(json: any): ApiDocsRawReport {
-    return ApiDocsRawReportFromJSONTyped(json, false);
+export function ModelScanStatusRespFromJSON(json: any): ModelScanStatusResp {
+    return ModelScanStatusRespFromJSONTyped(json, false);
 }
 
-export function ApiDocsRawReportFromJSONTyped(json: any, ignoreDiscriminator: boolean): ApiDocsRawReport {
+export function ModelScanStatusRespFromJSONTyped(json: any, ignoreDiscriminator: boolean): ModelScanStatusResp {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'payload': json['payload'],
+        'status': json['status'],
     };
 }
 
-export function ApiDocsRawReportToJSON(value?: ApiDocsRawReport | null): any {
+export function ModelScanStatusRespToJSON(value?: ModelScanStatusResp | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -60,7 +60,7 @@ export function ApiDocsRawReportToJSON(value?: ApiDocsRawReport | null): any {
     }
     return {
         
-        'payload': value.payload,
+        'status': value.status,
     };
 }
 
