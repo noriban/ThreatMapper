@@ -6,7 +6,9 @@ import { AuthenticationApi, Configuration, TopologyApi, UserApi } from './genera
 
 const configuration = new Configuration({
   basePath: `${window.location.protocol}//${window.location.host}`,
-  accessToken: storage.getAuth().access_token,
+  accessToken: () => {
+    return storage.getAuth().access_token;
+  },
 });
 
 export const authenticationApi = new AuthenticationApi(configuration);
