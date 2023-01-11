@@ -9,7 +9,6 @@ import (
 	"github.com/deepfence/ThreatMapper/deepfence_utils/log"
 	postgresql_db "github.com/deepfence/ThreatMapper/deepfence_utils/postgresql/postgresql-db"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/utils"
-	"github.com/go-chi/jwtauth/v5"
 	httpext "github.com/go-playground/pkg/v5/net/http"
 	"net/http"
 )
@@ -140,6 +139,15 @@ func (h *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+	user, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
+	if err != nil {
+		httpext.JSON(w, statusCode, model.Response{Success: false, Message: err.Error()})
+		return
+	}
+	httpext.JSON(w, http.StatusOK, model.Response{Success: true, Data: user})
+}
+
+func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	user, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
 	if err != nil {
 		httpext.JSON(w, statusCode, model.Response{Success: false, Message: err.Error()})
