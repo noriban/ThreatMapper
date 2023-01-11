@@ -9,7 +9,7 @@ function App() {
   const { toggleMode, mode } = useThemeMode(true);
   return (
     <ThemeProvider value={{ toggleMode, mode }}>
-      <div className="dark:bg-gray-900 bg-white">
+      <div className="dark:bg-gray-900 bg-[#F9FAFB]">
         <RouterProvider router={router} />
       </div>
     </ThemeProvider>
