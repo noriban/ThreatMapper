@@ -157,8 +157,8 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 		httpext.JSON(w, statusCode, model.Response{Success: false, Message: err.Error()})
 		return
 	}
-	var ctx context.Context
-	client, err := directory.Neo4jClient(ctx)
+
+	client, err := directory.Neo4jClient(r.Context())
 	if err != nil {
 		log.Error().Msg("some error 1")
 		return
