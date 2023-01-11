@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
@@ -14,6 +13,7 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	httpext "github.com/go-playground/pkg/v5/net/http"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j/dbtype"
 	"net/http"
 )
 
@@ -22,29 +22,29 @@ const (
 	DefaultNamespace   = "default"
 )
 
-type SecretDoc struct {
-	Identity   int      `json:"identity"`
-	Labels     []string `json:"labels"`
-	Properties struct {
-		FullFilename          string  `json:"full_filename"`
-		ImageLayerID          string  `json:"ImageLayerId"`
-		Level                 string  `json:"level"`
-		KubernetesClusterName string  `json:"kubernetes_cluster_name"`
-		Masked                string  `json:"masked"`
-		StartingIndex         int     `json:"starting_index"`
-		RelativeEndingIndex   int     `json:"relative_ending_index"`
-		NodeName              string  `json:"node_name"`
-		Score                 float64 `json:"score"`
-		MatchedContent        string  `json:"matched_content"`
-		NodeType              string  `json:"node_type"`
-		Timestamp             string  `json:"@timestamp"`
-		ContainerName         string  `json:"container_name"`
-		ScanID                string  `json:"scan_id"`
-		RelativeStartingIndex int     `json:"relative_starting_index"`
-		HostName              string  `json:"host_name"`
-		NodeID                string  `json:"node_id"`
-	} `json:"properties"`
-}
+//type SecretDoc struct {
+//	Identity   int      `json:"identity"`
+//	Labels     []string `json:"labels"`
+//	Properties struct {
+//		FullFilename          string  `json:"full_filename"`
+//		ImageLayerID          string  `json:"ImageLayerId"`
+//		Level                 string  `json:"level"`
+//		KubernetesClusterName string  `json:"kubernetes_cluster_name"`
+//		Masked                string  `json:"masked"`
+//		StartingIndex         int     `json:"starting_index"`
+//		RelativeEndingIndex   int     `json:"relative_ending_index"`
+//		NodeName              string  `json:"node_name"`
+//		Score                 float64 `json:"score"`
+//		MatchedContent        string  `json:"matched_content"`
+//		NodeType              string  `json:"node_type"`
+//		Timestamp             string  `json:"@timestamp"`
+//		ContainerName         string  `json:"container_name"`
+//		ScanID                string  `json:"scan_id"`
+//		RelativeStartingIndex int     `json:"relative_starting_index"`
+//		HostName              string  `json:"host_name"`
+//		NodeID                string  `json:"node_id"`
+//	} `json:"properties"`
+//}
 
 func (h *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var registerRequest model.UserRegisterRequest
@@ -218,20 +218,21 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, record := range records {
-		var secretDoc SecretDoc
+		//var secretDoc SecretDoc
 		if record.Values[0] == nil {
 			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
 			continue
 		}
 
-		//secretDoc := record.Values[0].(SecretDoc)
-		err := json.Unmarshal([]byte(record.Values[0].(string)), &secretDoc)
-		if err != nil {
-			log.Error().Msgf("Unmarshal of action failed: %v", err)
-			continue
-		}
+		secretDoc := record.Values[0].(dbtype.Node)
+		//err := json.Unmarshal([]byte(record.Values[0].(string)), &secretDoc)
+		//if err != nil {
+		//	log.Error().Msgf("Unmarshal of action failed: %v", err)
+		//	continue
+		//}
 
-		fmt.Printf("%+v", secretDoc)
+		fmt.Printf("%+v", secretDoc.Props)
+		fmt.Println(secretDoc.Props["full_filename"])
 		//fmt.Println(secretDoc.Props.full_filename)
 	}
 
