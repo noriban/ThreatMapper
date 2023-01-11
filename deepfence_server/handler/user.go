@@ -3,14 +3,18 @@ package handler
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
+	"github.com/deepfence/ThreatMapper/deepfence_utils/controls"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/directory"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/log"
 	postgresql_db "github.com/deepfence/ThreatMapper/deepfence_utils/postgresql/postgresql-db"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/utils"
 	"github.com/go-chi/jwtauth/v5"
 	httpext "github.com/go-playground/pkg/v5/net/http"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"net/http"
 )
 
@@ -150,10 +154,61 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	user, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
+	res := []controls.Action{}
 	if err != nil {
 		httpext.JSON(w, statusCode, model.Response{Success: false, Message: err.Error()})
 		return
 	}
+	client, err := directory.Neo4jClient(ctx)
+	if err != nil {
+		log.Error().Msg("some error 1")
+		return
+	}
+
+	session, err := client.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		log.Error().Msg("some error 2")
+		return
+	}
+	defer session.Close()
+
+	tx, err := session.BeginTransaction()
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+	defer tx.Close()
+
+	rq, err := tx.Run("MATCH (n:Secret {host_name: 'mukul-test'})  return n", map[string]interface{}{})
+
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+
+	records, err := rq.Collect()
+
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+
+	for _, record := range records {
+		var action controls.Action
+		if record.Values[0] == nil {
+			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
+			continue
+		}
+		err := json.Unmarshal([]byte(record.Values[0].(string)), &action)
+		if err != nil {
+			log.Error().Msgf("Unmarshal of action failed: %v", err)
+			continue
+		}
+		res = append(res, action)
+	}
+
+	fmt.Println(res)
+
 	httpext.JSON(w, http.StatusOK, model.Response{Success: true, Data: user})
 }
 
