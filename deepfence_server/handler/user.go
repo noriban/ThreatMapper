@@ -198,6 +198,7 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 		//	log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
 		//	continue
 		//}
+		fmt.Println(record)
 		fmt.Println(*record)
 		//err := json.Unmarshal([]byte(record.Values[0].(string)), &action)
 		//if err != nil {
