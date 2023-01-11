@@ -218,14 +218,15 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 
 	for _, record := range records {
 		//var secretDoc SecretDoc
-		//if record.Values[0] == nil {
-		//	log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
-		//	continue
-		//}
-		fmt.Println(record.Values[0])
-		fmt.Println("mukul")
+		if record.Values[0] == nil {
+			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
+			continue
+		}
 
-		fmt.Printf("%+v", record.Values[0])
+		var secretDoc interface{}
+		secretDoc = record.Values[0]
+		fmt.Printf("%+v", secretDoc)
+		fmt.Println(secretDoc.Props.full_filename)
 	}
 
 	httpext.JSON(w, http.StatusOK, model.Response{Success: true, Data: user})
