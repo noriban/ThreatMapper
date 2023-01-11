@@ -3,11 +3,9 @@ package handler
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
-	"github.com/deepfence/ThreatMapper/deepfence_utils/controls"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/directory"
 	"github.com/deepfence/ThreatMapper/deepfence_utils/log"
 	postgresql_db "github.com/deepfence/ThreatMapper/deepfence_utils/postgresql/postgresql-db"
@@ -154,7 +152,7 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	user, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
-	res := []controls.Action{}
+	//res := []controls.Action{}
 	if err != nil {
 		httpext.JSON(w, statusCode, model.Response{Success: false, Message: err.Error()})
 		return
@@ -195,20 +193,19 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, record := range records {
-		var action controls.Action
-		if record.Values[0] == nil {
-			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
-			continue
-		}
-		err := json.Unmarshal([]byte(record.Values[0].(string)), &action)
-		if err != nil {
-			log.Error().Msgf("Unmarshal of action failed: %v", err)
-			continue
-		}
-		res = append(res, action)
+		//var action controls.Action
+		//if record.Values[0] == nil {
+		//	log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
+		//	continue
+		//}
+		fmt.Println(*record)
+		//err := json.Unmarshal([]byte(record.Values[0].(string)), &action)
+		//if err != nil {
+		//	log.Error().Msgf("Unmarshal of action failed: %v", err)
+		//	continue
+		//}
+		//res = append(res, action)
 	}
-
-	fmt.Println(res)
 
 	httpext.JSON(w, http.StatusOK, model.Response{Success: true, Data: user})
 }
