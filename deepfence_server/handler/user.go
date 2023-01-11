@@ -206,7 +206,7 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	//	res = append(res, action)
 	//}
 
-	fmt.Println(records)
+	fmt.Println(*records[0])
 
 	httpext.JSON(w, http.StatusOK, model.Response{Success: true, Data: user})
 }
