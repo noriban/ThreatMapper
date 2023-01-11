@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
@@ -217,13 +218,18 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, record := range records {
-		//var secretDoc SecretDoc
+		var secretDoc SecretDoc
 		if record.Values[0] == nil {
 			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
 			continue
 		}
 
-		secretDoc := record.Values[0].(SecretDoc)
+		//secretDoc := record.Values[0].(SecretDoc)
+		err := json.Unmarshal([]byte(record.Values[0].(string)), &secretDoc)
+		if err != nil {
+			log.Error().Msgf("Unmarshal of action failed: %v", err)
+			continue
+		}
 
 		fmt.Printf("%+v", secretDoc)
 		//fmt.Println(secretDoc.Props.full_filename)
