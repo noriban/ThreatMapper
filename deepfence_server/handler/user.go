@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
@@ -225,14 +224,9 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 		//}
 		fmt.Println(record.Values[0])
 		fmt.Println("mukul")
-		fmt.Println(*record)
-		err := json.Unmarshal([]byte(record.Values[0].(string)), &secretDoc)
-		if err != nil {
-			log.Error().Msgf("Unmarshal of action failed: %v", err)
-			continue
-		}
-		fmt.Println(secretDoc)
-		//res = append(res, action)
+		secretDoc = record.Values[0].(SecretDoc)
+
+		fmt.Printf("%+v", secretDoc)
 	}
 
 	httpext.JSON(w, http.StatusOK, model.Response{Success: true, Data: user})
