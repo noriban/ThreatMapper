@@ -217,23 +217,42 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	f := excelize.NewFile()
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	secretDocHeader := map[string]string{"A1": "FileName", "B1": "ImageLayerId", "C1": "level", "D1": "kubernetes_cluster_name", "E1": "node_name", "F1": "Score", "G1": "Matched Content", "H1": "Node Type", "I1": "TimeStamp", "J1": "Host Name", "K": "Node Id"}
+
+	index, err := f.NewSheet("SecretScan")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	for k, v := range secretDocHeader {
+		f.SetCellValue("SecretScan", k, v)
+	}
+
+	f.SetActiveSheet(index)
+
+	if err := f.SaveAs("/tmp/secret-scan.xlsx"); err != nil {
+		fmt.Println(err)
+	}
+
 	for _, record := range records {
-		//var secretDoc SecretDoc
 		if record.Values[0] == nil {
 			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
 			continue
 		}
 
 		secretDoc := record.Values[0].(dbtype.Node)
-		//err := json.Unmarshal([]byte(record.Values[0].(string)), &secretDoc)
-		//if err != nil {
-		//	log.Error().Msgf("Unmarshal of action failed: %v", err)
-		//	continue
-		//}
 
 		fmt.Printf("%+v", secretDoc.Props)
 		fmt.Println(secretDoc.Props["full_filename"])
-		//fmt.Println(secretDoc.Props.full_filename)
+
 	}
 
 	httpext.JSON(w, http.StatusOK, model.Response{Success: true, Data: user})
