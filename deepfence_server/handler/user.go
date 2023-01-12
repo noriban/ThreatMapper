@@ -219,11 +219,6 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f := excelize.NewFile()
-	defer func() {
-		if err := f.Close(); err != nil {
-			fmt.Println(err)
-		}
-	}()
 
 	secretDocHeader := map[string]string{"A1": "FileName", "B1": "ImageLayerId", "C1": "level", "D1": "kubernetes_cluster_name", "E1": "node_name", "F1": "Score", "G1": "Matched Content", "H1": "Node Type", "I1": "TimeStamp", "J1": "Host Name", "K": "Node Id"}
 
