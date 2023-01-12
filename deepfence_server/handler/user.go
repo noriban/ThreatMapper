@@ -227,7 +227,7 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	for k, v := range secretDocHeader {
 		f.SetCellValue("Secret", k, v)
 	}
-
+	// it should work
 	if err := f.SaveAs("/secret-scan.xlsx"); err != nil {
 		fmt.Println(err)
 	}
