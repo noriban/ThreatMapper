@@ -222,17 +222,9 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 
 	secretDocHeader := map[string]string{"A1": "FileName", "B1": "ImageLayerId", "C1": "level", "D1": "kubernetes_cluster_name", "E1": "node_name", "F1": "Score", "G1": "Matched Content", "H1": "Node Type", "I1": "TimeStamp", "J1": "Host Name", "K": "Node Id"}
 
-	index, err := f.NewSheet("SecretScan")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
 	for k, v := range secretDocHeader {
 		f.SetCellValue("SecretScan", k, v)
 	}
-
-	f.SetActiveSheet(index)
 
 	if err := f.SaveAs("/tmp/secret-scan.xlsx"); err != nil {
 		fmt.Println(err)
