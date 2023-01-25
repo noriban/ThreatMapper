@@ -42,3 +42,5 @@ openapi.yaml
 
 deepfence_ctl/deepfencectl
 deepfence_ctl/vendor
+
+deepfence_agent/tools/apache/scope/vendor/
