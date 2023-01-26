@@ -41,7 +41,7 @@ RUN wget -qO - https://packages.fluentbit.io/fluentbit.key | apt-key add - \
 COPY tools/apache/fluentbit/* /etc/td-agent-bit/
 
 # Copy fluentbit plugin
-COPY tools/apache/fluentbit/out_deepfence/out_deepfence.so /opt/td-agent-bit/bin/
+COPY tools/apache/fluentbit/out_deepfence/out_deepfence.go /opt/td-agent-bit/bin/
 COPY tools/apache/deepfence/df-utils/get_cloud_instance_id/getCloudInstanceId /usr/local/bin/getCloudInstanceId
 COPY etc/fenced_logrotate.conf /etc/logrotate.d/fenced_logrotate.conf
 COPY etc/certs/* /etc/filebeat/
