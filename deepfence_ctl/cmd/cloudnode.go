@@ -59,9 +59,7 @@ func init() {
 	rootCmd.AddCommand(cloudNodeCmd)
 	cloudNodeCmd.AddCommand(cloudNodeStartSubCmd)
 
-	cloudNodeCmd.PersistentFlags().String("type", "", "Scan type")
-
-	cloudNodeStartSubCmd.PersistentFlags().String("node-id", "", "Node id")
+	cloudNodeStartSubCmd.PersistentFlags().String("node_id", "", "Node id")
 	cloudNodeStartSubCmd.PersistentFlags().String("cloud_account", "", "Cloud Account")
 	cloudNodeStartSubCmd.PersistentFlags().String("cloud_provider", "", "CSP (AWS, GCP, AZURE)")
 
