@@ -23,7 +23,7 @@ var cloudNodeStartSubCmd = &cobra.Command{
 	Long:  `This subcommand triggers a scan remote server`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		cloud_account, _ := cmd.Flags().GetString("cloud-account")
+		cloud_account, _ := cmd.Flags().GetString("cloud_account")
 		if cloud_account == "" {
 			log.Fatal().Msg("Please provide a cloud_account")
 		}
