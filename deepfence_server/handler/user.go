@@ -509,9 +509,35 @@ func (h *Handler) GetApiTokenForConsoleAgent(w http.ResponseWriter, r *http.Requ
 func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	_, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
 	if err != nil {
-		httpext.JSON(w, statusCode, model.Response{Success: false, Message: err.Error()})
+		httpext.JSON(w, statusCode, model.MessageResponse{Message: err.Error()})
 		return
 	}
+
+	payload, err := json.Marshal(params.SbomParameters)
+	if err != nil {
+		log.Error().Msg(err.Error())
+		respondError(err, w)
+		return
+	}
+
+	msg := message.NewMessage(watermill.NewUUID(), payload)
+	namespace, err := directory.ExtractNamespace(r.Context())
+	if err != nil {
+		log.Error().Msg(err.Error())
+		respondError(err, w)
+		return
+	}
+	msg.Metadata = map[string]string{directory.NamespaceKey: string(namespace)}
+	msg.SetContext(directory.NewContextWithNameSpace(namespace))
+	middleware.SetCorrelationID(watermill.NewShortUUID(), msg)
+
+	err = h.TasksPublisher.Publish(utils.ScanSBOMTask, msg)
+	if err != nil {
+		log.Error().Msgf("cannot publish message:", err)
+		respondError(err, w)
+		return
+	}
+	
 	httpext.JSON(w, http.StatusOK, model.MessageResponse{
 		Message: "OK"})
 }

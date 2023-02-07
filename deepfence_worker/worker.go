@@ -11,6 +11,7 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message/router/plugin"
 	"github.com/deepfence/ThreatMapper/deepfence_worker/cronjobs"
 	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/sbom"
+	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/report"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 	"github.com/deepfence/golang_deepfence_sdk/utils/utils"
 	"github.com/twmb/franz-go/pkg/kgo"
@@ -76,6 +77,19 @@ func startWorker(wml watermill.LoggerAdapter, cfg config) error {
 		utils.ScanSBOMTask,
 		subscribe_scan_sbom,
 		sbom.NewSBOMScanner(ingestC).ScanSBOM,
+	)
+
+	// xlsx report
+	subscribe_generate_xlsx_report, err := subscribe(utils.ReportGeneratorTask, cfg.KafkaBrokers, wml)
+	if err != nil {
+		cancel()
+		return err
+	}
+	mux.AddNoPublisherHandler(
+		utils.ReportGeneratorTask,
+		utils.ReportGeneratorTask,
+		subscribe_generate_xlsx_report,
+		report.GenerateReport,
 	)
 
 	subscribe_generate_sbom, err := subscribe(utils.GenerateSBOMTask, cfg.KafkaBrokers, wml)
