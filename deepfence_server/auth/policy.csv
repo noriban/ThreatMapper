@@ -53,3 +53,6 @@ p, standard-user, container-registry, start
 p, standard-user, container-registry, stop
 p, standard-user, container-registry, read
 p, read-only-user, container-registry, read
+
+p, admin, integration-scan-report, write
+p, admin, integration-scan-report, read

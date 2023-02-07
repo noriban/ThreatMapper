@@ -32,15 +32,16 @@ const (
 
 	//	API RBAC Resources
 
-	ResourceUser        = "user"
-	ResourceAllUsers    = "all-users"
-	ResourceAgentReport = "agent-report"
-	ResourceCloudReport = "cloud-report"
-	ResourceScanReport  = "scan-report"
-	ResourceScan        = "scan"
-	ResourceDiagnosis   = "diagnosis"
-	ResourceCloudNode   = "cloud-node"
-	ResourceRegistry    = "container-registry"
+	ResourceUser          = "user"
+	ResourceAllUsers      = "all-users"
+	ResourceAgentReport   = "agent-report"
+	ResourceCloudReport   = "cloud-report"
+	ResourceScanReport    = "scan-report"
+	ResourceScan          = "scan"
+	ResourceDiagnosis     = "diagnosis"
+	ResourceCloudNode     = "cloud-node"
+	ResourceRegistry      = "container-registry"
+	IntegrationScanReport = "integration-scan-report"
 )
 
 func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDocs bool,
@@ -176,6 +177,10 @@ func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDo
 				r.Post("/malware-scan-logs", dfHandler.AuthHandler(ResourceScanReport, PermissionIngest, dfHandler.IngestMalwareScanStatusHandler))
 				r.Post("/cloud-compliance", dfHandler.AuthHandler(ResourceScanReport, PermissionIngest, dfHandler.IngestCloudComplianceReportHandler))
 				r.Post("/cloud-compliance-status", dfHandler.AuthHandler(ResourceScanReport, PermissionIngest, dfHandler.IngestCloudComplianceScanStatusReportHandler))
+			})
+
+			r.Route("/generate", func(r chi.Router) {
+				r.Post("/xlsx", dfHandler.AuthHandler(IntegrationScanReport, PermissionWrite, dfHandler.GenerateXlsxReport))
 			})
 
 			r.Route("/cloud-node", func(r chi.Router) {

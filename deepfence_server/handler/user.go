@@ -505,3 +505,13 @@ func (h *Handler) GetApiTokenForConsoleAgent(w http.ResponseWriter, r *http.Requ
 	}
 	httpext.JSON(w, http.StatusOK, model.ApiAuthRequest{ApiToken: token.String()})
 }
+
+func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
+	_, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
+	if err != nil {
+		httpext.JSON(w, statusCode, model.Response{Success: false, Message: err.Error()})
+		return
+	}
+	httpext.JSON(w, http.StatusOK, model.MessageResponse{
+		Message: "OK"})
+}
