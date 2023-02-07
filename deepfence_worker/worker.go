@@ -81,13 +81,29 @@ func startWorker(wml watermill.LoggerAdapter, cfg config) error {
 		cronjobs.RetryScansDB,
 	)
 
-	subscribeCleanupPostgresql, err := subscribe(utils.CleanUpPostgresqlTask, cfg.KafkaBrokers, wml)
+	subscribe_retry_failed_upgrades, err := subscribe(utils.RetryFailedUpgradesTask, cfg.KafkaBrokers, wml)
 	if err != nil {
 		cancel()
 		return err
 	}
 	mux.AddNoPublisherHandler(
-		utils.CleanUpPostgresqlTask, utils.CleanUpPostgresqlTask, subscribeCleanupPostgresql, cronjobs.CleanUpPostgresDB,
+		utils.RetryFailedUpgradesTask,
+		utils.RetryFailedUpgradesTask,
+		subscribe_retry_failed_upgrades,
+		cronjobs.RetryUpgradeAgent,
+	)
+
+	subscribeCleanupPostgresql, err := subscribe(utils.CleanUpPostgresqlTask, cfg.KafkaBrokers, wml)
+	if err != nil {
+		cancel()
+		return err
+	}
+
+	mux.AddNoPublisherHandler(
+		utils.CleanUpPostgresqlTask,
+		utils.CleanUpPostgresqlTask,
+		subscribeCleanupPostgresql,
+		cronjobs.CleanUpPostgresDB,
 	)
 
 	check_agent_upgrade_task, err := subscribe(utils.CheckAgentUpgradeTask, cfg.KafkaBrokers, wml)
@@ -100,6 +116,18 @@ func startWorker(wml watermill.LoggerAdapter, cfg config) error {
 		utils.CheckAgentUpgradeTask,
 		check_agent_upgrade_task,
 		cronjobs.CheckAgentUpgrade,
+	)
+
+	sync_registry_task, err := subscribe(utils.SyncRegistryTask, cfg.KafkaBrokers, wml)
+	if err != nil {
+		cancel()
+		return err
+	}
+	mux.AddNoPublisherHandler(
+		utils.SyncRegistryTask,
+		utils.SyncRegistryTask,
+		sync_registry_task,
+		cronjobs.SyncRegistry,
 	)
 
 	log.Info().Msg("Starting the consumer")

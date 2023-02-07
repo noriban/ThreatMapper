@@ -145,23 +145,22 @@ func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDo
 				r.Post("/containers", dfHandler.GetContainers)
 				r.Post("/processes", dfHandler.GetProcesses)
 				r.Post("/kubernetesclusters", dfHandler.GetKubernetesClusters)
-				r.Post("/kubernetes-scanners", dfHandler.GetKubernetesScanners)
 				r.Post("/containerimages", dfHandler.GetContainerImages)
 				r.Post("/pods", dfHandler.GetPods)
+				r.Post("/registryaccount", dfHandler.GetRegistryAccount)
 			})
 
 			r.Route("/controls", func(r chi.Router) {
-				r.Post("/agent", dfHandler.AuthHandler(ResourceAgentReport, PermissionIngest, dfHandler.GetAgentControls))
-				r.Get("/kubernetes-scanner", dfHandler.AuthHandler(ResourceAgentReport, PermissionIngest, dfHandler.GetKubernetesScannerControls))
-				r.Post("/agent-init", dfHandler.AuthHandler(ResourceAgentReport, PermissionIngest, dfHandler.GetAgentInitControls))
-				r.Post("/agent-upgrade", dfHandler.AuthHandler(ResourceAgentReport, PermissionIngest, dfHandler.ScheduleAgentUpgrade))
+				r.Post("/agent", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.GetAgentControls))
+				r.Post("/kubernetes-cluster", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.GetKubernetesClusterControls))
+				r.Post("/agent-init", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.GetAgentInitControls))
+				r.Post("/agent-upgrade", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.ScheduleAgentUpgrade))
 			})
 
 			r.Route("/ingest", func(r chi.Router) {
 				r.Post("/report", dfHandler.AuthHandler(ResourceAgentReport, PermissionIngest, dfHandler.IngestAgentReport))
 				r.Post("/sync-report", dfHandler.AuthHandler(ResourceAgentReport, PermissionIngest, dfHandler.IngestSyncAgentReport))
 				r.Post("/cloud-resources", dfHandler.AuthHandler(ResourceCloudReport, PermissionIngest, dfHandler.IngestCloudResourcesReportHandler))
-				r.Post("/kubernetes-scanner", dfHandler.AuthHandler(ResourceAgentReport, PermissionIngest, dfHandler.RegisterKubernetesScanner))
 				// below api's write to kafka
 				r.Post("/sbom", dfHandler.AuthHandler(ResourceScanReport, PermissionIngest, dfHandler.IngestSbomHandler))
 				r.Post("/vulnerabilities", dfHandler.AuthHandler(ResourceScanReport, PermissionIngest, dfHandler.IngestVulnerabilityReportHandler))
@@ -177,6 +176,7 @@ func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDo
 			r.Route("/cloud-node", func(r chi.Router) {
 				r.Post("/account", dfHandler.AuthHandler(ResourceCloudNode, PermissionRegister, dfHandler.RegisterCloudNodeAccountHandler))
 				r.Post("/accounts/list", dfHandler.AuthHandler(ResourceCloudNode, PermissionRead, dfHandler.ListCloudNodeAccountHandler))
+				r.Get("/providers/list", dfHandler.AuthHandler(ResourceCloudNode, PermissionRead, dfHandler.ListCloudNodeProvidersHandler))
 			})
 
 			r.Route("/scan/start", func(r chi.Router) {
@@ -184,6 +184,7 @@ func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDo
 				r.Post("/secret", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.StartSecretScanHandler))
 				r.Post("/compliance", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.StartComplianceScanHandler))
 				r.Post("/malware", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.StartMalwareScanHandler))
+				r.Post("/cloud-compliance", dfHandler.AuthHandler(ResourceScan, PermissionStart, dfHandler.StartCloudComplianceScanHandler))
 			})
 			r.Route("/scan/stop", func(r chi.Router) {
 				r.Post("/vulnerability", dfHandler.AuthHandler(ResourceScan, PermissionStop, dfHandler.StopVulnerabilityScanHandler))
@@ -211,9 +212,8 @@ func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDo
 			})
 
 			openApiDocs.AddRegistryOperations()
-			r.Route("/container-registry", func(r chi.Router) {
-				r.Get("/images", dfHandler.AuthHandler(ResourceRegistry, PermissionRead, dfHandler.ListImagesInRegistry))
-				r.Get("/", dfHandler.AuthHandler(ResourceRegistry, PermissionRead, dfHandler.ListRegistry))
+			r.Route("/registryaccount", func(r chi.Router) {
+				r.Get("/list", dfHandler.AuthHandler(ResourceRegistry, PermissionRead, dfHandler.ListRegistry))
 				r.Post("/", dfHandler.AuthHandler(ResourceRegistry, PermissionWrite, dfHandler.AddRegistry))
 			})
 
@@ -236,3 +236,9 @@ func newAuthorizationHandler() (*casbin.Enforcer, error) {
 func IsSaasDeployment() bool {
 	return strings.ToLower(os.Getenv("DEEPFENCE_SAAS_DEPLOYMENT")) == "true"
 }
+
+/*
+
+
+
+ */

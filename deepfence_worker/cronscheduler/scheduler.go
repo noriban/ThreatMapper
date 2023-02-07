@@ -44,11 +44,19 @@ func (s *Scheduler) addJobs() error {
 	if err != nil {
 		return err
 	}
+	_, err = s.cron.AddFunc("@every 120s", s.RetryFailedUpgradesTask)
+	if err != nil {
+		return err
+	}
 	_, err = s.cron.AddFunc("@every 10m", s.CleanUpPostgresqlTask)
 	if err != nil {
 		return err
 	}
 	_, err = s.cron.AddFunc("@every 60m", s.CheckAgentUpgradeTask)
+	if err != nil {
+		return err
+	}
+	_, err = s.cron.AddFunc("@every 300s", s.SyncRegistryTask)
 	if err != nil {
 		return err
 	}
@@ -75,6 +83,14 @@ func (s *Scheduler) RetryFailedScansTask() {
 	}
 }
 
+func (s *Scheduler) RetryFailedUpgradesTask() {
+	metadata := map[string]string{directory.NamespaceKey: string(directory.NonSaaSDirKey)}
+	err := s.publishNewCronJob(metadata, utils.RetryFailedUpgradesTask, []byte(utils.GetDatetimeNow()))
+	if err != nil {
+		log.Error().Msg(err.Error())
+	}
+}
+
 func (s *Scheduler) CleanUpPostgresqlTask() {
 	metadata := map[string]string{directory.NamespaceKey: string(directory.NonSaaSDirKey)}
 	err := s.publishNewCronJob(metadata, utils.CleanUpPostgresqlTask, []byte(utils.GetDatetimeNow()))
@@ -86,6 +102,14 @@ func (s *Scheduler) CleanUpPostgresqlTask() {
 func (s *Scheduler) CheckAgentUpgradeTask() {
 	metadata := map[string]string{directory.NamespaceKey: string(directory.NonSaaSDirKey)}
 	err := s.publishNewCronJob(metadata, utils.CheckAgentUpgradeTask, []byte(utils.GetDatetimeNow()))
+	if err != nil {
+		log.Error().Msg(err.Error())
+	}
+}
+
+func (s *Scheduler) SyncRegistryTask() {
+	metadata := map[string]string{directory.NamespaceKey: string(directory.NonSaaSDirKey)}
+	err := s.publishNewCronJob(metadata, utils.SyncRegistryTask, nil)
 	if err != nil {
 		log.Error().Msg(err.Error())
 	}

@@ -6,7 +6,6 @@ import (
 	"github.com/deepfence/ThreatMapper/deepfence_server/diagnosis"
 	"github.com/weaveworks/scope/render/detailed"
 
-	controls2 "github.com/deepfence/ThreatMapper/deepfence_server/controls"
 	"github.com/deepfence/ThreatMapper/deepfence_server/ingesters"
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
 	"github.com/deepfence/ThreatMapper/deepfence_server/reporters"
@@ -111,10 +110,6 @@ func (d *OpenApiDocs) AddLookupOperations() {
 		"Retrieve K8s data", "Retrieve all the data associated with k8s clusters",
 		http.StatusOK, []string{tagLookup}, bearerToken, new(reporters.LookupFilter), new([]model.KubernetesCluster))
 
-	d.AddOperation("getKubernetesScanners", http.MethodPost, "/deepfence/lookup/kubernetes-scanners",
-		"Retrieve K8s scanners data", "Retrieve all the data associated with k8s scanners",
-		http.StatusOK, []string{tagLookup}, bearerToken, new(reporters.LookupFilter), new([]model.KubernetesCluster))
-
 	d.AddOperation("getPods", http.MethodPost, "/deepfence/lookup/pods",
 		"Retrieve Pods data", "Retrieve all the data associated with pods",
 		http.StatusOK, []string{tagLookup}, bearerToken, new(reporters.LookupFilter), new([]model.Pod))
@@ -122,6 +117,10 @@ func (d *OpenApiDocs) AddLookupOperations() {
 	d.AddOperation("getContainerImages", http.MethodPost, "/deepfence/lookup/containerimages",
 		"Retrieve Container Images data", "Retrieve all the data associated with images",
 		http.StatusOK, []string{tagLookup}, bearerToken, new(reporters.LookupFilter), new([]model.ContainerImage))
+
+	d.AddOperation("getRegistryAccount", http.MethodPost, "/deepfence/lookup/registryaccount",
+		"Get Images in Registry", "List all the images present in the given registry",
+		http.StatusOK, []string{tagLookup}, bearerToken, new(reporters.LookupFilter), new([]model.RegistryAccount))
 }
 
 func (d *OpenApiDocs) AddControlsOperations() {
@@ -129,13 +128,13 @@ func (d *OpenApiDocs) AddControlsOperations() {
 		"Fetch Agent Actions", "Fetch actions for a given agent",
 		http.StatusOK, []string{tagControls}, bearerToken, new(model.AgentId), new(controls.AgentControls))
 
-	d.AddOperation("getKubernetesScannerControls", http.MethodPost, "/deepfence/controls/kubernetes-scanner",
-		"Fetch Kubernetes Scanner Actions", "Fetch actions for a given Kubernetes Cluster",
-		http.StatusOK, []string{tagControls}, bearerToken, new(model.AgentId), new(controls2.KubernetesScannerControlResponse))
+	d.AddOperation("getKubernetesClusterControls", http.MethodPost, "/deepfence/controls/kubernetes-cluster",
+		"Fetch Kubernetes Cluster Actions", "Fetch actions for a given Kubernetes Cluster",
+		http.StatusOK, []string{tagControls}, bearerToken, new(model.AgentId), new(controls.AgentControls))
 
 	d.AddOperation("getAgentInitControls", http.MethodPost, "/deepfence/controls/agent-init",
 		"Fetch Agent Init Actions", "Fetch initial actions for a given agent after it started",
-		http.StatusOK, []string{tagControls}, bearerToken, new(model.AgentId), new(controls.AgentControls))
+		http.StatusOK, []string{tagControls}, bearerToken, new(model.InitAgentReq), new(controls.AgentControls))
 
 	d.AddOperation("upgradeAgentVersion", http.MethodPost, "/deepfence/controls/agent-upgrade",
 		"Schedule new agent version upgrade", "Schedule new agent version upgrade",
@@ -149,6 +148,9 @@ func (d *OpenApiDocs) AddCloudNodeOperations() {
 	d.AddOperation("listCloudNodeAccount", http.MethodPost, "/deepfence/cloud-node/accounts/list",
 		"List Cloud Node Accounts", "List Cloud Node Accounts registered with the console",
 		http.StatusOK, []string{tagCloudNodes}, bearerToken, new(model.CloudNodeAccountsListReq), new(model.CloudNodeAccountsListResp))
+	d.AddOperation("listCloudProviders", http.MethodPost, "/deepfence/cloud-node/providers/list",
+		"List Cloud Node Providers", "List Cloud Node Providers registered with the console",
+		http.StatusOK, []string{tagCloudNodes}, bearerToken, new(model.CloudNodeProvidersListReq), new(model.CloudNodeProvidersListResp))
 }
 
 func (d *OpenApiDocs) AddIngestersOperations() {
@@ -199,11 +201,6 @@ func (d *OpenApiDocs) AddIngestersOperations() {
 	d.AddOperation("ingestCloudResources", http.MethodPost, "/deepfence/ingest/cloud-resources",
 		"Ingest Cloud resources", "Ingest Clouds Resources found while scanning cloud provider",
 		http.StatusOK, []string{tagCloudResources}, bearerToken, new([]ingesters.CloudResource), nil)
-
-	d.AddOperation("registerKubernetesScanner", http.MethodPost, "/deepfence/ingest/kubernetes-scanner",
-		"Register Kubernetes Scanner", "Register Kubernetes Scanner",
-		http.StatusNoContent, []string{tagKubernetesScanner}, bearerToken, new([]ingesters.RegisterKubernetesScannerRequest), nil)
-
 }
 
 func (d *OpenApiDocs) AddScansOperations() {
@@ -220,6 +217,9 @@ func (d *OpenApiDocs) AddScansOperations() {
 	d.AddOperation("startMalwareScan", http.MethodPost, "/deepfence/scan/start/malware",
 		"Start Malware Scan", "Start Malware Scan on agent or registry",
 		http.StatusAccepted, []string{tagMalwareScan}, bearerToken, new(model.MalwareScanTriggerReq), new(model.ScanTriggerResp))
+	d.AddOperation("startCloudComplianceScans", http.MethodPost, "/deepfence/scan/start/cloud-compliance",
+		"Start Cloud Compliance Scans", "Start Cloud Compliance Scans on cloud nodes", http.StatusAccepted,
+		[]string{tagCloudScanner}, bearerToken, new(model.CloudComplianceScanTriggerReq), new(model.ScanTriggerResp))
 
 	// Stop scan
 	d.AddOperation("stopVulnerabilityScan", http.MethodPost, "/deepfence/scan/stop/vulnerability",
@@ -294,14 +294,10 @@ func (d *OpenApiDocs) AddDiagnosisOperations() {
 }
 
 func (d *OpenApiDocs) AddRegistryOperations() {
-	// TODO
-	d.AddOperation("listImagesInRegistry", http.MethodGet, "/deepfence/container-registry/images",
-		"List Images in Registry", "List all the images present in all the registries",
-		http.StatusOK, []string{tagRegistry}, bearerToken, nil, nil)
-	d.AddOperation("ListRegistry", http.MethodGet, "/deepfence/container-registry/",
-		"List Images in Registry", "List all the added Registry",
+	d.AddOperation("listRegistry", http.MethodGet, "/deepfence/registryaccount/list",
+		"List Registries", "List all the added Registries",
 		http.StatusOK, []string{tagRegistry}, bearerToken, new(model.RegistryListReq), new([]postgresqldb.GetContainerRegistriesSafeRow))
-	d.AddOperation("AddRegistry", http.MethodPost, "/deepfence/container-registry/",
+	d.AddOperation("addRegistry", http.MethodPost, "/deepfence/registryaccount/",
 		"Add Registry", "Add a new supported registry",
 		http.StatusOK, []string{tagRegistry}, bearerToken, new(model.RegistryAddReq), nil)
 }
