@@ -13,6 +13,7 @@ import (
 	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/malwarescan"
 	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/sbom"
 	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/secretscan"
+	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/report"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 	"github.com/deepfence/golang_deepfence_sdk/utils/utils"
 	"github.com/twmb/franz-go/pkg/kgo"
@@ -168,6 +169,8 @@ func startWorker(wml watermill.LoggerAdapter, cfg config) error {
 	worker.AddNoPublisherHandler(utils.SecretScanTask, secretscan.NewSecretScanner(ingestC).StartSecretScan)
 
 	worker.AddNoPublisherHandler(utils.MalwareScanTask, malwarescan.NewMalwareScanner(ingestC).StartMalwareScan)
+	worker.AddNoPublisherHandler(utils.ReportGeneratorTaskXLSX, report.GenerateXLSXReport)
+	worker.AddNoPublisherHandler(utils.ReportGeneratorTaskPDF, report.GeneratePDFReport)
 
 	log.Info().Msg("Starting the consumer")
 	if err = worker.Run(context.Background()); err != nil {
