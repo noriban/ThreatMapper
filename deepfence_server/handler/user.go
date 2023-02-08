@@ -3,12 +3,16 @@ package handler
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
 	"github.com/deepfence/golang_deepfence_sdk/utils/directory"
 	"github.com/deepfence/golang_deepfence_sdk/utils/integrations/email"
@@ -33,6 +37,10 @@ var (
 func init() {
 	*True = true
 	*False = false
+}
+
+type ReportStruct struct{
+	ReportType string `json:"report_type"`
 }
 
 func (h *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -628,13 +636,18 @@ func (h *Handler) GetApiTokenForConsoleAgent(w http.ResponseWriter, r *http.Requ
 }
 
 func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
+
 	_, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
 	if err != nil {
 		httpext.JSON(w, statusCode, model.MessageResponse{Message: err.Error()})
 		return
 	}
 
-	payload, err := json.Marshal(params.SbomParameters)
+	params := ReportStruct{
+		ReportType : "xlsx",
+	}
+
+	payload, err := json.Marshal(params)
 	if err != nil {
 		log.Error().Msg(err.Error())
 		respondError(err, w)
@@ -648,17 +661,17 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 		respondError(err, w)
 		return
 	}
-	msg.Metadata = map[string]string{directory.NamespaceKey: string(namespace)}
+	msg.Metadata = map[string]string{directory.NamespaceKey: string(namespace),"reportType": "xlsx"}
 	msg.SetContext(directory.NewContextWithNameSpace(namespace))
 	middleware.SetCorrelationID(watermill.NewShortUUID(), msg)
 
-	err = h.TasksPublisher.Publish(utils.ScanSBOMTask, msg)
+	err = h.TasksPublisher.Publish(utils.ReportGeneratorTask, msg)
 	if err != nil {
 		log.Error().Msgf("cannot publish message:", err)
 		respondError(err, w)
 		return
 	}
-	
+
 	httpext.JSON(w, http.StatusOK, model.MessageResponse{
 		Message: "OK"})
 }

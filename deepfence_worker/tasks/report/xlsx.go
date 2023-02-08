@@ -17,6 +17,9 @@ func GenerateReport(msg *message.Message) error{
 		log.Error().Msg("tenant-id/namespace is empty")
 		return errors.New("tenant-id/namespace is empty")
 	}
+	log.Info().Msgf("message tenant id %s", string(tenantID))
+
+	log.Info().Msgf("uuid: %s payload: %s ", msg.UUID, string(msg.Payload))
 	return err
 }
 
