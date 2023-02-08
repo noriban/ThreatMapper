@@ -6,8 +6,9 @@ import (
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/deepfence/ThreatMapper/deepfence_utils/directory"
-	"github.com/deepfence/ThreatMapper/deepfence_utils/log"
+
+	// "github.com/deepfence/ThreatMapper/deepfence_utils/directory"
+	// "github.com/deepfence/ThreatMapper/deepfence_utils/log"
 	"github.com/deepfence/golang_deepfence_sdk/utils/directory"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -27,13 +28,16 @@ func GenerateReport(msg *message.Message) error {
 
 	log.Info().Msgf("uuid: %s payload: %s ", msg.UUID, string(msg.Payload))
 
-	client, err := directory.Neo4jClient(r.Context())
+	ctx := directory.NewGlobalContext()
+
+	client, err := directory.Neo4jClient(ctx)
 	if err != nil {
-		log.Error().Msg("some error 1")
+		log.Error().Msg("error 1")
+		log.Error().Msgf("%s", err)
 		return err
 	}
 
-	session, err := client.Session(neo4j.AccessModeWrite)
+	session := client.NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	if err != nil {
 		log.Error().Msg("some error 2")
 		return err
@@ -46,7 +50,7 @@ func GenerateReport(msg *message.Message) error {
 	}
 	defer tx.Close()
 
-	rq, err := tx.Run("MATCH (n:Secret {host_name: 'mukul-test'})  return n", map[string]interface{}{})
+	rq, err := tx.Run("MATCH (n:Secret)  return n", map[string]interface{}{})
 
 	if err != nil {
 		log.Error().Msg("some error 3")
@@ -84,7 +88,7 @@ func GenerateReport(msg *message.Message) error {
 		secretDoc := record.Values[0].(dbtype.Node)
 
 		log.Info().Msgf("%+v", secretDoc.Props)
-		log.Info().Msgf(secretDoc.Props["full_filename"])
+		log.Info().Msgf("%s", secretDoc.Props["full_filename"])
 
 	}
 
