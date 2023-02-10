@@ -1,0 +1,10 @@
+go 1.19
+
+use (
+	./deepfence_agent/plugins/package-scanner
+	./deepfence_agent/plugins/package-scanner/tools/syft-bin/syft
+	./deepfence_agent/tools/apache/scope
+	./deepfence_ctl
+	./deepfence_server
+	./deepfence_worker
+)
