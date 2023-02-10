@@ -20,16 +20,15 @@ import (
 	"github.com/deepfence/golang_deepfence_sdk/utils/utils"
 	"github.com/go-chi/jwtauth/v5"
 	httpext "github.com/go-playground/pkg/v5/net/http"
+	"github.com/google/uuid"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j/dbtype"
 )
 
 const (
 	MaxPostRequestSize = 100000 // 100 KB
 	DefaultNamespace   = "default"
 )
-
-type ReportStruct struct{
-	ReportType string `json:"report_type"`
-}
 
 func (h *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var registerRequest model.UserRegisterRequest
@@ -522,9 +521,46 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	params := ReportStruct{
-		ReportType : "xlsx",
+	report_id := uuid.New().String()
+	params := model.ReportStruct{
+		ReportType: "xlsx",
+		Status:     "started",
+		ReportID:   report_id,
+		FileURL:    "",
+		StartedAt:  time.Now().Format("2006-01-02 15:04:05.000000000"),
+		FinishedAt: "",
 	}
+
+	client, err := directory.Neo4jClient(r.Context())
+	if err != nil {
+		log.Error().Msg("some error 1")
+		return
+	}
+
+	session, err := client.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		log.Error().Msg("some error 2")
+		return
+	}
+	defer session.Close()
+
+	tx, err := session.BeginTransaction()
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+	defer tx.Close()
+
+	_, err = tx.Run("create (n:REPORT:XLSX {type : 'xlsx', report_id: $uid, url: '', started_at: $timestamp, status: 'started'}) return n", map[string]interface{}{"timestamp": params.StartedAt, "uid": params.ReportID})
+	if err != nil {
+		log.Error().Msg("something happened while saving it to db")
+	}
+
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+	tx.Commit()
 
 	payload, err := json.Marshal(params)
 	if err != nil {
@@ -540,7 +576,7 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 		respondError(err, w)
 		return
 	}
-	msg.Metadata = map[string]string{directory.NamespaceKey: string(namespace),"reportType": "xlsx"}
+	msg.Metadata = map[string]string{directory.NamespaceKey: string(namespace), "reportType": "xlsx"}
 	msg.SetContext(directory.NewContextWithNameSpace(namespace))
 	middleware.SetCorrelationID(watermill.NewShortUUID(), msg)
 
@@ -553,4 +589,67 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 
 	httpext.JSON(w, http.StatusOK, model.MessageResponse{
 		Message: "OK"})
+}
+
+func (h *Handler) GenerateReportStatus(w http.ResponseWriter, r *http.Request) {
+
+	_, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
+	if err != nil {
+		httpext.JSON(w, statusCode, model.MessageResponse{Message: err.Error()})
+		return
+	}
+
+	client, err := directory.Neo4jClient(r.Context())
+	if err != nil {
+		log.Error().Msg("some error 1")
+		return
+	}
+
+	session, err := client.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		log.Error().Msg("some error 2")
+		return
+	}
+	defer session.Close()
+
+	tx, err := session.BeginTransaction()
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+	defer tx.Close()
+
+	rq, err := tx.Run("match (n:REPORT:XLSX) return n", map[string]interface{}{})
+	if err != nil {
+		log.Error().Msg("something happened while saving it to db")
+	}
+
+	records, err := rq.Collect()
+
+	if err != nil {
+		httpext.JSON(w, statusCode, model.MessageResponse{Message: err.Error()})
+		return
+	}
+
+	var response []model.ReportStruct
+	var tempInfo model.ReportStruct
+
+	for _, record := range records {
+		if record.Values[0] == nil {
+			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
+			continue
+		}
+		doc := record.Values[0].(dbtype.Node)
+		log.Info().Msgf("%s", doc.Props)
+		tempInfo.FileURL = doc.Props["url"].(string)
+		tempInfo.ReportID = doc.Props["report_id"].(string)
+		tempInfo.ReportType = doc.Props["type"].(string)
+		tempInfo.FinishedAt = doc.Props["finished_at"].(string)
+		tempInfo.StartedAt = doc.Props["started_at"].(string)
+		tempInfo.Status = doc.Props["status"].(string)
+		response = append(response, tempInfo)
+	}
+
+	httpext.JSON(w, http.StatusOK, model.ReportStatusResponse{
+		Data: response})
 }

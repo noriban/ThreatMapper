@@ -28,8 +28,21 @@ const (
 	GrantTypeAPIToken = "api_token"
 )
 
+type ReportStruct struct {
+	ReportType string `json:"report_type"`
+	Status     string `json:"status"`
+	ReportID   string `json:"report_id"`
+	FileURL    string `json:"file_url"`
+	StartedAt  string `json:"started_at"`
+	FinishedAt string `json:"finished_at"`
+}
+
 type MessageResponse struct {
 	Message string `json:"message" required:"true"`
+}
+
+type ReportStatusResponse struct {
+	Data []ReportStruct `json:"data" required:"true"`
 }
 
 var (

@@ -1,14 +1,20 @@
 package report
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+	"path"
+	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/minio/minio-go/v7"
 
 	// "github.com/deepfence/ThreatMapper/deepfence_utils/directory"
 	// "github.com/deepfence/ThreatMapper/deepfence_utils/log"
+	"github.com/deepfence/ThreatMapper/deepfence_server/model"
 	"github.com/deepfence/golang_deepfence_sdk/utils/directory"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -17,6 +23,7 @@ import (
 
 func GenerateReport(msg *message.Message) error {
 	var err error
+	var reportPayload model.ReportStruct
 	log.Info().Msg("Generating report")
 	fmt.Println("generating report")
 	tenantID := msg.Metadata.Get(directory.NamespaceKey)
@@ -28,7 +35,12 @@ func GenerateReport(msg *message.Message) error {
 
 	log.Info().Msgf("uuid: %s payload: %s ", msg.UUID, string(msg.Payload))
 
-	ctx := directory.NewGlobalContext()
+	err = json.Unmarshal(msg.Payload, &reportPayload)
+	if err != nil {
+		log.Error().Msg("error while processing report payload")
+	}
+
+	ctx := directory.NewContextWithNameSpace(directory.NamespaceID(tenantID))
 
 	client, err := directory.Neo4jClient(ctx)
 	if err != nil {
@@ -74,11 +86,6 @@ func GenerateReport(msg *message.Message) error {
 		f.SetCellValue("Sheet1", k, v)
 	}
 	// it should work
-	if err := f.SaveAs("/secret-scan.xlsx"); err != nil {
-		log.Error().Msg("some error 3")
-		return err
-	}
-
 	for _, record := range records {
 		if record.Values[0] == nil {
 			log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
@@ -87,10 +94,69 @@ func GenerateReport(msg *message.Message) error {
 
 		secretDoc := record.Values[0].(dbtype.Node)
 
-		log.Info().Msgf("%+v", secretDoc.Props)
+		// log.Info().Msgf("%+v", secretDoc.Props)
 		log.Info().Msgf("%s", secretDoc.Props["full_filename"])
 
 	}
+
+	if err = os.MkdirAll("/tmp/"+reportPayload.ReportID, os.ModePerm); err != nil {
+		log.Error().Msg("while making the folder")
+	}
+	secretFilename := fmt.Sprintf("/tmp/%s/secret-scan.xlsx", reportPayload.ReportID)
+	if err := f.SaveAs(secretFilename); err != nil {
+		log.Error().Msg("some error 3")
+		return err
+	}
+
+	b, err := os.ReadFile(secretFilename)
+	if err != nil {
+		log.Error().Err(err).Msg("ReadFile")
+		return err
+	}
+
+	mc, err := directory.MinioClient(ctx)
+	if err != nil {
+		log.Error().Msg("1")
+		log.Error().Msg(err.Error())
+		return err
+	}
+
+	file := path.Join("/report/", reportPayload.ReportID, "/secret-scan.xlsx")
+	res, err := mc.UploadFile(ctx, file, b,
+		minio.PutObjectOptions{ContentType: "application/xlsx"})
+	key := ""
+	if err != nil {
+		ape, ok := err.(directory.AlreadyPresentError)
+		if ok {
+			log.Warn().Err(err).Msg("Skip upload")
+			key = ape.Path
+		} else {
+			log.Error().Err(err).Msg("Upload")
+			return err
+		}
+	} else {
+		key = res.Key
+	}
+
+	url, err := mc.ExposeFile(ctx, key)
+	if err != nil {
+		log.Error().Err(err)
+		return err
+	}
+
+	reportPayload.FileURL = url
+	reportPayload.FinishedAt = time.Now().Format("2006-01-02 15:04:05.000000000")
+	reportPayload.Status = "completed"
+
+	log.Info().Msgf("Exposed URL: %v", url)
+
+	_, err = tx.Run("match (n:REPORT:XLSX {report_id: $uid}) set n.url = $url, n.finished_at = $finishedAt, n.status = $status return n", map[string]interface{}{"uid": reportPayload.ReportID, "url": reportPayload.FileURL, "finishedAt": reportPayload.FinishedAt, "status": reportPayload.Status})
+
+	if err != nil {
+		log.Error().Msg("something happened while saving it to db")
+	}
+
+	tx.Commit()
 
 	return err
 }
