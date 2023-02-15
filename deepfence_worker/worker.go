@@ -10,8 +10,8 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
 	"github.com/ThreeDotsLabs/watermill/message/router/plugin"
 	"github.com/deepfence/ThreatMapper/deepfence_worker/cronjobs"
-	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/sbom"
 	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/report"
+	"github.com/deepfence/ThreatMapper/deepfence_worker/tasks/sbom"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 	"github.com/deepfence/golang_deepfence_sdk/utils/utils"
 	"github.com/twmb/franz-go/pkg/kgo"
@@ -80,16 +80,28 @@ func startWorker(wml watermill.LoggerAdapter, cfg config) error {
 	)
 
 	// xlsx report
-	subscribe_generate_xlsx_report, err := subscribe(utils.ReportGeneratorTask, cfg.KafkaBrokers, wml)
+	subscribe_generate_xlsx_report, err := subscribe(utils.ReportGeneratorTaskXLSX, cfg.KafkaBrokers, wml)
 	if err != nil {
 		cancel()
 		return err
 	}
 	mux.AddNoPublisherHandler(
-		utils.ReportGeneratorTask,
-		utils.ReportGeneratorTask,
+		utils.ReportGeneratorTaskXLSX,
+		utils.ReportGeneratorTaskXLSX,
 		subscribe_generate_xlsx_report,
-		report.GenerateReport,
+		report.GenerateXLSXReport,
+	)
+
+	subscribe_generate_pdf_report, err := subscribe(utils.ReportGeneratorTaskPDF, cfg.KafkaBrokers, wml)
+	if err != nil {
+		cancel()
+		return err
+	}
+	mux.AddNoPublisherHandler(
+		utils.ReportGeneratorTaskPDF,
+		utils.ReportGeneratorTaskPDF,
+		subscribe_generate_pdf_report,
+		report.GeneratePDFReport,
 	)
 
 	subscribe_generate_sbom, err := subscribe(utils.GenerateSBOMTask, cfg.KafkaBrokers, wml)

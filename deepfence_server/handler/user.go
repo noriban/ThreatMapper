@@ -580,15 +580,14 @@ func (h *Handler) GenerateXlsxReport(w http.ResponseWriter, r *http.Request) {
 	msg.SetContext(directory.NewContextWithNameSpace(namespace))
 	middleware.SetCorrelationID(watermill.NewShortUUID(), msg)
 
-	err = h.TasksPublisher.Publish(utils.ReportGeneratorTask, msg)
+	err = h.TasksPublisher.Publish(utils.ReportGeneratorTaskXLSX, msg)
 	if err != nil {
 		log.Error().Msgf("cannot publish message:", err)
 		respondError(err, w)
 		return
 	}
 
-	httpext.JSON(w, http.StatusOK, model.MessageResponse{
-		Message: "OK"})
+	httpext.JSON(w, http.StatusOK, model.MessageResponse{})
 }
 
 func (h *Handler) GenerateReportStatus(w http.ResponseWriter, r *http.Request) {
@@ -652,4 +651,83 @@ func (h *Handler) GenerateReportStatus(w http.ResponseWriter, r *http.Request) {
 
 	httpext.JSON(w, http.StatusOK, model.ReportStatusResponse{
 		Data: response})
+}
+
+
+func (h *Handler) GeneratePDFReport(w http.ResponseWriter, r *http.Request) {
+
+	_, statusCode, _, _, err := h.GetUserFromJWT(r.Context())
+	if err != nil {
+		httpext.JSON(w, statusCode, model.MessageResponse{Message: err.Error()})
+		return
+	}
+
+	report_id := uuid.New().String()
+	params := model.ReportStruct{
+		ReportType: "pdf",
+		Status:     "started",
+		ReportID:   report_id,
+		FileURL:    "",
+		StartedAt:  time.Now().Format("2006-01-02 15:04:05.000000000"),
+		FinishedAt: "",
+	}
+
+	client, err := directory.Neo4jClient(r.Context())
+	if err != nil {
+		log.Error().Msg("some error 1")
+		return
+	}
+
+	session, err := client.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		log.Error().Msg("some error 2")
+		return
+	}
+	defer session.Close()
+
+	tx, err := session.BeginTransaction()
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+	defer tx.Close()
+
+	_, err = tx.Run("create (n:REPORT:PDF {type : 'xlsx', report_id: $uid, url: '', started_at: $timestamp, status: 'started'}) return n", map[string]interface{}{"timestamp": params.StartedAt, "uid": params.ReportID})
+	if err != nil {
+		log.Error().Msg("something happened while saving it to db")
+	}
+
+	if err != nil {
+		log.Error().Msg("some error 3")
+		return
+	}
+	tx.Commit()
+
+	payload, err := json.Marshal(params)
+	if err != nil {
+		log.Error().Msg(err.Error())
+		respondError(err, w)
+		return
+	}
+
+	msg := message.NewMessage(watermill.NewUUID(), payload)
+	namespace, err := directory.ExtractNamespace(r.Context())
+	if err != nil {
+		log.Error().Msg(err.Error())
+		respondError(err, w)
+		return
+	}
+
+	msg.Metadata = map[string]string{directory.NamespaceKey: string(namespace), "reportType": "pdf"}
+	msg.SetContext(directory.NewContextWithNameSpace(namespace))
+	middleware.SetCorrelationID(watermill.NewShortUUID(), msg)
+
+	err = h.TasksPublisher.Publish(utils.ReportGeneratorTaskPDF, msg)
+	if err != nil {
+		log.Error().Msgf("cannot publish message:", err)
+		respondError(err, w)
+		return
+	}
+
+	httpext.JSON(w, http.StatusOK, model.MessageResponse{})
 }
