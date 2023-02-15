@@ -218,6 +218,7 @@ func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDo
 			r.Route("/generate", func(r chi.Router) {
 				r.Post("/xlsx", dfHandler.AuthHandler(IntegrationScanReport, PermissionWrite, dfHandler.GenerateXlsxReport))
 				r.Get("/reports/status", dfHandler.AuthHandler(IntegrationScanReport, PermissionWrite, dfHandler.GenerateReportStatus))
+				r.Post("/pdf", dfHandler.AuthHandler(IntegrationScanReport, PermissionWrite, dfHandler.GeneratePDFReport))
 			})
 
 			r.Route("/cloud-node", func(r chi.Router) {

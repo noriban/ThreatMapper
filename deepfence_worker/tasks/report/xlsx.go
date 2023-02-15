@@ -1,10 +1,6 @@
 package report
 
-import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	"os"
+
 	"path"
 	"time"
 
@@ -21,7 +17,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j/dbtype"
 )
 
-func GenerateReport(msg *message.Message) error {
+func GenerateXLSXReport(msg *message.Message) error {
 	var err error
 	var reportPayload model.ReportStruct
 	log.Info().Msg("Generating report")
@@ -101,7 +97,9 @@ func GenerateReport(msg *message.Message) error {
 
 	if err = os.MkdirAll("/tmp/"+reportPayload.ReportID, os.ModePerm); err != nil {
 		log.Error().Msg("while making the folder")
+		return err
 	}
+
 	secretFilename := fmt.Sprintf("/tmp/%s/secret-scan.xlsx", reportPayload.ReportID)
 	if err := f.SaveAs(secretFilename); err != nil {
 		log.Error().Msg("some error 3")
@@ -116,7 +114,6 @@ func GenerateReport(msg *message.Message) error {
 
 	mc, err := directory.MinioClient(ctx)
 	if err != nil {
-		log.Error().Msg("1")
 		log.Error().Msg(err.Error())
 		return err
 	}
