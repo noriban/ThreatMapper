@@ -24,6 +24,7 @@ replace github.com/deepfence/agent-plugins-grpc => ../deepfence_agent/plugins/ag
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize v1.4.1
+	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.0
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/ThreeDotsLabs/watermill-kafka/v2 v2.2.2
 	github.com/anchore/syft v0.73.0

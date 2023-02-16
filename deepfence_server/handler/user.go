@@ -743,7 +743,7 @@ func (h *Handler) GenerateReportStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Close()
 
-	rq, err := tx.Run("match (n:REPORT:XLSX) return n", map[string]interface{}{})
+	rq, err := tx.Run("match (n:REPORT) return n", map[string]interface{}{})
 	if err != nil {
 		log.Error().Msg("something happened while saving it to db")
 	}
