@@ -134,6 +134,12 @@ func GeneratePDFReport(msg *message.Message) error {
 
 	// var t *template.Template
 
+	mydir, err := os.Getwd()
+    if err != nil {
+        fmt.Println(err)
+    }
+    fmt.Println("this is current wotking dir",mydir)
+
 	t := template.Must(template.ParseGlob("secret/*.gohtml"))
 
 	var b bytes.Buffer
