@@ -24,11 +24,11 @@ import (
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 )
 
-var t *template.Template
+// var t *template.Template
 
-func init() {
-	t = template.Must(template.ParseGlob("secret/*.gohtml"))
-}
+// func init() {
+// 	t = template.Must(template.ParseGlob("secret/*.gohtml"))
+// }
 
 type Info struct {
 	Title string
@@ -132,9 +132,9 @@ func GeneratePDFReport(msg *message.Message) error {
 		return err
 	}
 
-	var t *template.Template
+	// var t *template.Template
 
-	t = template.Must(template.ParseGlob("secret/*.gohtml"))
+	t := template.Must(template.ParseGlob("secret/*.gohtml"))
 
 	var b bytes.Buffer
 
