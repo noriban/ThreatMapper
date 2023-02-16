@@ -817,7 +817,7 @@ func (h *Handler) GeneratePDFReport(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Close()
 
-	_, err = tx.Run("create (n:REPORT:PDF {type : 'xlsx', report_id: $uid, url: '', started_at: $timestamp, status: 'started'}) return n", map[string]interface{}{"timestamp": params.StartedAt, "uid": params.ReportID})
+	_, err = tx.Run("create (n:REPORT:PDF {type : 'pdf', report_id: $uid, url: '', started_at: $timestamp, status: 'started'}) return n", map[string]interface{}{"timestamp": params.StartedAt, "uid": params.ReportID})
 	if err != nil {
 		log.Error().Msg("something happened while saving it to db")
 	}

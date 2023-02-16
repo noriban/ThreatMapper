@@ -3,6 +3,7 @@ ARG IMAGE_REPOSITORY=deepfenceio
 FROM $IMAGE_REPOSITORY/deepfence_package_scanner_ce:$DF_IMG_TAG AS packagescanner
 FROM $IMAGE_REPOSITORY/deepfence_secret_scanner_ce:$DF_IMG_TAG AS secretscanner
 FROM $IMAGE_REPOSITORY/yara-hunter:$DF_IMG_TAG AS yarahunter
+FROM surnet/alpine-wkhtmltopdf:3.16.2-0.12.6-full as wkhtmltopdf
 
 FROM alpine:3.17 AS builder-yara
 
@@ -65,6 +66,20 @@ RUN apk add --no-cache kafkacat docker openrc bash skopeo \
     libmagic
 RUN apk add hyperscan --repository=https://dl-cdn.alpinelinux.org/alpine/v3.13/community 
 
+RUN apk add --no-cache \
+        libstdc++ \
+        libx11 \
+        libxrender \
+        libxext \
+        libssl1.1 \
+        ca-certificates \
+        fontconfig \
+        freetype \
+        ttf-droid \
+        ttf-freefont \
+        ttf-liberation \
+        ;
+
 ENV DEEPFENCE_KAFKA_TOPIC_PARTITIONS=3 \
     DEEPFENCE_KAFKA_TOPIC_REPLICAS=1 \
     DEEPFENCE_KAFKA_TOPIC_RETENTION_MS="86400000" \
@@ -93,6 +108,9 @@ COPY --from=builder-yara /usr/local/yara.tar.gz /usr/local/yara.tar.gz
 RUN tar -xzf /usr/local/yara.tar.gz -C /usr/local/ \
     && rm /usr/local/yara.tar.gz \
     && chmod +x /entrypoint.sh
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/libwkhtmltox.so /bin/
+# COPY --from=build /go/deepfence_worker/secretscan-config.yaml /config.yaml
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/local/bin/deepfence_worker"]

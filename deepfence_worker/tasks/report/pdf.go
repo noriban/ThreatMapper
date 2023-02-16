@@ -2,6 +2,7 @@ package report
 
 import (
 	"bytes"
+	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -77,6 +78,9 @@ type Filter struct {
 	TypeInformation string
 }
 
+//go:embed secret/*.gohtml
+var content embed.FS
+
 func GeneratePDFReport(msg *message.Message) error {
 	var err error
 	var reportPayload model.ReportStruct
@@ -135,12 +139,15 @@ func GeneratePDFReport(msg *message.Message) error {
 	// var t *template.Template
 
 	mydir, err := os.Getwd()
-    if err != nil {
-        fmt.Println(err)
-    }
-    fmt.Println("this is current wotking dir",mydir)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	t := template.Must(template.ParseGlob("secret/*.gohtml"))
+	fmt.Println("this is current wotking dir", mydir)
+	secretFileNames := []string{"secret/detailed_report_applied_filter.gohtml","secret/detailed_report_nodewise_secret.gohtml","secret/detailed_report_nodewise_vulnerability_count.gohtml","secret/detailed_report_security_report_base.gohtml","secret/detailed_secret_summary_table.gohtml","secret/summary_report_header.gohtml"}
+	t := template.Must(template.ParseFS(content,secretFileNames...))
+
+
 
 	var b bytes.Buffer
 
@@ -230,7 +237,6 @@ func GeneratePDFReport(msg *message.Message) error {
 		return err
 	}
 
-
 	fmt.Println("Done")
 	if err = os.MkdirAll("/tmp/"+reportPayload.ReportID, os.ModePerm); err != nil {
 		log.Error().Msg("while making the folder")
@@ -257,9 +263,9 @@ func GeneratePDFReport(msg *message.Message) error {
 		return err
 	}
 
-	file := path.Join("/report/", reportPayload.ReportID, "/secret-scan.xlsx")
+	file := path.Join("/report/", reportPayload.ReportID, "/secret-scan.pdf")
 	res, err := mc.UploadFile(ctx, file, byteBuffer,
-		minio.PutObjectOptions{ContentType: "application/xlsx"})
+		minio.PutObjectOptions{ContentType: "application/pdf"})
 	key := ""
 	if err != nil {
 		ape, ok := err.(directory.AlreadyPresentError)
