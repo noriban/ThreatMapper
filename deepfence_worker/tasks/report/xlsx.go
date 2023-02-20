@@ -8,6 +8,8 @@ import (
 	"path"
 	"time"
 
+	url2 "net/url"
+
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/minio/minio-go/v7"
@@ -139,7 +141,7 @@ func GenerateXLSXReport(msg *message.Message) error {
 		key = res.Key
 	}
 
-	url, err := mc.ExposeFile(ctx, key)
+	url, err := mc.ExposeFile(ctx, key, 10*time.Hour, url2.Values{})
 	if err != nil {
 		log.Error().Err(err)
 		return err

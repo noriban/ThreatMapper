@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"html/template"
+	url2 "net/url"
 
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/minio/minio-go/v7"
@@ -144,10 +145,8 @@ func GeneratePDFReport(msg *message.Message) error {
 	}
 
 	fmt.Println("this is current wotking dir", mydir)
-	secretFileNames := []string{"secret/detailed_report_applied_filter.gohtml","secret/detailed_report_nodewise_secret.gohtml","secret/detailed_report_nodewise_vulnerability_count.gohtml","secret/detailed_report_security_report_base.gohtml","secret/detailed_secret_summary_table.gohtml","secret/summary_report_header.gohtml"}
-	t := template.Must(template.ParseFS(content,secretFileNames...))
-
-
+	secretFileNames := []string{"secret/detailed_report_applied_filter.gohtml", "secret/detailed_report_nodewise_secret.gohtml", "secret/detailed_report_nodewise_vulnerability_count.gohtml", "secret/detailed_report_security_report_base.gohtml", "secret/detailed_secret_summary_table.gohtml", "secret/summary_report_header.gohtml"}
+	t := template.Must(template.ParseFS(content, secretFileNames...))
 
 	var b bytes.Buffer
 
@@ -280,7 +279,7 @@ func GeneratePDFReport(msg *message.Message) error {
 		key = res.Key
 	}
 
-	url, err := mc.ExposeFile(ctx, key)
+	url, err := mc.ExposeFile(ctx, key, 10*time.Hour, url2.Values{})
 	if err != nil {
 		log.Error().Err(err)
 		return err
