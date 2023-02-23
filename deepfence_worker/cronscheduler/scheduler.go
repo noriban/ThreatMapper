@@ -68,6 +68,12 @@ func (s *Scheduler) addJobs() error {
 	if err != nil {
 		return err
 	}
+
+	_, err = s.cron.AddFunc("@every 30s", s.enqeueTask(sdkUtils.SendNotificationTask))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -76,6 +82,7 @@ func (s *Scheduler) startImmediately() {
 	s.enqeueTask(sdkUtils.SetUpGraphDBTask)()
 	s.enqeueTask(sdkUtils.CheckAgentUpgradeTask)()
 	s.enqeueTask(sdkUtils.SyncRegistryTask)()
+	s.enqeueTask(sdkUtils.SendNotificationTask)()
 }
 
 func (s *Scheduler) Run() {

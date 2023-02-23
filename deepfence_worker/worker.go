@@ -172,6 +172,11 @@ func startWorker(wml watermill.LoggerAdapter, cfg config) error {
 	worker.AddNoPublisherHandler(utils.ReportGeneratorTaskXLSX, report.GenerateXLSXReport)
 	worker.AddNoPublisherHandler(utils.ReportGeneratorTaskPDF, report.GeneratePDFReport)
 
+	worker.AddNoPublisherHandler(utils.SendNotificationTask, cronjobs.SendNotification)
+
+
+
+
 	log.Info().Msg("Starting the consumer")
 	if err = worker.Run(context.Background()); err != nil {
 		cancel()
