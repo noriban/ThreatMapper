@@ -1,6 +1,7 @@
 package cronjobs
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -34,7 +35,7 @@ func sendNotification[T any](documents NotificationDocs[T], notificationType str
 	if notificationType == "slack" {
 		sendNotificationToSlack(documents.Docs)
 	} else if notificationType == "sumo" {
-		sendNotificationToSumoLogic(documents)
+		sendNotificationToSumoLogic(documents.Docs)
 	}
 	return nil
 }
@@ -134,7 +135,7 @@ func SendNotification(msg *message.Message) error {
 		return err
 	}
 
-	session := clientNeo.NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	session := clientNeo.NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
 	if err != nil {
 		log.Error().Msg("some error 2")
 		return err
@@ -147,17 +148,32 @@ func SendNotification(msg *message.Message) error {
 	}
 	defer tx.Close()
 
-	ExtractAndSendNotification[model.Secret](utils.NEO4J_SECRET_SCAN)
-	ExtractAndSendNotification[model.Vulnerability](utils.NEO4J_VULNERABILITY_SCAN)
-	ExtractAndSendNotification[model.Malware](utils.NEO4J_MALWARE_SCAN)
-	ExtractAndSendNotification[model.Compliance](utils.NEO4J_COMPLIANCE_SCAN)
-	ExtractAndSendNotification[model.CloudCompliance](utils.NEO4J_CLOUD_COMPLIANCE_SCAN)
+	err = ExtractAndSendNotification[model.Secret](ctx, tx, utils.NEO4J_SECRET_SCAN)
+	if err != nil {
+		return err
+	}
+	err = ExtractAndSendNotification[model.Vulnerability](ctx, tx, utils.NEO4J_VULNERABILITY_SCAN)
+	if err != nil {
+		return err
+	}
+	err = ExtractAndSendNotification[model.Malware](ctx, tx, utils.NEO4J_MALWARE_SCAN)
+	if err != nil {
+		return err
+	}
+	err = ExtractAndSendNotification[model.Compliance](ctx, tx, utils.NEO4J_COMPLIANCE_SCAN)
+	if err != nil {
+		return err
+	}
+	err = ExtractAndSendNotification[model.CloudCompliance](ctx, tx, utils.NEO4J_CLOUD_COMPLIANCE_SCAN)
+	if err != nil {
+		return err
+	}
 
 	return nil
 
 }
 
-func ExtractAndSendNotification[T any](scan_type utils.Neo4jScanType) {
+func ExtractAndSendNotification[T any](ctx context.Context, tx neo4j.Transaction, scan_type utils.Neo4jScanType) error {
 
 	currentEpochtime := makeTimestamp() - 30000
 
@@ -243,5 +259,5 @@ func ExtractAndSendNotification[T any](scan_type utils.Neo4jScanType) {
 		Docs: scanDocs,
 	}
 
-	sendNotification[T](notificationDocs, "slack")
+	return sendNotification[T](notificationDocs, "slack")
 }
