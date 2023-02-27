@@ -41,7 +41,7 @@ func sendNotification[T any](documents NotificationDocs[T], notificationType str
 }
 
 func sendNotificationToSlack[T any](documents []T) error {
-	url := "https://hooks.slack.com/services/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"
+	url := ""
 	method := "POST"
 	// payload := strings.NewReader(`{"text": "This is a line of text in a channel.\nAnd this is another line of text."}`)
 	bytes, _ := json.Marshal(documents)
