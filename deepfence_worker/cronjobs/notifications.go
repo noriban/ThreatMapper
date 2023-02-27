@@ -32,14 +32,14 @@ func sendNotification[T any](documents NotificationDocs[T], notificationType str
 		return nil
 	}
 	if notificationType == "slack" {
-		sendNotificationToSlack[model.Secret](documents.Docs)
+		sendNotificationToSlack(documents.Docs)
 	} else if notificationType == "sumo" {
 		sendNotificationToSumoLogic(documents)
 	}
 	return nil
 }
 
-func sendNotificationToSlack[T any](documents []interface{}) error {
+func sendNotificationToSlack[T any](documents []T) error {
 	url := "https://hooks.slack.com/services/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"
 	method := "POST"
 	// payload := strings.NewReader(`{"text": "This is a line of text in a channel.\nAnd this is another line of text."}`)
@@ -78,7 +78,7 @@ func sendNotificationToSlack[T any](documents []interface{}) error {
 	return nil
 }
 
-func sendNotificationToSumoLogic(documents []interface{}) error {
+func sendNotificationToSumoLogic[T any](documents []T) error {
 	url := ""
 	method := "POST"
 	// payload := strings.NewReader(`{"text": "This is a line of text in a channel.\nAnd this is another line of text."}`)
@@ -147,11 +147,23 @@ func SendNotification(msg *message.Message) error {
 	}
 	defer tx.Close()
 
+	ExtractAndSendNotification[model.Secret](utils.NEO4J_SECRET_SCAN)
+	ExtractAndSendNotification[model.Vulnerability](utils.NEO4J_VULNERABILITY_SCAN)
+	ExtractAndSendNotification[model.Malware](utils.NEO4J_MALWARE_SCAN)
+	ExtractAndSendNotification[model.Compliance](utils.NEO4J_COMPLIANCE_SCAN)
+	ExtractAndSendNotification[model.CloudCompliance](utils.NEO4J_CLOUD_COMPLIANCE_SCAN)
+
+	return nil
+
+}
+
+func ExtractAndSendNotification[T any](scan_type utils.Neo4jScanType) {
+
 	currentEpochtime := makeTimestamp() - 30000
 
 	log.Info().Msgf("time is %d", currentEpochtime)
 
-	rq, err := tx.Run("MATCH (n:SecretScan) where n.updated_at >= $timefrom and n.status = 'COMPLETE' return n", map[string]interface{}{
+	rq, err := tx.Run(`MATCH (n:`+string(scan_type)+`) where n.updated_at >= $timefrom and n.status = 'COMPLETE' return n`, map[string]interface{}{
 		"timefrom": currentEpochtime,
 	})
 
@@ -184,7 +196,7 @@ func SendNotification(msg *message.Message) error {
 
 	log.Info().Msgf("scan ids %v", scanIds)
 
-	scanDocs := []model.Secret{}
+	scanDocs := []T{}
 	for _, id := range scanIds {
 		log.Info().Msgf("scan ids %v", id)
 		// rq, err = tx.Run("MATCH (n:Secret) where n.scan_id = $id return n", map[string]interface{}{
@@ -217,22 +229,19 @@ func SendNotification(msg *message.Message) error {
 		// 	log.Info().Msgf("%s", scanStatusDocument.Props)
 
 		// }
-		entries, _, err := reporters_scan.GetScanResults[model.Secret](ctx, utils.NEO4J_SECRET_SCAN, id, reporters.FieldsFilters{}, model.FetchWindow{Offset: 0, Size: 0})
+		entries, _, err := reporters_scan.GetScanResults[T](ctx, scan_type, id, reporters.FieldsFilters{}, model.FetchWindow{Offset: 0, Size: 0})
 
-		if err != nil{
+		if err != nil {
 			log.Error().Msg("some error 3")
 		}
 		scanDocs = entries
 	}
 
 	// entries, err := reporters_search.SearchReport[T](ctx, req.NodeFilter, 0)
-	
 
-	var notificationDocs = NotificationDocs[model.Secret]{
+	var notificationDocs = NotificationDocs[T]{
 		Docs: scanDocs,
 	}
 
-	sendNotification[model.Secret](notificationDocs, "slack")
-	return nil
-
+	sendNotification[T](notificationDocs, "slack")
 }
