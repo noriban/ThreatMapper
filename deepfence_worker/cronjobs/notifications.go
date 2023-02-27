@@ -36,7 +36,7 @@ func (documents *NotificationDocs) sendNotification(notificationType string) err
 }
 
 func sendNotificationToSlack(documents []interface{}) error {
-	url := "https://hooks.slack.com/services/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"
+	url := ""
 	method := "POST"
 	// payload := strings.NewReader(`{"text": "This is a line of text in a channel.\nAnd this is another line of text."}`)
 	bytes, _ := json.Marshal(documents)
@@ -75,7 +75,7 @@ func sendNotificationToSlack(documents []interface{}) error {
 }
 
 func sendNotificationToSumoLogic(documents []interface{}) error {
-	url := "https://collectors.in.sumologic.com/receiver/v1/http/ZaVnC4dhaV2Qv5jFmWWCw597LY_nXM_Zoh_emIf6XqG3dJPS25FEZg1fQXd8oQJvGlIwiIvo1xVZSuF2AYhElpkgQcZskwyUF3RV4GeOvRo_aEMoOLYFNw=="
+	url := "" 
 	method := "POST"
 	// payload := strings.NewReader(`{"text": "This is a line of text in a channel.\nAnd this is another line of text."}`)
 	bytes, _ := json.Marshal(documents)
