@@ -93,18 +93,18 @@ func CommitFuncCloudCompliance(ns string, data []CloudCompliance) error {
 		return err
 	}
 
-	if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_vpc_security_group_rule'})"+
-		" MATCH (t:SecurityGroup{})-[:SECURED]-> (b:CloudResource{resource_type:'aws_ec2_instance'})"+
-		" MATCH (m:SecurityGroup{node_id: n.group_id})-[:SECURED]-> (z:CloudResource{resource_type:'aws_ec2_instance'})"+
-		" WHERE n.cidr_ipv4 = t.node_id    MERGE (z)-[:COMMUNICATES]->(b)",
-		map[string]interface{}{}); err != nil {
-		return err
-	}
+	//if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_vpc_security_group_rule'})"+
+	//	" MATCH (t:SecurityGroup{})-[:SECURED]-> (b:CloudResource{resource_type:'aws_ec2_instance'})"+
+	//	" MATCH (m:SecurityGroup{node_id: n.group_id})-[:SECURED]-> (z:CloudResource{resource_type:'aws_ec2_instance'})"+
+	//	" WHERE n.cidr_ipv4 = t.node_id    MERGE (z)-[:COMMUNICATES]->(b)",
+	//	map[string]interface{}{}); err != nil {
+	//	return err
+	//}
 
 	if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_vpc_security_group_rule'})"+
 		" MATCH (t:SecurityGroup{})-[:SECURED]-> (b:CloudResource{resource_type:'aws_ec2_instance'})"+
 		" MATCH (m:SecurityGroup{node_id: n.group_id})-[:SECURED]-> (z:CloudResource{resource_type:'aws_ec2_instance'})"+
-		" WHERE n.cidr_ipv4 = t.node_id    MERGE (z)-[:COMMUNICATES]->(b)",
+		" WHERE n.referenced_group_id = t.node_id    MERGE (z)-[:COMMUNICATES]->(b)",
 		map[string]interface{}{}); err != nil {
 		return err
 	}
@@ -284,16 +284,16 @@ func CommitFuncCloudCompliance(ns string, data []CloudCompliance) error {
 	//	return err
 	//}
 
-	if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_iam_role' })"+
-		" WITH apoc.convert.fromJsonList(n.inline_policies)"+
-		" as inline_policies,n UNWIND inline_policies as policy"+
-		"  MERGE (p:CloudResource{resource_type:'inline_policy',"+
-		" policy: policy.PolicyName ,"+
-		" policyDocument:apoc.convert.toString(policy.PolicyDocument),arn:"+
-		" apoc.text.random(10, 'A-Z0-9.$') }) MERGE (n) -[:inline]-> (p)",
-		map[string]interface{}{}); err != nil {
-		return err
-	}
+	//if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_iam_role' })"+
+	//	" WITH apoc.convert.fromJsonList(n.inline_policies)"+
+	//	" as inline_policies,n UNWIND inline_policies as policy"+
+	//	"  MERGE (p:CloudResource{resource_type:'inline_policy',"+
+	//	" policy: policy.PolicyName ,"+
+	//	" policyDocument:apoc.convert.toString(policy.PolicyDocument),arn:"+
+	//	" apoc.text.random(10, 'A-Z0-9.$') }) MERGE (n) -[:inline]-> (p)",
+	//	map[string]interface{}{}); err != nil {
+	//	return err
+	//}
 
 	if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_iam_group' })"+
 		"   WITH apoc.convert.fromJsonList(n.users) as users,n"+
@@ -311,17 +311,17 @@ func CommitFuncCloudCompliance(ns string, data []CloudCompliance) error {
 	//	return err
 	//}
 
-	if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_iam_user' }) "+
-		"  WITH apoc.convert.fromJsonList(n.groups) as groups,n "+
-		"  UNWIND groups as group MERGE (k:CloudResource{resource_type:'aws_iam_group', "+
-		"arn: group.Arn  }) WITH apoc.convert.fromJsonList(k.inline_policies) "+
-		"as inline,n,k  UNWIND inline as policy MERGE "+
-		"(t:CloudResource{resource_type:'inline_policy', "+
-		"policy: policy.PolicyName ,policyDocument:apoc.convert.toString(policy.PolicyDocument),"+
-		" arn: apoc.text.random(10, 'A-Z0-9.$') })"+
-		" MERGE (n) -[:inline]-> (t)", map[string]interface{}{}); err != nil {
-		return err
-	}
+	//if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_iam_user' }) "+
+	//	"  WITH apoc.convert.fromJsonList(n.groups) as groups,n "+
+	//	"  UNWIND groups as group MERGE (k:CloudResource{resource_type:'aws_iam_group', "+
+	//	"arn: group.Arn  }) WITH apoc.convert.fromJsonList(k.inline_policies) "+
+	//	"as inline,n,k  UNWIND inline as policy MERGE "+
+	//	"(t:CloudResource{resource_type:'inline_policy', "+
+	//	"policy: policy.PolicyName ,policyDocument:apoc.convert.toString(policy.PolicyDocument),"+
+	//	" arn: apoc.text.random(10, 'A-Z0-9.$') })"+
+	//	" MERGE (n) -[:inline]-> (t)", map[string]interface{}{}); err != nil {
+	//	return err
+	//}
 
 	if _, err = tx.Run("MATCH (n:CloudResource{resource_type:'aws_iam_user' })"+
 		"  MATCH (o:CloudResource{resource_type:'aws_iam_policy' })"+
