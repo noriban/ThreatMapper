@@ -67,6 +67,7 @@ type CloudResource struct {
 	Path                           string           `json:"path"`
 	UserId                         string           `json:"user_id"`
 	AccessLevel                    string           `json:"access_level"`
+	ReferencedGroupId              string           `json:"referenced_group_id"`
 	Action                         string           `json:"action"`
 	Description                    string           `json:"description"`
 	Privilege                      string           `json:"privilege"`
