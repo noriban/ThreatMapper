@@ -8,7 +8,7 @@ export default {
   component: FlexibleSelect,
 } as ComponentMeta<typeof FlexibleSelect>;
 
-const Template: ComponentStory<typeof FlexibleSelect<string>> = (args) => {
+const Template: ComponentStory = (args) => {
   const [value, setValue] = useState<string | undefined>();
   // TODO problem. somehow first value always gets selected.
   return (
