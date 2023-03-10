@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/deepfence/ThreatMapper/deepfence_server/model"
 	"github.com/deepfence/golang_deepfence_sdk/utils/directory"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 	"github.com/deepfence/golang_deepfence_sdk/utils/utils"
@@ -164,7 +163,6 @@ func sendNotificationToHttpEndpoint[T any](documents []T) error {
 	url := "http://142.93.178.37:8000"
 	method := "POST"
 
-	
 	myPayload := Payload[T]{
 		Text: documents,
 	}
@@ -232,22 +230,22 @@ func SendNotification(msg *message.Message) error {
 	if err != nil {
 		return err
 	}
-	err = ExtractAndSendNotification[model.Vulnerability](ctx, tx, utils.NEO4J_VULNERABILITY_SCAN)
-	if err != nil {
-		return err
-	}
-	err = ExtractAndSendNotification[model.Malware](ctx, tx, utils.NEO4J_MALWARE_SCAN)
-	if err != nil {
-		return err
-	}
-	err = ExtractAndSendNotification[model.Compliance](ctx, tx, utils.NEO4J_COMPLIANCE_SCAN)
-	if err != nil {
-		return err
-	}
-	err = ExtractAndSendNotification[model.CloudCompliance](ctx, tx, utils.NEO4J_CLOUD_COMPLIANCE_SCAN)
-	if err != nil {
-		return err
-	}
+	// err = ExtractAndSendNotification[model.Vulnerability](ctx, tx, utils.NEO4J_VULNERABILITY_SCAN)
+	// if err != nil {
+	// 	return err
+	// }
+	// err = ExtractAndSendNotification[model.Malware](ctx, tx, utils.NEO4J_MALWARE_SCAN)
+	// if err != nil {
+	// 	return err
+	// }
+	// err = ExtractAndSendNotification[model.Compliance](ctx, tx, utils.NEO4J_COMPLIANCE_SCAN)
+	// if err != nil {
+	// 	return err
+	// }
+	// err = ExtractAndSendNotification[model.CloudCompliance](ctx, tx, utils.NEO4J_CLOUD_COMPLIANCE_SCAN)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 
@@ -289,6 +287,7 @@ func ExtractAndSendNotification[T any](ctx context.Context, tx neo4j.Transaction
 		scanId := fmt.Sprintf("%s", scanStatusDocument.Props["node_id"])
 		scanIds = append(scanIds, scanId)
 	}
+	
 	log.Info().Msgf("scan ids %v", scanIds)
 	scanIds = []string{"47e915c47511ef211d80b817c87dd81aa83d6bd6b31e315c3eeca6a86b49ec3a-1677171997"}
 	log.Info().Msgf("scan ids %v", scanIds)

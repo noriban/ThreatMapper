@@ -2,6 +2,7 @@ package report
 
 import (
 	"bytes"
+	"context"
 	"embed"
 	"encoding/json"
 	"errors"
@@ -16,6 +17,9 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/minio/minio-go/v7"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j/dbtype"
+
+	// "github.com/neo4j/neo4j-go-driver/v4/neo4j/dbtype"
 
 	// "github.com/deepfence/ThreatMapper/deepfence_utils/directory"
 	// "github.com/deepfence/ThreatMapper/deepfence_utils/log"
@@ -24,6 +28,8 @@ import (
 	"github.com/deepfence/ThreatMapper/deepfence_server/model"
 	"github.com/deepfence/golang_deepfence_sdk/utils/directory"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
+	"github.com/deepfence/golang_deepfence_sdk/utils/utils"
+	// "github.com/deepfence/golang_deepfence_sdk/utils/utils"
 )
 
 // var t *template.Template
@@ -43,12 +49,12 @@ type Info2 struct {
 	EndTime                   string
 	AppliedFilters            []Filter
 	OverallSeveritySummary    string
-	SeverityCount             map[string]int
+	SeverityCount             map[string]int64
 	NodeWiseSeverityCountData []NodeWiseSeverityCountDoc
 }
 
 type NodeWiseSeverityCountDoc struct {
-	NodeWiseSeverityCount map[string]map[string]int
+	NodeWiseSeverityCount map[string]map[string]int64
 	NodeWiseSeverityData  []SecretDoc
 }
 
@@ -66,7 +72,6 @@ type SecretDoc struct {
 	Score                 float64  `json:"score"`
 	MatchedContent        string   `json:"matched_content"`
 	NodeType              string   `json:"node_type"`
-	Timestamp             string   `json:"@timestamp"`
 	ContainerName         string   `json:"container_name"`
 	ScanID                string   `json:"scan_id"`
 	RelativeStartingIndex int      `json:"relative_starting_index"`
@@ -74,13 +79,120 @@ type SecretDoc struct {
 	NodeID                string   `json:"node_id"`
 }
 
+type SecretDocCount struct {
+	High int `json:"high"`
+	// Medium   int `json:"medium"`
+	// Low      int `json:"low"`
+	// Critical int `json:"critical"`
+}
+
 type Filter struct {
 	Type_           string
 	TypeInformation string
 }
 
+type SeverityWisecount struct {
+	Low      int64 `json:"low"`
+	Medium   int64 `json:"medium"`
+	High     int64 `json:"high"`
+	Critical int64 `json:"critical"`
+}
+
 //go:embed secret/*.gohtml
 var content embed.FS
+
+func SecretDocumentsLevel(ctx context.Context, tx neo4j.Transaction, _ []Filter) map[string]int64 {
+	var scanIds []string
+
+	log.Info().Msgf("scan ids %v", scanIds)
+	scanIds = []string{"47e915c47511ef211d80b817c87dd81aa83d6bd6b31e315c3eeca6a86b49ec3a-1677171997"}
+
+	// scanDocs := SecretDocCount{}
+	secretDocsLevelCount := make(map[string]int64)
+	secretDocsLevelCount["low"] = 0
+	secretDocsLevelCount["medium"] = 0
+	secretDocsLevelCount["high"] = 0
+	secretDocsLevelCount["critical"] = 0
+	for _, id := range scanIds {
+		log.Info().Msgf("scan ids %v", id)
+		rq, err := tx.Run("MATCH (n:Secret) where n.scan_id = $id return n.level as level, count(n) as count ", map[string]interface{}{
+			"id": id,
+		})
+		if err != nil {
+			log.Error().Msg("some error 3")
+			return secretDocsLevelCount
+		}
+		records, err := rq.Collect()
+		if err != nil {
+			log.Error().Msg("some error 3")
+			return secretDocsLevelCount
+		}
+		for _, record := range records {
+			if record.Values[0] == nil {
+				log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
+				continue
+			}
+			value, ok := record.Values[1].(int64)
+			if !ok {
+				log.Error().Msgf("int;  got %T", value)
+			}
+			key, ok := record.Values[0].(string)
+			if !ok {
+				log.Error().Msgf("want type string];  got %T", key)
+			}
+
+			if secretDocsLevelCount[key] == 0 {
+				secretDocsLevelCount[key] = value
+			}
+
+			log.Info().Msgf("%+v", secretDocsLevelCount)
+		}
+	}
+	var total int64
+	total  = 0
+	for _,v := range secretDocsLevelCount {
+		total = total + v
+	}
+	secretDocsLevelCount["total"] = total
+	return secretDocsLevelCount
+}
+
+func SecretDocuments(ctx context.Context, tx neo4j.Transaction, _ []Filter) []SecretDoc {
+	var scanIds []string
+
+	log.Info().Msgf("scan ids %v", scanIds)
+	scanIds = []string{"47e915c47511ef211d80b817c87dd81aa83d6bd6b31e315c3eeca6a86b49ec3a-1677171997"}
+
+	scanDocs := []SecretDoc{}
+
+	for _, id := range scanIds {
+		log.Info().Msgf("scan ids %v", id)
+		rq, err := tx.Run("MATCH (n:Secret) where n.scan_id = $id return n", map[string]interface{}{
+			"id": id,
+		})
+		if err != nil {
+			log.Error().Msg("some error 3")
+			return scanDocs
+		}
+		records, err := rq.Collect()
+		if err != nil {
+			log.Error().Msg("some error 3")
+			return scanDocs
+		}
+		for _, record := range records {
+			if record.Values[0] == nil {
+				log.Error().Msgf("Invalid neo4j trigger_action result, skipping")
+				continue
+			}
+			scanStatusDocument := record.Values[0].(dbtype.Node)
+			var tmp SecretDoc
+			utils.FromMap(scanStatusDocument.Props, &tmp)
+			scanDocs = append(scanDocs, tmp)
+		}
+	}
+
+	return scanDocs
+}
 
 func GeneratePDFReport(msg *message.Message) error {
 	var err error
@@ -93,7 +205,6 @@ func GeneratePDFReport(msg *message.Message) error {
 		return errors.New("tenant-id/namespace is empty")
 	}
 	log.Info().Msgf("message tenant id %s", string(tenantID))
-
 	log.Info().Msgf("uuid: %s payload: %s ", msg.UUID, string(msg.Payload))
 
 	err = json.Unmarshal(msg.Payload, &reportPayload)
@@ -102,19 +213,13 @@ func GeneratePDFReport(msg *message.Message) error {
 	}
 
 	ctx := directory.NewContextWithNameSpace(directory.NamespaceID(tenantID))
-
 	client, err := directory.Neo4jClient(ctx)
 	if err != nil {
 		log.Error().Msg("error 1")
 		log.Error().Msgf("%s", err)
 		return err
 	}
-
 	session := client.NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
-	if err != nil {
-		log.Error().Msg("some error 2")
-		return err
-	}
 	defer session.Close()
 
 	tx, err := session.BeginTransaction()
@@ -123,66 +228,23 @@ func GeneratePDFReport(msg *message.Message) error {
 	}
 	defer tx.Close()
 
-	rq, err := tx.Run("MATCH (n:Secret)  return n", map[string]interface{}{})
+	secretDocCountLevel := SecretDocumentsLevel(ctx, tx, []Filter{})
+	secretDocuments := SecretDocuments(ctx, tx, []Filter{})
 
-	if err != nil {
-		log.Error().Msg("some error 3")
-		return err
-	}
-
-	_, err = rq.Collect()
-
-	if err != nil {
-		log.Error().Msg("some error 3")
-		return err
-	}
+	log.Info().Msgf("%+v %+v", secretDocCountLevel, secretDocuments)
 
 	// var t *template.Template
 
-	mydir, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println("this is current wotking dir", mydir)
 	secretFileNames := []string{"secret/detailed_report_applied_filter.gohtml", "secret/detailed_report_nodewise_secret.gohtml", "secret/detailed_report_nodewise_vulnerability_count.gohtml", "secret/detailed_report_security_report_base.gohtml", "secret/detailed_secret_summary_table.gohtml", "secret/summary_report_header.gohtml"}
 	t := template.Must(template.ParseFS(content, secretFileNames...))
 
 	var b bytes.Buffer
 
-	doc := &SecretDoc{
-		Identity:              10,
-		Labels:                []string{"Secret"},
-		FullFilename:          "deepfence/bin/secret-scanner/config.yaml",
-		ImageLayerID:          "",
-		Level:                 "high",
-		KubernetesClusterName: "",
-		Masked:                "false",
-		StartingIndex:         12809,
-		RelativeEndingIndex:   27,
-		NodeName:              "mukul-test",
-		Score:                 7.51,
-		MatchedContent:        "regex: sshpass -p.*[|\\\\\\\\",
-		NodeType:              "host",
-		Timestamp:             "2023-01-11T15:49:50.388000000[UTC]",
-		ContainerName:         "",
-		ScanID:                "mukul-test-1673452184",
-		RelativeStartingIndex: 13,
-		HostName:              "mukul-test",
-		NodeID:                "111:mukul-test:deepfence/bin/secret-scanner/config.yaml",
-	}
-
 	nodeDoc := &NodeWiseSeverityCountDoc{
-		NodeWiseSeverityCount: map[string]map[string]int{
-			"122565780891.dkr.ecr.us-east-1.amazonaws.com/dvwa:latest": map[string]int{
-				"high":     0,
-				"low":      1,
-				"medium":   2,
-				"critical": 3,
-				"total":    6,
-			},
+		NodeWiseSeverityCount: map[string]map[string]int64{
+			"47e915c47511ef211d80b817c87dd81aa83d6bd6b31e315c3eeca6a86b49ec3a-1677171997": secretDocCountLevel,
 		},
-		NodeWiseSeverityData: []SecretDoc{*doc},
+		NodeWiseSeverityData: secretDocuments,
 	}
 
 	data2 := &Info2{
@@ -196,12 +258,7 @@ func GeneratePDFReport(msg *message.Message) error {
 			},
 		},
 		OverallSeveritySummary: "Total Count Severity-Wise",
-		SeverityCount: map[string]int{
-			"high":     0,
-			"low":      1,
-			"medium":   2,
-			"critical": 3,
-		},
+		SeverityCount: secretDocCountLevel,
 		NodeWiseSeverityCountData: []NodeWiseSeverityCountDoc{*nodeDoc},
 	}
 
@@ -217,14 +274,9 @@ func GeneratePDFReport(msg *message.Message) error {
 		return err
 	}
 
-	// pdfg.Dpi.Set(300)
-	// pdfg.Orientation.Set(pdf.OrientationLandscape)
 	pdfg.Grayscale.Set(false)
-	// fmt.Println(b.String())
 	page := pdf.NewPageReader(&b)
 	page.FooterRight.Set("[page]")
-	// page.FooterFontSize.Set(10)
-	// page.Zoom.Set(0.95)
 
 	// Add to document
 	pdfg.AddPage(page)
