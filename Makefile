@@ -17,9 +17,9 @@ DF_IMG_TAG?=latest
 IS_DEV_BUILD?=false
 VERSION?="2.0.0"
 
-default: bootstrap console_plugins agent console
+default: bootstrap console_plugins console
 
-.PHONY: console_plugins agent console
+.PHONY: console_plugins console
 console: redis postgres kafka-broker router server worker ui console_plugins file-server
 
 console_plugins: secretscanner malwarescanner packagescanner
@@ -38,10 +38,10 @@ bootstrap-agent-plugins:
 	(cd $(SECRET_SCANNER_DIR) && bash bootstrap.sh)
 	(cd $(MALWARE_SCANNER_DIR) && bash bootstrap.sh)
 
-.PHONY: agent
-agent:
-	(cd $(DEEPFENCE_AGENT_DIR) &&\
-	IMAGE_REPOSITORY="$(IMAGE_REPOSITORY)" DF_IMG_TAG="$(DF_IMG_TAG)" bash build.sh)
+#.PHONY: agent
+#agent:
+#	(cd $(DEEPFENCE_AGENT_DIR) &&\
+#	IMAGE_REPOSITORY="$(IMAGE_REPOSITORY)" DF_IMG_TAG="$(DF_IMG_TAG)" bash build.sh)
 
 .PHONY: redis
 redis:

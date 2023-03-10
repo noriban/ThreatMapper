@@ -9,12 +9,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/deepfence/ThreatMapper/deepfence_server/pkg/scope/report"
 	"github.com/deepfence/golang_deepfence_sdk/utils/directory"
 	"github.com/deepfence/golang_deepfence_sdk/utils/log"
 	"github.com/deepfence/golang_deepfence_sdk/utils/telemetry"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	redis2 "github.com/redis/go-redis/v9"
-	"github.com/weaveworks/scope/report"
 )
 
 const (
@@ -103,14 +103,14 @@ func (nc *neo4jIngester) runEnqueueReport() {
 	for {
 		select {
 		case rpt := <-nc.enqueuer:
-			var probe_id string
+			var probe_id interface{}
 			for _, n := range rpt.Host.Nodes {
 				probe_id, _ = n.Latest.Lookup("control_probe_id")
 				if len(rpt.Host.Nodes) > 1 {
 					log.Error().Msgf("multiple probe ids: %v", probe_id)
 				}
 			}
-			report_buffer[probe_id] = rpt
+			report_buffer[probe_id.(string)] = rpt
 			i += 1
 		case <-timeout:
 			log.Info().Msgf("Sending %v unique reports over %v received", len(report_buffer), i)
