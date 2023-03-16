@@ -1,9 +1,5 @@
 package report
 
-import (
-	"github.com/ugorji/go/codec"
-)
-
 // DefaultFormat and friends tell the UI how to render the "Value" of this
 // metric.
 const (
@@ -25,72 +21,4 @@ type MetricRow struct {
 	Priority   float64
 	URL        string
 	Metric     *Metric
-}
-
-// Summary returns a copy of the MetricRow, without the samples, just the value if there is one.
-func (m MetricRow) Summary() MetricRow {
-	return m
-}
-
-// MarshalJSON shouldn't be used, use CodecEncodeSelf instead
-//func (MetricRow) MarshalJSON() ([]byte, error) {
-//	//panic("MarshalJSON shouldn't be used, use CodecEncodeSelf instead")
-//}
-//
-//// UnmarshalJSON shouldn't be used, use CodecDecodeSelf instead
-//func (*MetricRow) UnmarshalJSON(b []byte) error {
-//	panic("UnmarshalJSON shouldn't be used, use CodecDecodeSelf instead")
-//}
-
-// Needed to flatten the fields for backwards compatibility with probes
-// (time.Time is encoded in binary in MsgPack)
-type wiredMetricRow struct {
-	ID         string  `json:"id"`
-	Label      string  `json:"label"`
-	Format     string  `json:"format,omitempty"`
-	Group      string  `json:"group,omitempty"`
-	Value      float64 `json:"value"`
-	ValueEmpty bool    `json:"valueEmpty,omitempty"`
-	Priority   float64 `json:"priority,omitempty"`
-	Samples    Sample  `json:"samples"`
-	Min        float64 `json:"min"`
-	Max        float64 `json:"max"`
-	First      string  `json:"first,omitempty"`
-	Last       string  `json:"last,omitempty"`
-	URL        string  `json:"url"`
-}
-
-// CodecEncodeSelf marshals this MetricRow. It takes the basic Metric
-// rendering, then adds some row-specific fields.
-func (m *MetricRow) CodecEncodeSelf(encoder *codec.Encoder) {
-	encoder.Encode(wiredMetricRow{
-		ID:         m.ID,
-		Label:      m.Label,
-		Format:     m.Format,
-		Group:      m.Group,
-		Value:      m.Value,
-		ValueEmpty: m.ValueEmpty,
-		Priority:   m.Priority,
-		URL:        m.URL,
-		Samples:    m.Metric.Samples,
-	})
-}
-
-// MetricRowsByPriority implements sort.Interface, so we can sort the rows by
-// priority before rendering them to the UI.
-type MetricRowsByPriority []MetricRow
-
-// Len is part of sort.Interface.
-func (m MetricRowsByPriority) Len() int {
-	return len(m)
-}
-
-// Swap is part of sort.Interface.
-func (m MetricRowsByPriority) Swap(i, j int) {
-	m[i], m[j] = m[j], m[i]
-}
-
-// Less is part of sort.Interface.
-func (m MetricRowsByPriority) Less(i, j int) bool {
-	return m[i].Priority < m[j].Priority
 }

@@ -1,8 +1,6 @@
 package report
 
 import (
-	"reflect"
-
 	"github.com/deepfence/ThreatMapper/deepfence_server/pkg/scope/report/ps"
 )
 
@@ -127,36 +125,3 @@ func (s Sets) Merge(other Sets) Sets {
 func (s Sets) String() string {
 	return mapToString(s.PsMap)
 }
-
-// DeepEqual tests equality with other Sets
-func (s Sets) DeepEqual(t Sets) bool {
-	return mapEqual(s.PsMap, t.PsMap, reflect.DeepEqual)
-}
-
-//func (s *Sets) CodecEncodeSelf(encoder *codec.Encoder) {
-//	mapWrite(s.PsMap, encoder, func(encoder *codec.Encoder, val interface{}) {
-//		encoder.Encode(val.(StringSet))
-//	})
-//}
-//
-//func (s *Sets) CodecDecodeSelf(decoder *codec.Decoder) {
-//	decoder.Decode(s)
-//	out := mapRead(decoder, func(isNil bool) interface{} {
-//		var value StringSet
-//		if !isNil {
-//			decoder.Decode(&value)
-//		}
-//		return value
-//	})
-//	*s = Sets{out}
-//}
-
-// MarshalJSON shouldn't be used, use CodecEncodeSelf instead
-//func (Sets) MarshalJSON() ([]byte, error) {
-//	panic("MarshalJSON shouldn't be used, use CodecEncodeSelf instead")
-//}
-//
-//// UnmarshalJSON shouldn't be used, use CodecDecodeSelf instead
-//func (*Sets) UnmarshalJSON(b []byte) error {
-//	panic("UnmarshalJSON shouldn't be used, use CodecDecodeSelf instead")
-//}

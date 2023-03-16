@@ -4,24 +4,6 @@ import (
 	"github.com/deepfence/ThreatMapper/deepfence_server/pkg/scope/report"
 )
 
-// NodeSummaryGroup is a topology-typed group of children for a Node.
-type NodeSummaryGroup struct {
-	ID         string        `json:"id"`
-	Label      string        `json:"label"`
-	Nodes      []NodeSummary `json:"nodes"`
-	TopologyID string        `json:"topologyId"`
-	Columns    []Column      `json:"columns"`
-}
-
-// Column provides special json serialization for column ids, so they include
-// their label for the frontend.
-type Column struct {
-	ID          string `json:"id"`
-	Label       string `json:"label"`
-	DefaultSort bool   `json:"defaultSort"`
-	Datatype    string `json:"dataType"`
-}
-
 // BasicNodeSummary is basic summary information about a Node,
 // sufficient for rendering links to the node.
 type BasicNodeSummary struct {
