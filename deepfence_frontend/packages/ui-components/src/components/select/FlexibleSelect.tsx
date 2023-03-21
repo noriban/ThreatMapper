@@ -1,7 +1,7 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
 import cx from 'classnames';
 import { useCombobox, useMultipleSelection, useSelect } from 'downshift';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export interface SelectProps extends SelectPrimitive.SelectProps {
@@ -13,20 +13,10 @@ export interface SelectProps extends SelectPrimitive.SelectProps {
   triggerAsChild?: boolean;
 }
 
-const items = ['Neptunium', 'Plutonium', 'Americium'];
-
-const books = [
-  { author: 'Harper Lee', title: 'To Kill a Mockingbird' },
-  { author: 'Lev Tolstoy', title: 'War and Peace' },
-  { author: 'Fyodor Dostoyevsy', title: 'The Idiot' },
-  { author: 'Oscar Wilde', title: 'A Picture of Dorian Gray' },
-  { author: 'George Orwell', title: '1984' },
-  { author: 'Jane Austen', title: 'Pride and Prejudice' },
-  { author: 'Marcus Aurelius', title: 'Meditations' },
-  { author: 'Fyodor Dostoevsky', title: 'The Brothers Karamazov' },
-  { author: 'Lev Tolstoy', title: 'Anna Karenina' },
-  { author: 'Fyodor Dostoevsky', title: 'Crime and Punishment' },
-];
+const books = Array.from(Array(100).keys()).map((i) => ({
+  author: 'Harper Lee ' + i,
+  title: 'To Kill a Mockingbird ' + i,
+}));
 
 function getFilteredBooks(
   selectedItems: { author: string; title: string },
@@ -43,6 +33,20 @@ function getFilteredBooks(
   });
 }
 
+const fetchData = async (offset: number, searchText) => {
+  if (searchText) {
+    const data = await new Promise((resolve) => {
+      const b = books.find((book) => book.title.includes(searchText));
+      resolve(b ? [b] : []);
+    });
+    return data;
+  } else {
+    const data = await new Promise((resolve) => {
+      resolve(Object.values(books.slice(0, offset + 5)));
+    });
+    return data ?? [];
+  }
+};
 export const FlexibleSelect = (props: SelectProps) => {
   const { children, content, triggerAsChild } = props;
 
@@ -62,11 +66,53 @@ export const FlexibleSelect = (props: SelectProps) => {
   // } = useSelect({ items });
 
   const [inputValue, setInputValue] = useState('');
+  const [offset, setOffset] = useState(0);
+  const [items, setItems] = useState(null);
+  const [searchText, setSearchText] = useState('');
   const [selectedItems, setSelectedItems] = useState(initialSelectedItems);
-  const items = useMemo(
-    () => getFilteredBooks(selectedItems, inputValue),
-    [selectedItems, inputValue],
+  // const items = useMemo(
+  //   () => getFilteredBooks(selectedItems, inputValue),
+  //   [selectedItems, inputValue],
+  // );
+
+  const intersectionRef = useRef(null);
+
+  const loadObserver = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+      debugger;
+      if (entry.isIntersecting) {
+        setOffset((_offset) => _offset + 5);
+      }
+    },
+    {
+      threshold: 1,
+    },
   );
+
+  useEffect(() => {
+    if (intersectionRef.current) {
+      loadObserver.observe(intersectionRef.current);
+    }
+    return () => {
+      if (intersectionRef.current) {
+        loadObserver.unobserve(intersectionRef.current);
+      }
+    };
+  }, [intersectionRef.current]);
+
+  useEffect(() => {
+    debugger;
+    if (searchText) {
+      fetchData(offset, searchText).then((res) => {
+        setItems(res);
+      });
+    } else {
+      fetchData(offset, '').then((res) => {
+        setItems(res);
+      });
+    }
+  }, [searchText, offset]);
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
@@ -95,26 +141,33 @@ export const FlexibleSelect = (props: SelectProps) => {
     getItemProps,
     selectedItem,
   } = useCombobox({
-    items,
+    items: items ?? [],
     itemToString(item) {
       return item ? item.title : '';
     },
     defaultHighlightedIndex: 0, // after selection, highlight the first item.
     selectedItem: null,
     stateReducer(state, actionAndChanges) {
-      const { changes, type } = actionAndChanges;
+      const { changes, type, inputValue } = actionAndChanges;
 
-      switch (type) {
-        case useCombobox.stateChangeTypes.InputKeyDownEnter:
-        case useCombobox.stateChangeTypes.ItemClick:
-          return {
-            ...changes,
-            isOpen: true, // keep the menu open after selection.
-            highlightedIndex: 0, // with the first option highlighted.
-          };
-        default:
-          return changes;
+      if (inputValue) {
+        setSearchText(inputValue);
+        return changes;
+      } else {
+        setSearchText('');
+        return changes;
       }
+      // switch (type) {
+      //   case useCombobox.stateChangeTypes.InputKeyDownEnter:
+      //   case useCombobox.stateChangeTypes.ItemClick:
+      //     return {
+      //       ...changes,
+      //       isOpen: true, // keep the menu open after selection.
+      //       highlightedIndex: 0, // with the first option highlighted.
+      //     };
+      //   default:
+      //     return changes;
+      // }
     },
     onStateChange({ inputValue: newInputValue, type, selectedItem: newSelectedItem }) {
       switch (type) {
@@ -192,6 +245,7 @@ export const FlexibleSelect = (props: SelectProps) => {
               <span className="pl-4 text-blue-500">+{selectedItems.length - 1} more</span>
             )}
           </span>
+
           <div className="flex gap-0.5 grow">
             <input
               placeholder="Search here..."
@@ -218,18 +272,21 @@ export const FlexibleSelect = (props: SelectProps) => {
       >
         {isOpen &&
           items.map((item, index) => (
-            <li
-              className={cx('py-2 px-3 shadow-sm flex flex-col', {
-                'bg-blue-300': selectedItems.includes(item),
-                // selectedItem === item && 'font-bold',
-              })}
-              key={`${item.value}${index}`}
-              {...getItemProps({ item, index })}
-            >
-              <span>{item.title}</span>
-              <span className="text-sm text-gray-700">{item.author}</span>
-            </li>
+            <div key={index}>
+              <li
+                className={cx('py-2 px-3 shadow-sm flex flex-col', {
+                  'bg-blue-300': selectedItems.includes(item),
+                  // selectedItem === item && 'font-bold',
+                })}
+                key={`${item.value}${index}`}
+                {...getItemProps({ item, index })}
+              >
+                <span>{item.title}</span>
+                <span className="text-sm text-gray-700">{item.author}</span>
+              </li>
+            </div>
           ))}
+        <li ref={intersectionRef}>Load</li>
       </ul>
     </div>
   );
