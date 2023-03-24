@@ -44,6 +44,7 @@ const (
 	ResourceDiagnosis   = "diagnosis"
 	ResourceCloudNode   = "cloud-node"
 	ResourceRegistry    = "container-registry"
+	ResourceReport      = "report"
 )
 
 // func telemetryInjector(next http.Handler) http.Handler {
@@ -345,6 +346,15 @@ func SetupRoutes(r *chi.Mux, serverPort string, jwtSecret []byte, serveOpenapiDo
 				})
 				r.Get("/diagnostic-logs", dfHandler.AuthHandler(ResourceDiagnosis, PermissionRead, dfHandler.GetDiagnosticLogs))
 			})
+
+			// Reports
+			r.Route("/report", func(r chi.Router) {
+				r.Get("/", dfHandler.AuthHandler(ResourceReport, PermissionRead, dfHandler.ListReports))
+				r.Get("/{id}", dfHandler.AuthHandler(ResourceReport, PermissionRead, dfHandler.GetReport))
+				r.Post("/", dfHandler.AuthHandler(ResourceReport, PermissionGenerate, dfHandler.GenerateReport))
+				r.Delete("/{id}", dfHandler.AuthHandler(ResourceReport, PermissionDelete, dfHandler.DeleteReport))
+			})
+
 		})
 	})
 
