@@ -153,10 +153,6 @@ export const SearchableSelect = ({
           </LabelPrimitive.Root>
         )}
         <div className="shadow-sm bg-white inline-flex gap-2 items-center flex-wrap p-1.5">
-          <span className="bg-gray-100 rounded-md px-1 focus:bg-red-400 mr-10">
-            {text && <span className="pl-4 text-blue-500">{text}</span>}
-          </span>
-
           <div className="flex gap-0.5 grow">
             <TextInput
               {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
