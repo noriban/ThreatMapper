@@ -27,6 +27,7 @@ replace github.com/deepfence/agent-plugins-grpc => ../deepfence_agent/plugins/ag
 replace github.com/weaveworks/scope => ../deepfence_agent/tools/apache/scope/
 
 require (
+	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.0
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/ThreeDotsLabs/watermill-kafka/v2 v2.2.2
 	github.com/anchore/syft v0.75.0
