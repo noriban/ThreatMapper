@@ -27,6 +27,7 @@ replace github.com/deepfence/agent-plugins-grpc => ../deepfence_agent/plugins/ag
 replace github.com/weaveworks/scope => ../deepfence_agent/tools/apache/scope/
 
 require (
+	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.0
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/ThreeDotsLabs/watermill-kafka/v2 v2.2.2
@@ -56,7 +57,6 @@ require (
 	github.com/CycloneDX/cyclonedx-go v0.7.1-0.20221222100750-41a1ac565cce // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
-	github.com/Masterminds/sprig/v3 v3.2.3 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/Microsoft/hcsshim v0.9.6 // indirect
 	github.com/Shopify/sarama v1.32.0 // indirect
